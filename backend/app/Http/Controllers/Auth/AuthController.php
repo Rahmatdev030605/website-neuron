@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\ToDoList;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -50,7 +52,7 @@ class AuthController extends Controller
 
         // Buat token akses baru
         $token = $user->createToken('auth_token')->plainTextToken;
-        
+
         return redirect('/adminpanel')->with('auth_token', $token);
     }
 
@@ -62,7 +64,9 @@ class AuthController extends Controller
 
         if ($tokenIsValid) {
             // Token masih berlaku, beri akses ke halaman adminpanel
-            return view('pages.dashboard');
+            $todos = ToDoList::all();
+
+            return view('pages.dashboard', compact('todos'));
         }
 
         // Token telah kedaluwarsa, arahkan pengguna untuk memperbarui token

@@ -23,23 +23,41 @@
             </div>
             <div class="form-group">
                 <label for="date_start">Start Date</label>
-                <input type="date" name="date_start" id="date_start" class="form-control" value="{{ $todo->date_start }}" required>
+                <input type="datetime-local" name="date_start" id="date_start" class="form-control" value="{{ $todo->date_start }}" required>
             </div>
             <div class="form-group">
                 <label for="date_end">End Date</label>
-                <input type="date" name="date_end" id="date_end" class="form-control" value="{{ $todo->date_end }}" required>
+                <input type="datetime-local" name="date_end" id="date_end" class="form-control" value="{{ $todo->date_end }}" required>
             </div>
             <div class="text-center">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save</button>
-                <form action="{{ route('adminpanel.todolist.destroy', ['todolist' => $todo->id]) }}" method="POST">
-                    @csrf
-                    @method('DELETE')
-                    <!-- Tambahkan tombol "Delete" di sini -->
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
-
+                <button type="submit" class="btn btn-primary custom-button"><i class="fas fa-save"></i> Save Edit</button>
             </div>
+        </form>
+
+        <form action="{{ route('adminpanel.todolist.destroy', ['todolist' => $todo->id]) }}" method="POST">
+            @csrf
+            @method('DELETE')
+            <div class="text-center">
+            <button type="submit" class="btn btn-danger right-align">Delete</button>
+            </div>
+
         </form>
     </div>
 </div>
 @endsection
+
+<style>
+    .right-align {
+        float: right;
+    }
+
+    .custom-button {
+        width: 200px;
+        height: 50px;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+    var formattedDateTime = "{{ $todo->date_start }}";
+    document.getElementById("date_start").value = formattedDateTime;
+</script>

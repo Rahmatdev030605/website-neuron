@@ -26,7 +26,8 @@ class ToDoListController extends Controller
      */
     public function addToDoList()
     {
-        return view('cms.ToDoList.create');
+        $todo = ToDoList::find(1);
+        return view('cms.ToDoList.create', ['todo' => $todo]);
     }
 
     /**
@@ -45,7 +46,7 @@ class ToDoListController extends Controller
         ]);
 
         ToDoList::create($validatedData);
-        return redirect()->route('todolist.index');
+        return redirect()->route('adminpanel');
     }
 
     /**
@@ -82,7 +83,7 @@ class ToDoListController extends Controller
     {
         $todo = ToDoList::find($id);
         $todo->update($request->all());
-        return redirect('/adminpanel/todolist');
+        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
     }
     /**
      * Remove the specified resource from storage.
@@ -95,11 +96,11 @@ class ToDoListController extends Controller
         $todo = ToDoList::find($id);
 
         if (!$todo) {
-            return redirect('/adminpanel/todolist')->with('error', 'Item not found.');
+            return redirect()->route('todolist.index')->with('error', 'Item not found.');
         }
 
         $todo->delete();
 
-        return redirect('/adminpanel/todolist')->with('success', 'Item has been deleted.');
+        return redirect()->route('todolist.index')->with('success', 'Item has been deleted.');
     }
 }

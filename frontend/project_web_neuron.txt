@@ -1,0 +1,156 @@
+Akun superadmin +1
+
+
+QA = bikin test case CMS
+
+
+Prioritas di:
+Rombak Database
+
+Career: Lowongan pekerjaan
+tombol edit cuman satu
+
+Service:
+Hanya Judul dan description
+
+
+
+Kotak Besar = Visitor
+Biru = Career ->
+Hijau = Jumlah artikel
+Kuning = Jumlah portofolio
+merah = Jumlah product
+
+
+Section Sales = Grafik Line -> pengunjung terakhir website
+Section Visitor = Geomap pengujung dari lokasi mana
+Section Chat = Trak Record Editing Page
+Sales Graph = daftar admin yang login dengan waktu
+To do list -> add waktu
+Calendaer = ada
+
+
+
+
+Batch2:
+	
+Hero_list = Hero Title 1 2 3 4
+Home = Hero Image
+Home = About Description
+neuron_programs = program
+Home = title_service
+Home = title_description
+services = fetching dari service
+Home = Trusted By
+Home = TrusteBy Desc
+partners = fetching dari partners
+Testimonial = testimony
+Home = Article Title
+Home = Article desc
+article = fetching dari article
+
+ROMBAK DATABASE:
+    Batch1:
+        Herotitle1           --
+        Herotitle2           --
+        Herotitle3           --
+        Hero Desc            --
+        About project 100+   --
+        About Experience     --
+        hero_image
+        about_desc 	     
+        About title	    
+        About ilustratoin    --
+        Titleservice -> service_title
+        service_desc	     
+        Titleproject	     --
+        Titleproduct	     --
+        Titlepartner -> partner_title
+        partner_desc
+        TitleArticles -> article_title
+        article_desc  	     
+        Title Certificate    --
+
+EDIT PAGES:
+    HOME_PAGE:
+        Home
+        Hero_list
+        Neuron_programs
+
+
+DATABASE
+    HERO_TITLE_LIST:
+        id
+        title -> hero_title
+        hero_desc
+        home_id
+
+    NEURON_PROGRAMS:
+        id
+        program_title
+        program_desc
+        tagline
+        image -> video
+        home_id
+    
+    PARTNERS
+        id
+        image   
+        home_id
+
+    HOME:
+        id
+        Herotitle1           --
+        Herotitle2           --
+        Herotitle3           --
+        Hero Desc            --
+        About project 100+   --
+        About Experience     --
+        hero_image
+        about_desc 	     
+        About title	    
+        About ilustratoin    --
+        Titleservice -> service_title
+        service_desc	     
+        Titleproject	     --
+        Titleproduct	     --
+        Titlepartner -> partner_title
+        partner_desc
+        TitleArticles -> article_title
+        article_desc  	     
+        Title Certificate    --
+        neuron_programs_id
+        cta_contact_id       --
+
+
+UNUSED DATABASE:
+    Certificate
+    cta_contact
+
+edit_record
+    Saat ada edit
+        id
+        action  (enum)->[create, update, delete]
+        time    (date)
+        note    (text)
+        user_id (unasigninteger)
+        role_id (unasigninteger)
+
+login_record
+    Saat ada login
+        id
+        action  (enum)->[login, logout]
+        time    (date)
+        user_id (unasigninteger)
+        role_id (unasigninteger)
+
+todo_list
+    to do list
+        id
+        title (string)
+        desc (text)
+        date_start (datetime)
+        date_end (datetime)
+        isDone (enum, ['true', 'false'])
+
+
