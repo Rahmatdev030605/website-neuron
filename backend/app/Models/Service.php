@@ -13,22 +13,5 @@ class Service extends Model
     protected $fillable = [
         'name',
         'desc',
-        'image',
-        'isTopService',
     ];
-
-    public function serviceTechnology()
-    {
-        return $this->hasMany(ServiceTechnology::class, 'services_id', 'id');
-    }
-
-    public function serviceKeys()
-    {
-        return $this->hasMany(ServiceKey::class, 'services_id', 'id');
-    }
-
-    public function technologies()
-    {
-        return $this->belongsToMany(Technology::class, 'service_technologies', 'services_id', 'technologies_id');
-    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePortofolioPage extends Migration
+class DropServiceCulumn extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreatePortofolioPage extends Migration
      */
     public function up()
     {
-        Schema::create('portofolio_page', function (Blueprint $table) {
-            $table->id();
-            $table->string()
-            $table->timestamps();
+        Schema::table('services', function(Blueprint $table) {
+            $table->dropColumn('image');
+            $table->dropColumn('isTopService');
         });
     }
 
@@ -27,6 +26,9 @@ class CreatePortofolioPage extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('portofolio_page');
+        Schema::table('services', function(Blueprint $table) {
+            $table->string('image');
+            $table->enum('isTopService', ['true', 'false']);
+        });
     }
 }

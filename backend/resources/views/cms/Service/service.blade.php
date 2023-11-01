@@ -72,61 +72,7 @@
                         <div>
                             <h4 class="service-name text-bold">{{ $service->name }}</h4>
                             <p class="service-desc">{{ $service->desc }}</p>
-                            <div class="d-flex">
-                                <div class="technology-card" style="margin-right: 30px;"> <!-- Menambahkan margin kanan sebesar 20px -->
-                                    <h5 class="text-bold">Technology Used</h5>
-                                    <ul style="list-style: none;">
-                                        @foreach ($service->serviceTechnology as $serviceTech)
-                                            @if ($serviceTech->technology)
-                                                <li class="pb-3">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                        <div>
-                                                            @if (!empty($serviceTech->technology->icon))
-                                                                <img src="{{ $serviceTech->technology->icon }}" alt="{{ $serviceTech->technology->name }}">
-                                                            @endif
-                                                            {{ $serviceTech->technology->name }}
-                                                        </div>
-                                                        <form method="POST" action="{{ route('delete-technology-service', ['id' => $service->id, 'technology_id' => $serviceTech->technology->id]) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            @if(auth()->user()->role->role_name !== 'HCM')
-                                                                <button type="submit" class="btn btn-danger ml-3">Delete</button>
-                                                            @else
-                                                                <button class="btn btn-danger ml-3" disabled>Delete</button>
-                                                            @endif
-                                                        </form>
-                                                    </div>
-                                                </li>
-                                            @endif
-                                        @endforeach
-                                    </ul>
-                                </div>
-                                <div class="servicekey-card" style="margin-left: 30px;"> <!-- Menambahkan margin kiri sebesar 20px -->
-                                    <h5 class="text-bold">Key Feature</h5>
-                                    <ul>
-                                        @foreach ($service->servicekeys as $serviceKey)
-                                            <li class="pb-3 text-bold">
-                                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                    <div>
-                                                        {{ $serviceKey->name }}
-                                                    </div>
-                                                    <form method="POST" action="{{ route('delete-keyFeature', ['services_id' => $service->id, 'keyfeature_id' => $serviceKey->id]) }}">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        @if(auth()->user()->role->role_name !== 'HCM')
-                                                            <button type="submit" class="btn btn-danger ml-3">Delete</button>
-                                                        @else
-                                                            <button type="button" class="btn btn-danger ml-3" disabled>Delete</button>
-                                                        @endif
-                                                    </form>
-                                                </div>
-                                            </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
                         </div>
-                        <img class="service-img" src="{{ asset($service->image) }}" alt="{{ $service->name }}">
                     </div>
                     <div class="actions">
                         @if(auth()->user()->role->role_name !== 'HCM')
