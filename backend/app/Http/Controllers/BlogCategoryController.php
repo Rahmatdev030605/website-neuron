@@ -18,12 +18,17 @@ class BlogCategoryController extends Controller
         return view('cms.Blog.Categories.categories', compact('categories'));
     }
 
-    public function deleteBlogCategories($id)
+    public function deleteBlogCategory($id)
     {
-        $categories = ArticleCategory::findOrFail($id);
-        $categories->delete();
+        $category = ArticleCategory::findOrFail($id); // Assuming Category is the model for categories
 
-        return redirect()->route('blog-categories')->with('success', 'Blog Category has been deleted successfully.');
+        if ($category) {
+            // Delete the category
+            $category->delete();
+            return redirect()->route('blog-categories')->with('success', 'Category deleted successfully');
+        } else {
+            return redirect()->route('blog-categories')->with('error', 'Category not found');
+        }
     }
 
     public function create()

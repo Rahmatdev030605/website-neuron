@@ -116,6 +116,8 @@ Route::middleware(['auth'])->group(function () {
     // edit & update blog category
     Route::get('blog-categories/{id}/edit', [BlogCategoryController::class, 'edit'])->name('blog-categories-edit');
     Route::put('blog-categories/{id}/update', [BlogCategoryController::class, 'update'])->name('blog-categories-update');
+    // delete blog Category
+    Route::delete('/blog-categories/{id}', [BlogCategoryController::class, 'deleteBlogCategory'])->name('blog-categories-delete');
     // show methadology
     Route::get('/methadology', [MethadologyController::class, 'methadology'])->name('methadology');
     Route::get('/methadology', [MethadologyController::class, 'methadologyshow'])->name('methadology');

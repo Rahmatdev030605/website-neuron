@@ -31,9 +31,9 @@
                         <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                     @if(auth()->user()->role->role_name !== 'HCM')
-                        <a href="{{ route('create-blog-categories') }}" class="btn btn-success ml-5">Add Blog Category</a>
+                    <a href="{{ route('create-blog-categories') }}" class="btn btn-success ml-5">Add Blog Category</a>
                     @else
-                        <button class="btn btn-success ml-5" disabled>Add Blog Category</button>
+                    <button class="btn btn-success ml-5" disabled>Add Blog Category</button>
                     @endif
                 </div>
             </form>
@@ -41,9 +41,9 @@
 
         <div id="success-message" class="mt-3">
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
         </div>
 
@@ -63,12 +63,39 @@
                         <td>{{ $category->name }}</td>
                         <td>
                             @if(auth()->user()->role->role_name !== 'HCM')
-                                <a href="{{ route('blog-categories-edit', $category->id) }}" class="btn btn-success">Edit</a>
+                            <a href="{{ route('blog-categories-edit', $category->id) }}" class="btn btn-success">Edit</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $category->id }}">Delete</button>
                             @else
-                                <button class="btn btn-success" disabled>Edit</button>
+                            <button class="btn btn-success" disabled>Edit</button>
+                            <button class="btn btn-danger" disabled>Delete</button>
                             @endif
                         </td>
                     </tr>
+                    <!-- Modal Konfirmasi Hapus -->
+                    <div class="modal fade" id="confirmDeleteModal{{ $category->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete <strong>{{ $category->name }}</strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    <form id="delete-form-{{ $category->id }}" action="{{ route('blog-categories-delete', $category->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Modal Konfirmasi Hapus End -->
                     @endforeach
                 </tbody>
             </table>

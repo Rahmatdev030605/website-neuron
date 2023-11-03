@@ -37,7 +37,7 @@ class BlogController extends Controller
     public function deleteBlog($id)
     {
         Article::where('user_id', $id)->delete();
-        
+
         $blogs = Article::findOrFail($id);
         $blogs->delete();
 
@@ -80,12 +80,13 @@ class BlogController extends Controller
 
         // Mengisi 'user_id' dengan ID pengguna yang sedang login
         $blog->user_id = Auth::id();
-        
+
         $blog->save();
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('blog')->with('success', 'Blog added successfully.');
     }
+
 
     public function viewBlog($id)
     {
@@ -188,4 +189,6 @@ class BlogController extends Controller
 
         return BlogResource::collection($latestBlogs);
     }
+
+
 }
