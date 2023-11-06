@@ -39,13 +39,13 @@
             </form>
         </div>
 
-        <div id="success-message" class="mt-3">
-            @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
+            <div id="success-message" class="mt-3">
+                @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+                @endif
             </div>
-            @endif
-        </div>
 
         <div class="table-responsive mt-3">
             <table class="table">
@@ -102,6 +102,10 @@
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script>
     // Cari elemen pesan sukses
     var successMessage = document.getElementById('success-message');
