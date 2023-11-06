@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\TechnologyResource;
 use App\Models\Technology;
 use App\Models\TechnologyCategory;
+use Google\Service\CloudSourceRepositories\Repo;
 use Illuminate\Http\Request;
 
 class TechnologyController extends Controller
@@ -28,7 +29,7 @@ class TechnologyController extends Controller
         return view('cms.Technology.technology', compact('technologies', 'categories'));
     }
 
-    public function store(Request $request)
+    public function addTechnology(Request $request)
     {
         // Validasi data yang diterima dari formulir
         $request->validate([
@@ -164,5 +165,17 @@ class TechnologyController extends Controller
         $technologies = $technologyCategory->technologies;
 
         return TechnologyResource::collection($technologies);
+    }
+
+    public function deleteTechnology($id)
+    {
+        $technologies = Technology::findOrFail($id);
+        if ($technologies) {
+            //delete the tehcnologies
+            $technologies->delete();
+            return redirect()->route('technology');
+        } else {
+            return redirect()->route('technology');
+        }
     }
 }

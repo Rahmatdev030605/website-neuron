@@ -33,11 +33,11 @@
                         <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                     @if(auth()->user()->role->role_name !== 'HCM')
-                        <a href="{{ route('technology-store') }}" class="btn btn-success ml-5" data-toggle="modal" data-target="#addTechnologyModal">Add New Technology</a>
-                        <a href="#" class="btn btn-success ml-2" data-toggle="modal" data-target="#addCategoryModal">Add Category</a>
+                    <a href="{{ route('technology-store') }}" class="btn btn-success ml-5" data-toggle="modal" data-target="#addTechnologyModal">Add New Technology</a>
+                    <a href="#" class="btn btn-success ml-2" data-toggle="modal" data-target="#addCategoryModal">Add Category</a>
                     @else
-                        <button class="btn btn-success ml-5" disabled>Add New Technology</button>
-                        <button class="btn btn-success ml-2" disabled>Add Category</button>
+                    <button class="btn btn-success ml-5" disabled>Add New Technology</button>
+                    <button class="btn btn-success ml-2" disabled>Add Category</button>
                     @endif
                 </div>
             </form>
@@ -45,9 +45,9 @@
 
         <div id="success-message" class="mt-3">
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
         </div>
 
@@ -70,81 +70,110 @@
                         <td>{{ $technology->technologyCategory->name }}</td>
                         <td>
                             @if(auth()->user()->role->role_name !== 'HCM')
-                                <a href="{{ route('technology-edit', $technology->id) }}" class="btn btn-success">Edit</a>
+                            <a href="{{ route('technology-edit', $technology->id) }}" class="btn btn-success">Edit</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $technology->id }}">Delete</button>
                             @else
-                                <button class="btn btn-success" disabled>Edit</button>
+                            <button class="btn btn-success" disabled>Edit</button>
+                            <button class="btn btn-danger" disabled>Delete</button>
                             @endif
                         </td>
                     </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <!-- Modal -->
-            <div class="modal fade" id="addTechnologyModal" tabindex="-1" role="dialog" aria-labelledby="addTechnologyModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addTechnologyModalLabel">Add New Technology</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form id="addTechnologyForm">
-                                {{ csrf_field() }}
-                                <div class="form-group">
-                                    <label for="name">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" required>
+                    <!-- Modal Konfirmasi Hapus -->
+                    <div class="modal fade" id="confirmDeleteModal{{ $technology->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
                                 </div>
-                                <div class="form-group">
-                                    <label for="icon">Icon</label>
-                                    <input type="file" class="form-control-file" id="icon" name="icon" required>
+                                <div class="modal-body">
+                                    Are you sure you want to delete <strong>{{ $technology->name }}</strong>?
                                 </div>
-                                <div class="form-group">
-                                    <label for="technology_category_id">Category</label>
-                                    <select class="form-control" id="technology_category_id" name="technology_category_id" required>
-                                        <option value="">Select Category</option>
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                        @endforeach
-                                    </select>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                                    <form id="delete-form-{{ $technology->id }}" action="{{ route('delete-technology', $technology->id) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Yes</button>
+                                    </form>
                                 </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="addTechnologyButton">Add</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-            <!-- Modal untuk Add Category -->
-            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('store-category') }}" method="POST">
-                                @csrf
-                                <div class="form-group">
-                                    <label for="category_name">Category Name</label>
-                                    <input type="text" class="form-control" id="category_name" name="category_name" required>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary">Add Category</button>
-                        </div>
+                    <!-- Modal Konfirmasi Hapus End -->
+        </div>
+        @endforeach
+        </tbody>
+        </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="addTechnologyModal" tabindex="-1" role="dialog" aria-labelledby="addTechnologyModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addTechnologyModalLabel">Add New Technology</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="addTechnologyForm">
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" class="form-control" id="name" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="icon">Icon</label>
+                                <input type="file" class="form-control-file" id="icon" name="icon" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="technology_category_id">Technology</label>
+                                <select class="form-control" id="technology_category_id" name="technology_category_id" required>
+                                    <option value="">Select Technology</option>
+                                    @foreach($categories as $category)
+                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="addTechnologyButton">Add</button>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- Modal untuk Add Category -->
+        <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('store-category') }}" method="POST">
+                            @csrf
+                            <div class="form-group">
+                                <label for="category_name">Category Name</label>
+                                <input type="text" class="form-control" id="category_name" name="category_name" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 <script>
@@ -159,34 +188,35 @@
         }, 3000); // 5000 milidetik (5 detik)
     }
 </script>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         // Handle Add Technology button click
-        $('#addTechnologyButton').on('click', function () {
+        $('#addTechnologyButton').on('click', function() {
             // Serialize form data
             var formData = new FormData($('#addTechnologyForm')[0]);
 
             // Send AJAX request to add technology
             $.ajax({
-                url: '{{ route('technology-store') }}',
+                url: "{{ route('technology-store') }}",
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function (data) {
+                success: function(data) {
                     // Close the modal
                     $('#addTechnologyModal').modal('hide');
 
                     // Refresh halaman setelah teknologi berhasil ditambahkan
                     location.reload();
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     // Handle errors, display them to the user
                     console.log(xhr.responseText);
                     alert('Failed to add technology. Please try again.');
                 }
             });
+
         });
     });
 </script>

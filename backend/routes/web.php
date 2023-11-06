@@ -141,6 +141,9 @@ Route::middleware(['auth'])->group(function () {
     // edit & update blog category
     Route::get('technology/{id}/edit', [TechnologyController::class, 'edit'])->name('technology-edit');
     Route::put('technology/{id}/update', [TechnologyController::class, 'update'])->name('technology-update');
+    //delete blog category technologies
+    Route::delete('/tecnology/{id}/delete-technology', [TechnologyController::class, 'deleteTechnology'])->name('delete-technology');
+
     // show service
     Route::get('/service', [ServiceController::class, 'service'])->name('service');
     Route::get('/service', [ServiceController::class, 'showservice'])->name('service');

@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "website-neuron",
+  "private_key_id": "75e174c555622095f6b96f70201420da2d14818c",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDPhWekgoQVzjmj\nM1kTcRACd9v2uuwolTp75rZMMW83Ihq1tbebu5EBu2giA0EB20dl42Wsc8H141ZS\nXlAblQ+d3xPROQBTrHnGyo3OI8R3OvuIphEPnU9ytQViEhzZCmco5QE4IGmXDG9c\nodfBTzURiiOm3n+pw8fB+cp+2MflIT9rIQ2DqGd040SaLQ5Ku7sn5Ami0851J9ny\nrc5GFoPGXZMEqksoU81WlBQlanpuGbd7hYsVF04WH6oLUNWipjGRGMkgTa14zNfm\nozRS8Cb+/W69JjyaZ1luB2SChYbG9KJQa++toeQU2FJtsOcu9cVtmN7KpnnvHUJe\n8eNX/yNvAgMBAAECggEAXtRbdDWgHkbK1+UTA2tbIYWcIrdwS2tF+nCHRXIhnFQd\nWIPdj3C65su43jIWdr65dbngMFoFfFOSkrk+ahxHsqDJ8YXWvGXIkCrnehemI8X0\nQ5F/ol8Eeyp1d0dHn3a9hVaApCFLnxaznOToLxH+8jDp8csjE3S/x8hZ3HU7g1xH\nUTuu4AasaBqVYFnfOqeSU68XEF3dV54mFpyJRZt5M7txHYtVPPXRAWapYpQOBWDk\nF8yIS2AcTZbM3kVYFFbh01PsPUsuo9q94vBkON+hrtvs6aLt/ICMBvW1btQfiy0Y\n+fUT1lpoPMYTQvTBymDkYryVNhB6HpqZcUoBUb7xQQKBgQDu1fkkJn7XsAbavR7t\nmczfjAr3O8CrORcXTnz8ztDN8WjWB7SBOFdreStQe/TxEuq/KPt52I6qOKX1bIzu\nbityAocmC3fBd2j66yA2kXmiZM4c6p3b3YHbLZbcGqm62UtUiIVlcJnB628sdBNI\nIgBh94oWONe1u0PLBsV3gvI8twKBgQDeb1AwhW2RJas7XuQTCzY1nC2BDfX9rbEb\n6WiE2y09EgS7ri0w9Q3wwy+1DRWEwxqlo4lHtMBgdP2QvjQaaT9fFKhGt36pttai\nBSJwQYP3z1/xhc5OEtXCkp+uWtoilBI9V6DxVX6WsngXF6u8iDMvY5Xg/qDYHEjd\ng0uMYr4HCQKBgADoTTcG8mptX8lK+KgccnvS82O3FWdRIzZSdQUc4Aw4Q5a0lsn6\n5dIhtrlqjyavVLb/N91hpkEdT/wbunlZb87SFaNeXckdZAe4BvpOGTE1wta3SXxB\nXjHv/We+rjBojPG4RxF4mQz0kQqRMlWO04OLxjmJY8BsArjtwKhQlg0HAoGAUOIb\nP7mVEP2omUs1FjOyf6YN6erAs4EwcNzcE8t7VMSzkeeRKUdCzXS8aVKbq44ip26j\nIb75YVnJRpPTcHMrBxEE68oXtfD1dS72yekY6sius62bSkqRDlKw2/7PaVl8lG/D\n513WTUgSYRtLaKACNM46lvkgVdVbLalrlF3nibkCgYBQYgOAYqmPsnn+4p4scyy1\nYMjmBDgzTobZzsYUrxXxF/TFQs7j+TB5F8mCGPe1iHpw4elok0GkVV8m29a8VEKr\nlLon5kDZgjwUSSlyymqYeuiJ0Hi/M8ww0VRXERCRq5n9awPy0Ld9YBlTXkxGPpsS\n7meH5lPczc3yXn1636kKuA==\n-----END PRIVATE KEY-----\n",
+  "client_email": "naufal-nabillansyah@website-neuron.iam.gserviceaccount.com",
+  "client_id": "102400919643566915112",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/naufal-nabillansyah%40website-neuron.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
