@@ -9,7 +9,7 @@ class Portofolio extends Model
 {
     protected $table = 'portofolios';
     protected $fillable = [
-        'name', 'customer_name', 'desc', 'category', 'image', 'link', 'our_solution', 'details', 'created_at', 'successProject'
+        'name', 'customer_name', 'desc', 'category', 'image', 'link', 'our_solution', 'details', 'created_at', 'successProject', 'service_id'
     ];
 
     public function portofolioTechnology()
@@ -30,5 +30,10 @@ class Portofolio extends Model
     public function technologies()
     {
         return $this->belongsToMany(Technology::class, 'portofolio_technologies', 'portofolio_id', 'technologies_id');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo(Service::class, 'service_id');
     }
 }

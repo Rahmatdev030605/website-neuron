@@ -6,6 +6,7 @@ use App\Models\Home;
 use App\Models\About;
 use App\Models\ServicePages;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 
 class PagesController extends Controller
@@ -17,6 +18,8 @@ class PagesController extends Controller
 
     public function previewHome(){
         $dataHome = Home::findOrFail(1);
+        $publicImg = "img/home/";
+        $dataHome['hero_image'] = $publicImg.basename($dataHome['hero_image']);
         return view('cms.Pages.homeedit',compact('dataHome'));
     }
 
@@ -37,35 +40,46 @@ class PagesController extends Controller
     }
 
     public function editHome(Request $req, $id){
-        $reqHome = $req->validate([
-            'hero_title1' => 'required|string|max:255',
-            'hero_title2' => 'required|string|max:255',
-            'hero_title3' => 'required|string|max:255',
-            'hero_desc' => 'required|string|max:255',
-            'about_project' => 'required|string|max:20',
-            'about_experience' => 'required|string|max:20',
-            'about_desc' => 'required|string|max:255',
-            'about_title' => 'required|string|max:255',
-            'about_ilustration' => '', //!NEED VALIDATE
-            'title_service'=> 'required|string|max:255',
-            'title_project'=> 'required|string|max:255',
-            'title_product'=> 'required|string|max:255',
-            'title_partner'=> 'required|string|max:255',
-            'title_articles'=> 'required|string|max:255',
-            'title_certificate'=> 'required|string|max:255'
-        ]);
+        try {
+            $reqHome = $req->validate([
+                'hero_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'about_title' => 'required|string|max:255',
+                'about_desc' => 'required|string',
+                'service_title'=> 'required|string|max:255',
+                'service_desc'=> 'required|string',
+                'partner_title'=> 'required|string|max:255',
+                'partner_desc'=> 'required|string',
+                'article_title'=> 'required|string|max:255',
+                'article_desc'=> 'required|string',
+            ]);
 
-        $DBHome = Home::findOrFail($id);
-        $DBHome->update($reqHome);
-        return redirect()->route('pages');
+            if($req->hasFile('hero_image')){
+                $heroHomeImage = $req->file('hero_image');
+                $heroHomeImageName = $heroHomeImage->getClientOriginalName();
+                $heroHomeImage->move('img/home', $heroHomeImageName);
+                $heroHomeImagePath = '/img/home/'.$heroHomeImageName;
+                $reqHome['hero_image'] = url($heroHomeImagePath);
+            }
+
+            $DBHome = Home::findOrFail($id);
+            $oldHomeImageName = basename($DBHome['hero_image']);
+            $oldHomeImagePath = public_path('img/home/').$oldHomeImageName;
+            $DBHome->update($reqHome);
+            if(File::exists($oldHomeImagePath) && ($oldHomeImageName != basename($DBHome['hero_image']))){
+                File::delete($oldHomeImagePath);
+            }
+            return redirect()->route('pages')->with('success','Home Pages updated Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->route('pages')->with('error', 'Failed to Update Home Page');
+        }
     }
 
 
-    public function editAbout(Request $req, $id){
-        try {
-            //code...
-            //Validasi data yang diterima dari formulir
-            $reqAbout = $req->validate([
+        public function editAbout(Request $req, $id){
+            try {
+                //code...
+                //Validasi data yang diterima dari formulir
+                $reqAbout = $req->validate([
                 'hero_title' => 'required|string|max:500',
                 'hero_desc'  => 'required|string|max:500',
                 'hero_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -134,30 +148,35 @@ class PagesController extends Controller
             if(File::exists($oldActivityImagePath) && $oldActivityImageName != basename($aboutUpdate['activity_image'])){File::delete($oldActivityImagePath);}
             if(File::exists($oldVisionImagePath) && $oldVisionImageName != basename($aboutUpdate['vision_image'])){File::delete($oldVisionImagePath);}
             if(File::exists($oldMissionImagePath) && $oldMissionImageName != basename($aboutUpdate['mission_image'])){File::delete($oldMissionImagePath);}
-            return redirect()->route('pages');
+            return redirect()->route('pages')->with('success', 'About Page Updated Successfully');
         } catch (\Throwable $th) {
-            return dd($th);
+            return redirect()->route('pages')->with('error', 'Failed to Update About Page');
         }
     }
 
     public function editService(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'hero_title' => 'required',
-            'hero_desc' => 'required',
-            'service_title' => 'required',
-            'service_subtitle' => 'required',
-            'technology_title' => 'required',
-            'technology_desc' => 'required',
-            'methodology_title' => 'required',
-            'methodology_subtitle' => 'required',
-            'cta_contact_id' => 'required',
-        ]);
+        try {
 
-        $pageSetting = ServicePages::find($id);
+            $validatedData = $request->validate([
+                'hero_title' => 'required',
+                'hero_desc' => 'required',
+                'service_title' => 'required',
+                'service_subtitle' => 'required',
+                'technology_title' => 'required',
+                'technology_desc' => 'required',
+                'methodology_title' => 'required',
+                'methodology_subtitle' => 'required',
+                'cta_contact_id' => 'required',
+            ]);
 
-        $pageSetting->update($validatedData);
+            $pageSetting = ServicePages::find($id);
 
-        return redirect()->route('pages');
+            $pageSetting->update($validatedData);
+
+            return redirect()->route('pages')->with('success', 'Service Page Updated Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->route('pages')->with('error', 'Failed to Update Service Page');
+        }
     }
 }

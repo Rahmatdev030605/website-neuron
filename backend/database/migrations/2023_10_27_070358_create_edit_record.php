@@ -13,12 +13,19 @@ class CreateEditRecord extends Migration
      */
     public function up()
     {
-        Schema::create('edit_record', function (Blueprint $table) {
+        Schema::create('edit_records', function (Blueprint $table) {
             $table->id();
-            $table->enum('action', ['add', 'edit', 'delete']);
-            $table->text('text');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('role_id');
+            $table->enum('action', ['Add', 'Edit', 'Delete']);
+            $table->enum('section',[
+                'Carrer Job', 'Article Blog', 'Blog Category',
+                'Portofio', 'Product', 'Home Page', 'About Page',
+                'Service Page', 'Services', 'Methodology',
+                'Technology', 'Technology Category', 'User', 'Role'
+            ]);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }
@@ -30,6 +37,6 @@ class CreateEditRecord extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('edit_record');
+        Schema::dropIfExists('edit_records');
     }
 }

@@ -1,6 +1,16 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+    .right-align {
+        float: right;
+    }
+
+    .custom-button {
+        width: 200px;
+        height: 50px;
+    }
+</style>
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">
@@ -29,6 +39,7 @@
                 <label for="date_end">End Date</label>
                 <input type="datetime-local" name="date_end" id="date_end" class="form-control" value="{{ $todo->date_end }}" required>
             </div>
+
             <div class="text-center">
                 <button type="submit" class="btn btn-primary custom-button"><i class="fas fa-save"></i> Save Edit</button>
             </div>
@@ -38,26 +49,16 @@
             @csrf
             @method('DELETE')
             <div class="text-center">
-            <button type="submit" class="btn btn-danger right-align">Delete</button>
+                <button type="submit" class="btn btn-danger right-align">Delete</button>
             </div>
-
         </form>
     </div>
 </div>
-@endsection
 
-<style>
-    .right-align {
-        float: right;
-    }
-
-    .custom-button {
-        width: 200px;
-        height: 50px;
-    }
-</style>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script>
     var formattedDateTime = "{{ $todo->date_start }}";
     document.getElementById("date_start").value = formattedDateTime;
 </script>
+
+@endsection

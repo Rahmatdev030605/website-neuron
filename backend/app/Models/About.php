@@ -30,7 +30,6 @@ class About extends Model
         'director_subtitle',
         'strategic_title',
         'strategic_subtitle',
-        'cta_contact_id',
     ];
 
     public function ctaContact()

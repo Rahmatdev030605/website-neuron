@@ -15,9 +15,9 @@ class CreateCareerPagesTable extends Migration
     {
         Schema::create('career_pages', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->string('desc');
-            $table->string('image');
+                $table->string('title');
+                $table->string('desc');
+                $table->string('image');
             $table->timestamps();
         });
     }

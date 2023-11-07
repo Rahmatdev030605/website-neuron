@@ -13,11 +13,13 @@ class CreateLoginRecord extends Migration
      */
     public function up()
     {
-        Schema::create('login_record', function (Blueprint $table) {
+        Schema::create('login_records', function (Blueprint $table) {
             $table->id();
-            $table->enum('action', ['login', 'logout']);
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('role_id');
+            $table->enum('action', ['Log In', 'Log Out']);
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('role_id');
+            $table->foreign('role_id')->references('id')->on('roles');
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ class CreateLoginRecord extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('login_record');
+        Schema::dropIfExists('login_records');
     }
 }

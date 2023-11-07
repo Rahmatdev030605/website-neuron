@@ -14,7 +14,8 @@ class NeuronProgram extends Model
     protected $fillable = [
         'title',
         'desc',
-        'image',
+        'video',
+        'tagline'
     ];
 
     public function home()

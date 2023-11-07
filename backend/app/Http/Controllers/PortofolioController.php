@@ -7,10 +7,13 @@ use App\Http\Resources\SuccessPortofolioResource;
 use App\Models\Deliverable;
 use App\Models\Handle;
 use App\Models\Portofolio;
+use App\Models\Service;
 use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
+use Ramsey\Uuid\Uuid;
 
 class PortofolioController extends Controller
 {
@@ -57,7 +60,11 @@ class PortofolioController extends Controller
 
         // Hapus terlebih dahulu relasi dengan teknologi
         $portofolios->technologies()->detach();
-        // Kemudian hapus portofolio 
+        $oldImageNamePath = public_path('img/portofolios/'.basename($portofolios['image']));
+        if(File::exists($oldImageNamePath)){
+            File::delete($oldImageNamePath);
+        }
+        // Kemudian hapus portofolio
         $portofolios->delete();
 
         return redirect()->route('portofolio')->with('success', 'Portofolio has been deleted successfully.');
@@ -68,11 +75,12 @@ class PortofolioController extends Controller
     {
         $technologies = Technology::all();
         $portofolio = new Portofolio();
+        $services = Service::all();
         $successProjectOption = [
             'true' => 'Yes',
             'false' => 'No',
         ];
-        return view('cms.Portofolio.add', compact('technologies', 'portofolio', 'successProjectOption'));
+        return view('cms.Portofolio.add', compact('technologies', 'portofolio', 'successProjectOption', 'services'));
     }
 
     public function store(Request $request)
@@ -80,7 +88,6 @@ class PortofolioController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
             'customer_name' => 'required|string|max:255',
             'desc' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -91,11 +98,13 @@ class PortofolioController extends Controller
             'technologies' => 'nullable|array',
             'deliverables' => 'required|array',
             'handles' => 'required|array',
+            'service_id' => 'required|numeric'
         ]);
 
         if ($request->hasFile('image')) {
             $profilePicture = $request->file('image');
-            $profilePictureName = $profilePicture->getClientOriginalName();
+            // Image diberi Uuid untuk menghindari penamaan yang sama dengan image lain pada portofolio lain
+            $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
             $profilePicture->move('img/portofolios', $profilePictureName);
             $profilePicturePath = '/img/portofolios/' . $profilePictureName;
         }
@@ -105,7 +114,6 @@ class PortofolioController extends Controller
         // Simpan data portofolio ke database
         $portofolio = new Portofolio([
             'name' => $request->name,
-            'category' => $request->category,
             'customer_name' => $request->customer_name,
             'desc' => $request->desc,
             'our_solution' => $request->our_solution,
@@ -153,62 +161,72 @@ class PortofolioController extends Controller
 
         $technologies = Technology::all();
 
+        $services = Service::all();
+
         $successProjectOption = [
             'true' => 'Yes',
             'false' => 'No',
         ];
         $selectedTechnologies = $portofolio->technologies->pluck('id')->toArray();
-        return view('cms.Portofolio.edit', compact('portofolio', 'technologies', 'selectedTechnologies', 'successProjectOption'));
+        return view('cms.Portofolio.edit', compact('portofolio', 'technologies', 'selectedTechnologies', 'successProjectOption', 'services'));
     }
 
     public function update(Request $request, $id)
     {
-        $portofolio = Portofolio::findOrFail($id);
+        try {
+            //code...
+            $portofolio = Portofolio::findOrFail($id);
 
-        // Validasi data yang akan diupdate
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
-            'customer_name' => 'required|string|max:255',
-            'desc' => 'required|string',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'our_solution' => 'required|string',
-            'details' => 'required|string',
-            'created_at' => 'required|date',
-            'successProject' => 'required|in:true,false',
-            'technologies' => 'required|array',
-        ]);
+            // Validasi data yang akan diupdate
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'customer_name' => 'required|string|max:255',
+                'desc' => 'required|string',
+                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'our_solution' => 'required|string',
+                'details' => 'required|string',
+                'created_at' => 'required|date',
+                'successProject' => 'required|in:true,false',
+                'technologies' => 'required|array',
+                'service_id' => 'required|numeric'
+            ]);
 
-        // Update data portofolio
-        $portofolio->name = $request->input('name');
-        $portofolio->category = $request->input('category');
-        $portofolio->customer_name = $request->input('customer_name');
-        $portofolio->desc = $request->input('desc');
-        $portofolio->our_solution = $request->input('our_solution');
-        $portofolio->details = $request->input('details');
-        $portofolio->created_at = $request->input('created_at');
-        $portofolio->successProject = $request->input(('successProject'));
-
-        // Simpan perubahan pada data portofolio
-        $portofolio->save();
-
-        // Update teknologi terkait dengan portofolio
-        $selectedTechnologies = $request->input('technologies', []); // Ambil array teknologi yang dipilih
-        $portofolio->technologies()->sync($selectedTechnologies); // Synchronize teknologi yang dipilih
-        // Periksa apakah ada file gambar yang diupload
-        if ($request->hasFile('image')) {
-            $profilePicture = $request->file('image');
-            $profilePictureName = $profilePicture->getClientOriginalName();
-            $profilePicture->move('img/portofolios', $profilePictureName);
-            $profilePicturePath = '/img/portofolios/' . $profilePictureName;
-
-            // Update path gambar portofolio
-            $portofolio->image = url($profilePicturePath);
+            // Update data portofolio
+            $portofolio->name = $request->input('name');
+            $portofolio->customer_name = $request->input('customer_name');
+            $portofolio->desc = $request->input('desc');
+            $portofolio->our_solution = $request->input('our_solution');
+            $portofolio->details = $request->input('details');
+            $portofolio->created_at = $request->input('created_at');
+            $portofolio->successProject = $request->input(('successProject'));
+            $portofolio->service_id = $request->input('service_id');
+            // Update teknologi terkait dengan portofolio
+            $selectedTechnologies = $request->input('technologies', []); // Ambil array teknologi yang dipilih
+            $portofolio->technologies()->sync($selectedTechnologies); // Synchronize teknologi yang dipilih
+            // Periksa apakah ada file gambar yang diupload
+            if ($request->hasFile('image')) {
+                $profilePicture = $request->file('image');
+                // Image diberi nama untuk menghindari penamaan yang sama dengan image lain di portofolio lain
+                $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
+                $profilePicturePath = '/img/portofolios/' . $profilePictureName;
+                // Update path gambar portofolio
+                $oldImageNamePath = public_path('img/portofolios/'.basename($portofolio['image']));
+                $portofolio->image = url($profilePicturePath);
+                if($portofolio->save()){
+                    $profilePicture->move('img/portofolios', $profilePictureName);
+                    if(File::exists($oldImageNamePath)){
+                        File::delete($oldImageNamePath);
+                    }
+                }else{
+                    throw new \Exception;
+                }
+            }
             $portofolio->save();
+            // Redirect ke halaman portofolio dengan pesan sukses
+            return redirect()->route('portofolio')->with('success', 'Portofolio updated successfully.');
+        } catch (\Exception $th) {
+            return redirect()->route('portofolio')->with('error', 'Failed to Update Portofolio.');
         }
-
-        // Redirect ke halaman portofolio dengan pesan sukses
-        return redirect()->route('portofolio')->with('success', 'Portofolio updated successfully.');
     }
 
     public function addTechnology(Request $request, $id)
@@ -346,7 +364,6 @@ class PortofolioController extends Controller
     public function getPortofolio(Request $request)
     {
         $request->validate([
-            'category' => 'required|string',
             'start_year' => 'nullable|numeric',
             'end_year' => 'nullable|numeric',
             'page' => 'nullable|numeric',
@@ -354,8 +371,7 @@ class PortofolioController extends Controller
             'filter_by' => 'nullable|in:asc,desc',
         ]);
 
-
-        $category = $request->input('category');
+        $service_id = $request->input('service_id');
         $startYear = $request->input('start_year');
         $endYear = $request->input('end_year');
         $page = $request->input('page', 1);
@@ -363,7 +379,7 @@ class PortofolioController extends Controller
         $filterBy = $request->input('filter_by', 'asc');
 
         // Buat kueri berdasarkan sort_by dan filter_by
-        $portofolioQuery = Portofolio::where('category', $category)
+        $portofolioQuery = Portofolio::where('service_id', $service_id)
             ->with('technologies', 'deliverables');
 
         if (!is_null($startYear)) {
@@ -383,7 +399,7 @@ class PortofolioController extends Controller
         $portofolios = $portofolioQuery->paginate(6);
 
         $portofolios->appends([
-            'category' => $category,
+            'service_id' => $service_id,
             'page' => $page,
         ]);
 

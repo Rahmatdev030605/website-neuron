@@ -23,19 +23,29 @@ class HeroTitleListSeeder extends Seeder
 
         DB::table('hero_title_list')->insert([
             [
-                'title' => 'Simplify',
+                'hero_title' => 'Business Intellegence',
+                'hero_desc' => 'Our solutions are strategically crafted to enhance your team’s performance and help you towards wiser decisions for you business.',
                 'home_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'title' => 'Growth',
+                'hero_title' => 'Business Intellegence',
+                'hero_desc' => 'Our solutions are strategically crafted to enhance your team’s performance and help you towards wiser decisions for you business.',
                 'home_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'title' => 'Improve',
+                'hero_title' => 'Business Intellegence',
+                'hero_desc' => 'Our solutions are strategically crafted to enhance your team’s performance and help you towards wiser decisions for you business.',
+                'home_id' => '1',
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'hero_title' => 'Business Intellegence',
+                'hero_desc' => 'Our solutions are strategically crafted to enhance your team’s performance and help you towards wiser decisions for you business.',
                 'home_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

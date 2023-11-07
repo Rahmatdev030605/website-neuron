@@ -40,7 +40,6 @@ class AboutSeeder extends Seeder
             'director_subtitle' => 'Board of Directors',
             'strategic_title' => 'Our Strategic Plan for Management',
             'strategic_subtitle' => 'Navigating the Path to Software Excellence',
-            'cta_contact_id' => '1',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

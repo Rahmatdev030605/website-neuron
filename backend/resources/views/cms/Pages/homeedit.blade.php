@@ -2,6 +2,16 @@
 
 @section('content')
 <style>
+    #image-tampil{
+        width: 500px;
+        height: auto;
+        border: 1px solid black;
+    }
+    #imageDB{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
     .form-group{
         margin-bottom: 30px
     }
@@ -18,94 +28,62 @@
             @csrf
             @method('PUT')
 
-            <div class="form-group">
-                <label for="hero_title1">Hero Title 1</label>
-                <input type="text" name="hero_title1" class="form-control" value="{{$dataHome->hero_title1}}" required maxlength="255">
-            </div>
-
-            <!-- Input field for 'hero_title2' -->
-            <div class="form-group">
-                <label for="hero_title2">Hero Title 2</label>
-                <input type="text" name="hero_title2" class="form-control" value="{{$dataHome->hero_title2}}" required maxlength="255">
-            </div>
-
-            <!-- Input field for 'hero_title3' -->
-            <div class="form-group">
-                <label for="hero_title3">Hero Title 3</label>
-                <input type="text" name="hero_title3" class="form-control" value="{{$dataHome->hero_title3}}" required maxlength="255">
-            </div>
-
-            <!-- Input field for 'hero_desc' -->
-            <div class="form-group">
-                <label for="hero_desc">Hero Description</label>
-                <textarea type="text" name="hero_desc" class="form-control" rows="4" maxlength="255">{{$dataHome->hero_desc}}</textarea>
-            </div>
-
-            <!-- Input field for 'about_project' -->
-            <div class="form-group">
-                <label for="about_project">About Project</label>
-                <input type="text" name="about_project" class="form-control" value="{{$dataHome->about_project}}" maxlength="20">
-            </div>
-
-            <!-- Input field for 'about_experience' -->
-            <div class="form-group">
-                <label for="about_experience">About Experience</label>
-                <input type="text" name="about_experience" class="form-control" value="{{$dataHome->about_experience}}" maxlength="20">
-            </div>
-
-                <!-- Input field for 'about_desc' -->
-            <div class="form-group">
-                <label for="about_desc">About Description</label>
-                <textarea type="text" name="about_desc" class="form-control" required maxlength="255">{{$dataHome->about_desc}}</textarea>
-            </div>
+                <!-- Input field for 'hero_image' -->
+                <div class="form-group">
+                    <label for="hero_image">Hero Image</label><br>
+                    <div id="image-tampil">
+                        <img id="imageDB"src="{{asset($dataHome->hero_image)}}" alt="gagal">
+                    </div>
+                    <input type="file" name="hero_image" class="form-control" accept="image/*">
+                </div>
 
                 <!-- Input field for 'about_title' -->
-            <div class="form-group">
-                <label for="about_title">About Title</label>
-                <input type="text" name="about_title" class="form-control" value="{{$dataHome->about_title}}" maxlength="255">
-            </div>
+                <div class="form-group">
+                    <label for="about_title">About Title</label>
+                    <input type="text" name="about_title" class="form-control" required maxlength="255" value="{{ old('about_title', $dataHome->about_title) }}">
+                </div>
 
-            <!-- Input field for 'about_ilustration' -->
-            <div class="form-group">
-                <label for="about_ilustration">About Ilustration</label>
-                <input type="file" name="about_ilustration" class="form-control">
-            </div>
+                <!-- Input field for 'about_desc' -->
+                <div class="form-group">
+                    <label for="about_desc">About Description</label>
+                    <textarea name="about_desc" class="form-control" required>{{ old('about_desc', $dataHome->about_desc) }}</textarea>
+                </div>
 
-            <!-- Input field for 'title_service' -->
-            <div class="form-group">
-                <label for="title_service">Title Service</label>
-                <input type="text" name="title_service" class="form-control" value="{{$dataHome->title_service}}" required maxlength="255">
-            </div>
+                <!-- Input field for 'service_title' -->
+                <div class="form-group">
+                    <label for "service_title">Service Title</label>
+                    <input type="text" name="service_title" class="form-control" required maxlength="255" value="{{ old('service_title', $dataHome->service_title) }}">
+                </div>
 
-            <!-- Input field for 'title_project' -->
-            <div class="form-group">
-                <label for="title_project">Title Project</label>
-                <input type="text" name="title_project" class="form-control" value="{{$dataHome->title_project}}" required maxlength="255">
-            </div>
+                <!-- Input field for 'service_desc' -->
+                <div class="form-group">
+                    <label for="service_desc">Service Description</label>
+                    <textarea name="service_desc" class="form-control" required>{{ old('service_desc', $dataHome->service_desc) }}</textarea>
+                </div>
 
-            <!-- Input field for 'title_product' -->
-            <div class="form-group">
-                <label for="title_product">Title Product</label>
-                <input type="text" name="title_product" class="form-control" value="{{$dataHome->title_product}}" maxlength="255">
-            </div>
+                <!-- Input field for 'partner_title' -->
+                <div class="form-group">
+                    <label for="partner_title">Partner Title</label>
+                    <input type="text" name="partner_title" class="form-control" required maxlength="255" value="{{ old('partner_title', $dataHome->partner_title) }}">
+                </div>
 
-            <!-- Input field for 'title_partner' -->
-            <div class="form-group">
-                <label for="title_partner">Title Partner</label>
-                <input type="text" name="title_partner" class="form-control" value="{{$dataHome->title_partner}}" maxlength="255">
-            </div>
+                <!-- Input field for 'partner_desc' -->
+                <div class="form-group">
+                    <label for="partner_desc">Partner Description</label>
+                    <textarea name="partner_desc" class="form-control" required>{{ old('partner_desc', $dataHome->partner_desc) }}</textarea>
+                </div>
 
-            <!-- Input field for 'title_articles' -->
-            <div class="form-group">
-                <label for="title_articles">Title Articles</label>
-                <input type="text" name="title_articles" class="form-control" value="{{$dataHome->title_articles}}" maxlength="255">
-            </div>
+                <!-- Input field for 'article_title' -->
+                <div class="form-group">
+                    <label for="article_title">Article Title</label>
+                    <input type="text" name="article_title" class="form-control" required maxlength="255" value="{{ old('article_title', $dataHome->article_title) }}">
+                </div>
 
-            <!-- Input field for 'title_certificate' -->
-            <div class="form-group">
-                <label for="title_certificate">Title Certificate</label>
-                <input type="text" name="title_certificate" class="form-control" value="{{$dataHome->title_certificate}}" maxlength="255">
-            </div>
+                <!-- Input field for 'article_desc' -->
+                <div class="form-group">
+                    <label for="article_desc">Article Description</label>
+                    <textarea name="article_desc" class="form-control" required>{{ old('article_desc', $dataHome->article_desc) }}</textarea>
+                </div>
 
             <!-- Submit button -->
             <button clas="fixed-bottom" type="submit" class="btn btn-primary">Update</button>

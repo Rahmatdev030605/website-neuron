@@ -41,6 +41,8 @@ $app->singleton(
     App\Exceptions\Handler::class
 );
 
+putenv("GOOGLE_APPLICATION_CREDENTIALS=" . __DIR__ . '/app/Analytics/'.env('ANALYTICS_CREDENTIALS_NAME'));
+
 /*
 |--------------------------------------------------------------------------
 | Return The Application

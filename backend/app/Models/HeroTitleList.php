@@ -12,7 +12,8 @@ class HeroTitleList extends Model
     protected $table = 'hero_title_list';
 
     protected $fillable = [
-        'title',
+        'hero_title',
+        'hero_desc',
         'home_id',
     ];
 

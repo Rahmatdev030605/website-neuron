@@ -12,7 +12,6 @@ class JobQualification extends Model
 
     protected $fillable = [
         'gender',
-        'domicile',
         'education',
         'major',
         'other',

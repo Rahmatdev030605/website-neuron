@@ -20,7 +20,6 @@ class ServicePages extends Model
         'technology_desc',
         'methodology_title',
         'methodology_subtitle',
-        'cta_contact_id',
     ];
 
     public function ctaContact()

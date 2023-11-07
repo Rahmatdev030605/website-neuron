@@ -30,6 +30,7 @@ class ToDoListController extends Controller
         return view('cms.ToDoList.create', ['todo' => $todo]);
     }
 
+
     /**
      * Store a newly created resource in storage.
      *
@@ -46,7 +47,7 @@ class ToDoListController extends Controller
         ]);
 
         ToDoList::create($validatedData);
-        return redirect()->route('adminpanel');
+        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
     }
 
     /**
@@ -83,7 +84,7 @@ class ToDoListController extends Controller
     {
         $todo = ToDoList::find($id);
         $todo->update($request->all());
-        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
+        return redirect('/adminpanel/todolist');
     }
     /**
      * Remove the specified resource from storage.

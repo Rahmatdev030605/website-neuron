@@ -15,6 +15,7 @@ class EditTbNeuronPrograms extends Migration
     {
         Schema::table('neuron_programs', function(Blueprint $table) {
             $table->renameColumn('image', 'video');
+            $table->string('tagline');
         });
     }
 
@@ -26,7 +27,8 @@ class EditTbNeuronPrograms extends Migration
     public function down()
     {
         Schema::table('neuron_programs', function(Blueprint $table) {
-            $table->string('image');
+            $table->renameColumn('video', 'image');
+            $table->dropColumn('tagline');
         });
     }
 }

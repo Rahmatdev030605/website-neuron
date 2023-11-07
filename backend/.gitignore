@@ -5,6 +5,11 @@
 /vendor
 .env
 .env.backup
+.env.production
+.env.hosting
+.env.stagin
+app/Analytics/*
+!app/Analytics/.gitkeep
 .phpunit.result.cache
 docker-compose.override.yml
 Homestead.json

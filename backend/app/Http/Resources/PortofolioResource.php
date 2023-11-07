@@ -17,7 +17,6 @@ class PortofolioResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'category' => $this->category,
             'customer_name' => $this->customer_name,
             'desc' => $this->desc,
             'link' => $this->link,

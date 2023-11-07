@@ -16,7 +16,7 @@
             </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
-    
+
     <div id="success-message" class="mt-3">
         @if(session('success'))
             <div class="alert alert-success">
@@ -32,24 +32,21 @@
                     <form action="{{ route('portofolio-update', $portofolio->id) }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
-                        
+
+                        <div class="form-group">
+                            <label for="service">Service</label>
+                            <select type="text" class="form-control" id="service_id" name="service_id" required>
+                                @foreach($services as $service)
+                                <option value="{{$service->id}}" {{$portofolio->service_id == $service->id ? 'selected' : ''}}>{{$service->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" value="{{ $portofolio->name }}" required>
                         </div>
 
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select class="form-control" id="category" name="category" required>
-                                <option value="Web App" {{ $portofolio->category == 'Web App' ? 'selected' : '' }}>Web App</option>
-                                <option value="Mobile App" {{ $portofolio->category == 'Mobile App' ? 'selected' : '' }}>Mobile App</option>
-                                <option value="Workflow Management System" {{ $portofolio->category == 'Workflow Management System' ? 'selected' : '' }}>Workflow Management System</option>
-                                <option value="System Integrator" {{ $portofolio->category == 'System Integrator' ? 'selected' : '' }}>System Integrator</option>
-                                <option value="Business Intelligence" {{ $portofolio->category == 'Business Intelligence' ? 'selected' : '' }}>Business Intelligence</option>
-                                <option value="CRM App" {{ $portofolio->category == 'CRM App' ? 'selected' : '' }}>CRM App</option>
-                            </select>
-                        </div>
-                        
                         <div class="form-group">
                             <label for="customer_name">Customer Name</label>
                             <input type="text" class="form-control" id="customer_name" name="customer_name" value="{{ $portofolio->customer_name }}" required>

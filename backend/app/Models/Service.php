@@ -12,6 +12,10 @@ class Service extends Model
 
     protected $fillable = [
         'name',
-        'desc',
+        'desc'
     ];
+
+    public function portofolio(){
+        return $this->hasMany(Portofolio::class);
+    }
 }

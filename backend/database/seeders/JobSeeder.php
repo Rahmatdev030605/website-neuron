@@ -17,7 +17,7 @@ class JobSeeder extends Seeder
     public function run()
     {
         DB::statement('ALTER TABLE jobs AUTO_INCREMENT=1');
-        
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('jobs')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

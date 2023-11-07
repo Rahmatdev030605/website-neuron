@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+ 
 class Home extends Model
 {
     use HasFactory;
@@ -12,33 +12,20 @@ class Home extends Model
     protected $table = 'home';
 
     protected $fillable = [
-        'hero_title1',
-        'hero_title2',
-        'hero_title3',
-        'hero_desc',
-        'about_project',
-        'about_experience',
+        'hero_image',
         'about_desc',
         'about_title',
-        'about_ilustration',
-        'neuron_program_id',
-        'cta_contact_id',
-        'title_service',
-        'title_project',
-        'title_product',
-        'title_partner',
-        'title_articles',
-        'title_certificate',
+        'service_title',
+        'service_desc',
+        'partner_title',
+        'partner_desc',
+        'article_title',
+        'article_desc',
     ];
 
     public function neuronProgram()
     {
         return $this->belongsTo(NeuronProgram::class);
-    }
-
-    public function ctaContact()
-    {
-        return $this->belongsTo(CtaContact::class);
     }
 
     public function testimonials()
@@ -49,11 +36,6 @@ class Home extends Model
     public function heroTitleLists()
     {
         return $this->hasMany(HeroTitleList::class, 'home_id');
-    }
-
-    public function certificates()
-    {
-        return $this->hasMany(Certificate::class, 'home_id');
     }
 
     public function partners()

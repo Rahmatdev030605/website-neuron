@@ -68,20 +68,20 @@
             </style>
             @foreach($services as $service)
                 <div class="service-card">
-                    <div class="d-flex">
+                    <div class="d-flex align-items-center m-4">
                         <div>
                             <h4 class="service-name text-bold">{{ $service->name }}</h4>
                             <p class="service-desc">{{ $service->desc }}</p>
+                            <div class="actions">
+                                @if(auth()->user()->role->role_name !== 'HCM')
+                                    <a href="{{ route('service-edit', $service->id) }}" class="btn btn-success">Edit</a>
+                                    <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $service->id }}">Delete</button>
+                                @else
+                                    <button class="btn btn-success" disabled>Edit</button>
+                                    <button class="btn btn-danger" disabled>Delete</button>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                    <div class="actions">
-                        @if(auth()->user()->role->role_name !== 'HCM')
-                            <a href="{{ route('service-edit', $service->id) }}" class="btn btn-success">Edit</a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $service->id }}">Delete</button>
-                        @else
-                            <button class="btn btn-success" disabled>Edit</button>
-                            <button class="btn btn-danger" disabled>Delete</button>
-                        @endif
                     </div>
                     <!-- Modal Konfirmasi Hapus -->
                     <div class="modal fade" id="confirmDeleteModal{{ $service->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">

@@ -1,23 +1,32 @@
+<style>
+    .toggle-desc-button .text {
+        display: none;
+    }
+
+    .toggle-desc-button:hover .text {
+        display: block;
+    }
+
+    .todo-item .description {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s;
+    }
+</style>
+
 <div class="card">
+    {{-- HEADER --}}
     <div class="card-header">
         <h3 class="card-title">
             <i class="ion ion-clipboard mr-1"></i>
             To Do List
         </h3>
-
-        <div class="card-tools">
-            <ul class="pagination pagination-sm">
-                <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
-                <li class="page-item"><a href="#" class="page-link 1">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
-            </ul>
-        </div>
+            <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
+            <i class="fas fa-plus"></i> Add item</a>
     </div>
-    <!-- /.card-header -->
-    <div class="card-body">
 
+    {{-- BODY --}}
+    <div class="card-body">
         <ul class="todo-list" data-widget="todo-list">
             @if(isset($todos))
             @foreach($todos as $todo)
@@ -39,6 +48,7 @@
                 <!-- Emphasis label -->
                 <small class="badge badge-danger "><i class="far fa-clock toggle-desc"></i> {{ $todo->date_start }}</small>
                 <!-- General tools such as edit or delete-->
+
                 <div class="tools">
                     <a href="{{ route('adminpanel.todolist.edit', ['todolist' => $todo->id]) }}"><i class="fas fa-edit"></i></a>
                     <i class="fas fa-trash-o"></i>
@@ -51,49 +61,23 @@
                         </div>
                     </li>
                 </ul>
+
             </li>
             @endforeach
             @endif
         </ul>
-
-
-        <div class="card-footer clearfix">
-            <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
-                <i class="fas fa-plus"></i> Add item</a>
-        </div>
     </div>
 </div>
 
-
-
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.desc-list').hide();
+<script>
+    $(document).ready(function() {
+        $('.desc-list').hide();
 
-            $('.todo-item').click(function() {
-                var description = $(this).find('.desc-list');
-                description.slideToggle();
-            });
-
+        $('.todo-item').click(function() {
+            var description = $(this).find('.desc-list');
+            description.slideToggle();
         });
-    </script>
-
-
-
-    <style>
-        .toggle-desc-button .text {
-            display: none;
-        }
-
-        .toggle-desc-button:hover .text {
-            display: block;
-        }
-
-        .todo-item .description {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s;
-        }
-    </style>
-
+    });
+</script>
+<!-- /

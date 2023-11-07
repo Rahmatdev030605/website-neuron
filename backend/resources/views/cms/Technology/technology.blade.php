@@ -43,13 +43,11 @@
             </form>
         </div>
 
-        <div id="success-message" class="mt-3">
-            @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-            @endif
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
         </div>
+        @endif
 
         <div class="table-responsive mt-3">
             <table class="table">
@@ -103,77 +101,77 @@
                         </div>
                     </div>
                     <!-- Modal Konfirmasi Hapus End -->
-        </div>
-        @endforeach
-        </tbody>
-        </table>
-
-        <!-- Modal -->
-        <div class="modal fade" id="addTechnologyModal" tabindex="-1" role="dialog" aria-labelledby="addTechnologyModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addTechnologyModalLabel">Add New Technology</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addTechnologyForm">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" class="form-control" id="name" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="icon">Icon</label>
-                                <input type="file" class="form-control-file" id="icon" name="icon" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="technology_category_id">Technology</label>
-                                <select class="form-control" id="technology_category_id" name="technology_category_id" required>
-                                    <option value="">Select Technology</option>
-                                    @foreach($categories as $category)
-                                    <option value="{{ $category->id }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="addTechnologyButton">Add</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Modal untuk Add Category -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <form action="{{ route('store-category') }}" method="POST">
-                            @csrf
-                            <div class="form-group">
-                                <label for="category_name">Category Name</label>
-                                <input type="text" class="form-control" id="category_name" name="category_name" required>
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Add Category</button>
+                    @endforeach
+                </tbody>
+            </table>
+            <!-- Modal -->
+            <div class="modal fade" id="addTechnologyModal" tabindex="-1" role="dialog" aria-labelledby="addTechnologyModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addTechnologyModalLabel">Add New Technology</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addTechnologyForm">
+                                {{ csrf_field() }}
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="icon">Icon</label>
+                                    <input type="file" class="form-control-file" id="icon" name="icon" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="technology_category_id">Category</label>
+                                    <select class="form-control" id="technology_category_id" name="technology_category_id" required>
+                                        <option value="">Select Category</option>
+                                        @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="addTechnologyButton">Add</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <!-- Modal untuk Add Category -->
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('store-category') }}" method="POST">
+                                {{ csrf_field() }}
+                                <div class="form-group">
+                                    <label for="category_name">Category Name</label>
+                                    <input type="text" class="form-control" id="category_name" name="category_name" required>
+                                </div>
 
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Add Category</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
 </div>
 <script>
@@ -188,7 +186,7 @@
         }, 3000); // 5000 milidetik (5 detik)
     }
 </script>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function() {
         // Handle Add Technology button click
@@ -198,7 +196,7 @@
 
             // Send AJAX request to add technology
             $.ajax({
-                url: "{{ route('technology-store') }}",
+                url: '/technology/store',
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -216,8 +214,19 @@
                     alert('Failed to add technology. Please try again.');
                 }
             });
-
         });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Check if the success message exists and is visible
+        if ($('#success-alert').length) {
+            // Automatically close the success message after 3 seconds
+            setTimeout(function () {
+                $('#success-alert').fadeOut('slow');
+            }, 3000); // 3000 milliseconds = 3 seconds
+        }
     });
 </script>
 @endsection

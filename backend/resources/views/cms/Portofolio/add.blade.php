@@ -31,24 +31,21 @@
                 <div class="card-body">
                     <form action="{{ route('portofolio-store') }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
-                        
+
+                        <div class="form-group">
+                            <label for="service">Service</label>
+                            <select type="text" class="form-control" id="service" name="service_id" required>
+                                @foreach($services as $service)
+                                <option value="{{$service->id}}" {{old('service_id') == $service->id ? 'selected' : ''}}>{{$service->name}}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
 
-                        <div class="form-group">
-                            <label for="category">Category</label>
-                            <select class="form-control" id="category" name="category" required>
-                                <option value="Web App">Web App</option>
-                                <option value="Mobile App">Mobile App</option>
-                                <option value="Workflow Management System">Workflow Management System</option>
-                                <option value="System Integrator">System Integrator</option>
-                                <option value="Business Intelligence">Business Intelligence</option>
-                                <option value="CRM App">CRM App</option>
-                            </select>
-                        </div>
-                        
                         <div class="form-group">
                             <label for="customer_name">Customer Name</label>
                             <input type="text" class="form-control" id="customer_name" name="customer_name" required>
@@ -136,7 +133,7 @@
 <script>
     $(document).ready(function () {
         var handlesContainer = $('#handles-container');
-        
+
         $('#button-handle').click(function () {
             var newInput = $('<input type="text" class="form-control" name="handles[]" placeholder="Handle">');
             handlesContainer.append(newInput);
@@ -146,7 +143,7 @@
 <script>
     $(document).ready(function () {
         var handlesContainer = $('#deliverables-container');
-        
+
         $('#button-deliverable').click(function () {
             var newInput = $('<input type="text" class="form-control" name="deliverables[]" placeholder="Deliverable">');
             handlesContainer.append(newInput);

@@ -13,7 +13,7 @@
                     <li class="breadcrumb-item"><a href="{{ route('portofolio') }}">Portofolio</a></li>
                     <li class="breadcrumb-item active">Edit Portofolio</li>
                 </ol>
-            </div><!-- /.col    
+            </div><!-- /.col -->
         </div><!-- /.row -->
     </div><!-- /.container-fluid -->
 
@@ -43,54 +43,12 @@
                             <textarea class="form-control" id="desc" name="desc" required>{{ $service->desc }}</textarea>
                         </div>
 
-
-                        <div class="form-group">
-                            <div class="d-flex">
-                            </div>
-
-                        </div>
-
-
                         <a href="{{ URL::previous() }}" class="btn btn-primary">Back</a>
                         <button type="submit" class="btn btn-primary float-right">Update</button>
                     </form>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Akhir dari modal key feature -->
                 </div>
             </div>
         </div>
     </div>
 </div>
-<!-- <script>
-    $(document).ready(function () {
-        // Handle Add Existing Technology button click
-        $('#addExistingTechnologyButton').on('click', function () {
-            var selectedTechnologyId = $('#existingTech').val();
-
-            // Send AJAX request to add existing technology to the service
-            $.ajax({
-                url: '{{ route('keyfeature-add-technology', $service->id) }}',
-                type: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    technology_id: selectedTechnologyId
-                },
-                success: function (data) {
-                    // Close the modal
-                    $('#addTechnologyModal').modal('hide');
-
-                    // Refresh the page or update the view with the new technology added to the portofolio
-                    location.reload();
-                },
-                error: function (xhr) {
-                    // Handle errors, display them to the user
-                    console.log(xhr.responseText);
-                    alert('Failed to add technology. Please try again.');
-                }
-            });
-        });
-    });
-</script> -->
 @endsection

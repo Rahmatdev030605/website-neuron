@@ -31,16 +31,12 @@ class ServiceController extends Controller
             $services = Service::all();
         }
 
-
-
-
         return view('cms.Service.service', compact('services'));
     }
 
     public function deleteService($id)
     {
         $services = Service::findOrFail($id);
-
         $services->delete();
 
         return redirect()->route('service')->with('success', 'Service has been deleted successfully.');
@@ -48,7 +44,6 @@ class ServiceController extends Controller
 
     public function create()
     {
-        $technologies = Technology::all();
         $service = new Service();
 
         return view('cms.Service.add', compact('service'));
@@ -59,11 +54,8 @@ class ServiceController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
-            'desc' => 'required|string',
-
+            'desc' => 'required|string'
         ]);
-
-
         // Simpan data service ke database
         $service = new Service([
             'name' => $request->name,
@@ -71,7 +63,6 @@ class ServiceController extends Controller
         ]);
 
         $service->save();
-        // Proses deliverables
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('service')->with('success', 'Service added successfully.');
@@ -96,21 +87,12 @@ class ServiceController extends Controller
         //update data service
         $service->name = $request->input('name');
         $service->desc = $request->input('desc');
-
-        // // S;impan perubahan pada data service
+        // // Simpan perubahan pada data service
         $service->save();
-
-
-        // Periksa apakah ada file gambar yang diuploa
         // Redirect ke halaman service dengan pesan sukses
         return redirect()->route('service')->with('success', 'Service updated successfully.');
     }
 
-    public function addTechnology(Request $request, $id)
-    {
-        $service = Service::findOrFail($id);
-        return redirect()->route('service-edit', ['id' => $service->id])->with('success', 'Technology added to service successfully');
-    }
     //API
 
     public function getServicesByName(Request $request)
@@ -123,7 +105,7 @@ class ServiceController extends Controller
         $requestedName = $request->input('name');
 
         // Query database untuk mengambil service berdasarkan nama yang sesuai
-        $services = Service::where('name', $requestedName)->with('technologies', 'serviceKeys')->get();
+        $services = Service::where('name', $requestedName)->get();
 
         // Periksa apakah service ditemukan
         if ($services->isEmpty()) {
@@ -152,12 +134,10 @@ class ServiceController extends Controller
         }
     }
 
-
     public function getServicePages()
     {
         // Ambil data dari tabel service_pages
-        $servicePages = ServicePages::all();
-
+        $servicePages = Service::with('portofolio')->get();
         return ServicePageResource::collection($servicePages);
     }
 }

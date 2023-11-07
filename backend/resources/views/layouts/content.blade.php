@@ -2,7 +2,7 @@
   <div class="content-wrapper">
     @yield('content')
     <!-- /.content -->
-  </div>    
+  </div>
   <!-- /.content-wrapper -->
   {{-- <script>
     setTimeout(function() {

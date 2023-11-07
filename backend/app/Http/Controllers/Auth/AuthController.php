@@ -3,14 +3,26 @@
 namespace App\Http\Controllers\Auth;
 
 use Auth;
+use App\Models\ToDoList;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\ToDoList;
+use App\Models\LoginRecord;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
-use Illuminate\Support\Facades\Auth as FacadesAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use App\Models\Job;
+use App\Models\Article;
+use App\Models\Portofolio;
+use App\Models\Product;
+use Illuminate\Support\Facades\Log;
+use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient as BetaAnalyticsDataClient;
+use Google\Analytics\Data\V1beta\DateRange as DateRange;
+use Google\Analytics\Data\V1beta\Dimension as Dimension;
+use Google\Analytics\Data\V1beta\Metric as Metric;
+use Google\Analytics\Data\V1beta\RunReportRequest as RunReportRequest;
+
+
 
 class AuthController extends Controller
 {
@@ -26,7 +38,11 @@ class AuthController extends Controller
 
             // Buat atau perbarui token personal access untuk pengguna yang berhasil login
             $token = $user->createToken('auth_token')->plainTextToken;
-
+            LoginRecord::create([
+                'action'=>'Log In',
+                'user_id'=>$user['id'],
+                'role_id'=>$user['role_id']
+            ]);
             return redirect('/adminpanel')->with('auth_token', $token)->with('success', 'Welcome ' . $user->firstname . ' ' . $user->lastname);
         }
         return redirect('/login')->with('error', 'Invalid email or password.');
@@ -34,15 +50,22 @@ class AuthController extends Controller
 
     public function logout()
     {
+        // Mengambil data user untuk dimasukkan ke login record
+        $user = Auth::user();
         // Revoke (mencabut) semua token akses pribadi yang dimiliki pengguna saat ini
         Auth::user()->tokens()->delete();
 
         // Logout pengguna
         Auth::logout();
-
+        LoginRecord::create([
+            'action'=>'Log Out',
+            'user_id'=>$user['id'],
+            'role_id'=>$user['role_id']
+        ]);
         // Set pesan flash
         return redirect('/login')->with('success', 'You have successfully logged out.');
     }
+
     public function refreshToken(Request $request)
     {
         $user = Auth::user();
@@ -64,9 +87,67 @@ class AuthController extends Controller
 
         if ($tokenIsValid) {
             // Token masih berlaku, beri akses ke halaman adminpanel
-            $todos = ToDoList::all();
+            // Mengambil data untuk halaman adminpanel
 
-            return view('pages.dashboard', compact('todos'));
+            // Mangmbil Google Analytics Credentials
+            $GACredentials = base_path('/app/Analytics/'.env('ANALYTICS_CREDENTIALS'));
+
+            // Credentials Authorization
+            $analyticsClient = new BetaAnalyticsDataClient([
+                'credentials' => $GACredentials
+            ]);
+
+            // Configurasi Permintaan yang ingin diminta
+            $analyticsConfig = (new RunReportRequest())
+                ->setProperty('properties/' . env('ANALYTICS_PROPERTY_ID'))
+                // Jarak Waktu Yang diambil
+                ->setDateRanges([
+                    new DateRange([
+                        'start_date' => '2023-01-01',
+                        'end_date' => 'today',
+                    ]),
+                ])
+                // Detail Tambahan
+                ->setDimensions([new Dimension([
+                        'name' => 'country',
+                    ]),
+                ])
+                // Mengambil Data
+                ->setMetrics([new Metric([
+                        'name' => 'activeUsers',
+                    ])
+                ]);
+
+            // Mengirimkan request ke Google Analytic Properties
+            $analyticsData = $analyticsClient->runReport($analyticsConfig);
+            // return dd($analyticsData);
+            if (!empty($analyticsData->getRows())) {
+                $activeUsers = 0;
+                for($i = 0; $i < $analyticsData->getRowCount(); $i++) {
+                    // Akses baris pertama (karena Anda hanya memiliki satu baris)
+                    $firstRow = $analyticsData->getRows()[$i];
+
+                    // Akses metrik dalam baris pertama
+                    $metrics = $firstRow->getMetricValues();
+
+                    // Mengambil banyak visitor
+                    $activeUsers = $activeUsers + $metrics[0]->getValue();
+                }
+            } else {
+                $activeUsers = null;
+            }
+
+            $jobData =  Job::all()->count();
+            $articleData = Article::all()->count();
+            $portofolioData = Portofolio::all()->count();
+            $productData = Product::all()->count();
+            $todos = ToDoList::all();
+            // Membuat login record
+            $loginRecords = LoginRecord::query()
+                    ->with('user','role')
+                    ->paginate(10);
+            $allData = array('jobData','articleData','portofolioData','productData','loginRecords', 'todos', 'activeUsers');
+            return view('pages.dashboard',compact($allData));
         }
 
         // Token telah kedaluwarsa, arahkan pengguna untuk memperbarui token

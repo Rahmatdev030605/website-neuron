@@ -12,10 +12,10 @@ use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\MethadologyController;
 use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\ToDoListController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Register\RegisterController;
-use App\Http\Controllers\ToDoListController;
 use App\Models\About;
 
 /*
@@ -112,12 +112,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/blog-categories/create', [BlogCategoryController::class, 'create'])->name('create-blog-categories');
     Route::post('/blog-categories/store', [BlogCategoryController::class, 'store'])->name('store-blog-categories');
     // delete blog category
-    Route::delete('/blog-categories/{id}', [BlogCategoryController::class, 'deleteBlogCategories'])->name('delete-blog-categories');
+    Route::delete('/blog-category/{id}', [BlogCategoryController::class, 'deleteBlogCategory'])->name('delete-blog-categories');
     // edit & update blog category
     Route::get('blog-categories/{id}/edit', [BlogCategoryController::class, 'edit'])->name('blog-categories-edit');
     Route::put('blog-categories/{id}/update', [BlogCategoryController::class, 'update'])->name('blog-categories-update');
-    // delete blog Category
-    Route::delete('/blog-categories/{id}', [BlogCategoryController::class, 'deleteBlogCategory'])->name('blog-categories-delete');
     // show methadology
     Route::get('/methadology', [MethadologyController::class, 'methadology'])->name('methadology');
     Route::get('/methadology', [MethadologyController::class, 'methadologyshow'])->name('methadology');
@@ -133,7 +131,7 @@ Route::middleware(['auth'])->group(function () {
     // add technology
     Route::post('/technology/store', [TechnologyController::class, 'store'])->name('technology-store');
     // add technology category
-    Route::post('/technology/category/store', [TechnologyController::class, 'storeCategory'])->name('store-category');
+    Route::post('/technology/category/store', [TechnologyController::class, 'store'])->name('store-category');
     // show technology
     Route::get('/technology', [TechnologyController::class, 'technology'])->name('technology');
     Route::get('/technology', [TechnologyController::class, 'technologyshow'])->name('technology');
@@ -143,7 +141,6 @@ Route::middleware(['auth'])->group(function () {
     Route::put('technology/{id}/update', [TechnologyController::class, 'update'])->name('technology-update');
     //delete blog category technologies
     Route::delete('/tecnology/{id}/delete-technology', [TechnologyController::class, 'deleteTechnology'])->name('delete-technology');
-
     // show service
     Route::get('/service', [ServiceController::class, 'service'])->name('service');
     Route::get('/service', [ServiceController::class, 'showservice'])->name('service');
@@ -198,13 +195,14 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/page/about/edit/{id}', [PagesController::class, 'editAbout'])->name('edit-about');
     Route::put('/page/service/edit/{id}', [PagesController::class, 'editService'])->name('page-settings.update');
 
-    //! To do List
-    Route::get('/todolist', [ToDoListController::class, 'getToDoList'])->name('todolist.index');
-    Route::get('/todolist/create', [ToDoListController::class, 'addToDoList'])->name('adminpanel.todolist.create');
-    Route::post('/todolist/store', [ToDoListController::class, 'storeToDoList'])->name('adminpanel.todolist.store');
-    Route::put('/todolist/{todolist}', [ToDoListController::class, 'updateToDoList'])->name('adminpanel.todolist.update');
-    Route::get('/todolist/{todolist}/edit', [ToDoListController::class, 'editToDoList'])->name('adminpanel.todolist.edit');
-    Route::delete('/todolist/{todolist}', [ToDoListController::class , 'deleteToDoList'])->name('adminpanel.todolist.destroy');
+    //! TODOLIST
+    Route::get('/adminpanel/todolist', [ToDoListController::class, 'getToDoList'])->name('todolist.index');
+    Route::get('/adminpanel/todolist/create', [ToDoListController::class, 'addToDoList'])->name('adminpanel.todolist.create');
+    Route::post('/adminpanel/todolist/store', [ToDoListController::class, 'storeToDoList'])->name('adminpanel.todolist.store');
+    Route::put('/adminpanel/todolist/{todolist}', [ToDoListController::class, 'updateToDoList'])->name('adminpanel.todolist.update');
+    Route::get('/adminpanel/todolist/{todolist}/edit', [ToDoListController::class, 'editToDoList'])->name('adminpanel.todolist.edit');
+    Route::delete('/adminpanel/todolist/{todolist}', [ToDoListController::class , 'deleteToDoList'])->name('adminpanel.todolist.destroy');
+
 });
 
 // hanya untuk user dengan role superadmin

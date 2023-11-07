@@ -16,60 +16,40 @@ class HomeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'hero' => [
-                'hero_title1' => $this->hero_title1,
-                'hero_title2' => $this->hero_title2,
-                'hero_title3' => $this->hero_title3,
-                'hero_title_lists' => $this->heroTitleLists->map(function ($titleList) {
+            'hero'=>[
+                'hero_title' => $this->heroTitleLists->map(function ($titleList) {
                     return [
                         'id' => $titleList->id,
-                        'title' => $titleList->title,
+                        'hero_title' => $titleList->hero_title,
+                        'hero_desc' => $titleList->hero_desc,
                     ];
                 }),
-                'hero_desc' => $this->hero_desc,
+                'hero_image'=>$this->hero_image,
             ],
             'about' => [
-                'about_project' => $this->about_project,
-                'about_experience' => $this->about_experience,
-                'about_desc' => $this->about_desc,
                 'about_title' => $this->about_title,
-                'about_ilustration' => $this->about_ilustration,
+                'about_desc' => $this->about_desc,
+            ],
+            'program' => [
+                'id' => $this->neuron_program_id,
+                'title' => optional($this->neuronProgram)->title,
+                'desc' => optional($this->neuronProgram)->desc,
+                'ytEmbed' => optional($this->neuronProgram)->video,
+                'tagline' => optional($this->neuronProgram)->tagline,
             ],
             'service' => [
-                'title_service' => $this->title_service,
-            ],
-            'portfolio' => [
-                'title_portfolio' => $this->title_project,
-            ],
-            'product' => [
-                'title_product' => $this->title_product,
+                'service_title' => $this->service_title,
+                'service_desc' => $this->service_desc,
             ],
             'partner' => [
-                'title_partner' => $this->title_partner,
+                'partner_title' => $this->partner_title,
+                'partner_desc' => $this->partner_desc,
                 'partners' => $this->partners->map(function ($partner) {
                     return [
                         'id' => $partner->id,
                         'image' => $partner->image,
                     ];
                 }),
-            ],
-            'article' => [
-                'title_articles' => $this->title_articles,
-            ],
-            'license' => [
-                'title_certificate' => $this->title_certificate,
-                'certificates' => $this->certificates->map(function ($certificate) {
-                    return [
-                        'id' => $certificate->id,
-                        'image' => $certificate->image,
-                    ];
-                }),
-            ],
-            'program' => [
-                'id' => $this->neuron_program_id,
-                'title' => optional($this->neuronProgram)->title,
-                'desc' => optional($this->neuronProgram)->desc,
-                'ytEmbed' => optional($this->neuronProgram)->image,
             ],
             'testimonials' => $this->testimonials->map(function ($testimonial) {
                 return [
@@ -80,8 +60,11 @@ class HomeResource extends JsonResource
                     'job' => $testimonial->job,
                     'image' => $testimonial->image,
                 ];
-            }),
-
+          }),
+            'article' => [
+                'article_title' => $this->article_title,
+                'article_desc' => $this->article_desc,
+            ],
         ];
     }
 }

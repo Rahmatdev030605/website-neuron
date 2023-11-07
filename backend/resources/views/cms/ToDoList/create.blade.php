@@ -21,8 +21,7 @@
             </div>
             <div class="form-group">
                 <label for="date_start">Start Date</label>
-                <input type="datetime-local" name="date_start" id="date_start" class="form-control" required>
-            </div>
+                <input type="datetime-local" name="date_start" id="date_start" class="form-control" required>            </div>
             <div class="form-group">
                 <label for="date_end">End Date</label>
                 <input type="datetime-local" name="date_end" id="date_end" class="form-control" required>
@@ -33,8 +32,6 @@
         </form>
     </div>
 </div>
-@endsection
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 @if ($todo && !is_null($todo->date_start))
@@ -43,3 +40,5 @@
     document.getElementById("date_start").value = formattedDateTime;
 </script>
 @endif
+
+@endsection
