@@ -21,7 +21,7 @@
             <i class="ion ion-clipboard mr-1"></i>
             To Do List
         </h3>
-            <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
+        <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
             <i class="fas fa-plus"></i> Add item</a>
     </div>
 
@@ -39,14 +39,16 @@
                 <!-- checkbox -->
                 <!-- checkbox -->
                 <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="{{ $todo->id }}" name="todo{{ $todo->id }}" id="todoCheck{{ $todo->id }}">
+                    <input type="checkbox" value="{{ $todo->id }}" name="todo{{ $todo->id }}" id="todoCheck{{ $todo->id }}" data-deadline="{{ $todo->date_end }}">
                     <label for="todoCheck{{ $todo->id }}"></label>
                 </div>
+
 
                 <!-- todo text -->
                 <span class="text">{{ $todo->title }}</span>
                 <!-- Emphasis label -->
-                <small class="badge badge-danger "><i class="far fa-clock toggle-desc"></i> {{ $todo->date_start }}</small>
+                <small class="badge badge-danger" data-end="{{ $todo->date_end }}"><i class="far fa-clock toggle-desc"></i> Dateline {{ $todo->date_end }}</small>
+
                 <!-- General tools such as edit or delete-->
 
                 <div class="tools">
@@ -61,6 +63,8 @@
                         </div>
                     </li>
                 </ul>
+
+                <span class="date-start" data-start="{{ $todo->date_start }}"><i class="far fa-clock toggle-desc"></i> Start {{ $todo->date_start }}</span>
 
             </li>
             @endforeach
@@ -80,4 +84,68 @@
         });
     });
 </script>
+
+<script>
+    // Ambil semua elemen checkbox dengan atribut 'data-deadline'
+    const checkboxes = document.querySelectorAll('input[data-deadline]');
+
+    checkboxes.forEach((checkbox) => {
+        const deadline = new Date(checkbox.getAttribute('data-deadline'));
+        const currentDate = new Date();
+
+        // Bandingkan tanggal `date_end` dengan tanggal saat ini
+        if (deadline < currentDate) {
+            checkbox.checked = true;
+        }
+    });
+</script>
+
+<script>
+    function deleteExpiredTodos() {
+        const checkboxes = document.querySelectorAll('input[data-deadline]');
+
+        checkboxes.forEach((checkbox) => {
+            const deadline = new Date(checkbox.getAttribute('data-deadline'));
+            const currentDate = new Date();
+
+            if (deadline < currentDate) {
+                // Hapus elemen list tugas (parent dari checkbox)
+                const todoItem = checkbox.parentElement.parentElement;
+                todoItem.remove();
+            }
+        });
+    }
+
+    // Pemeriksaan pertama saat halaman dimuat
+    deleteExpiredTodos();
+
+    // Mengeksekusi pemeriksaan setiap 1 menit (atau sesuai kebutuhan)
+    setInterval(deleteExpiredTodos, 60000); // Setiap 1 menit
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const dateStartElements = document.querySelectorAll(".date-start");
+        const dateEndElements = document.querySelectorAll(".badge-danger");
+
+        dateStartElements.forEach((startElement, index) => {
+            const startDate = new Date(startElement.dataset.start);
+            const endDate = new Date(dateEndElements[index].dataset.end);
+
+            const timeDifference = endDate - startDate;
+            const daysDifference = timeDifference / (1000 * 3600 * 24);
+
+            if (daysDifference <= 3) {
+                startElement.style.color = "red"; // Ubah warna teks menjadi merah
+            } else if (daysDifference <= 7) {
+                startElement.style.color = "yellow"; // Ubah warna teks menjadi kuning
+            } else {
+                startElement.style.color = "green"; // Atau warna hijau, sesuai kebutuhan
+            }
+        });
+    });
+</script>
+
+
+
 <!-- /

@@ -205,13 +205,41 @@ class CareerController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $career = Job::findOrFail($id);
-        $career->update($request->all());
+{
+    $validatedData = $request->validate([
+        'name' => 'required|string',
+        'location' => 'required|string',
+        'desc' => 'required|string',
+        'responsibilities' => 'required|string',
+        'link' => 'nullable|string',
+        'gender' => 'required|in:Man,Female,Man/Female',
+        'education' => 'required|string',
+        'major' => 'required|string',
+        'other' => 'nullable|string',
+    ]);
 
-        // Redirect ke halaman yang sesuai setelah berhasil mengedit
-        return redirect()->route('career')->with('success', 'Career updated successfully');
-    }
+    $career = Job::findOrFail($id);
+
+    // Update data karier dengan data baru
+    $career->update([
+        'name_position' => $validatedData['name'],
+        'location' => $validatedData['location'],
+        'desc' => $validatedData['desc'],
+        'responsibilities' => $validatedData['responsibilities'],
+        'link' => $validatedData['link'],
+    ]);
+
+    // Perbarui data kualifikasi karier
+    $career->jobQualification->update([
+        'gender' => $validatedData['gender'],
+        'education' => $validatedData['education'],
+        'major' => $validatedData['major'],
+        'other' => $validatedData['other'],
+    ]);
+
+    return redirect()->route('career')->with('success', 'Career updated successfully');
+}
+
 
     public function addSkillEdit(Request $request, $career_id)
     {

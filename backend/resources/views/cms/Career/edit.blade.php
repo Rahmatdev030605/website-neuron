@@ -156,7 +156,7 @@
                             <h5 class="text-title">Qualification</h5>
                         </div>
                         <div class="d-flex" style="justify-content: space-between;">
-                            <div>
+                            <div>php artisan serve
                                 <h6 class="text-bold">Gender</h6>
                                 <p>{{ $career->jobQualification->gender }}</p>
                             </div>

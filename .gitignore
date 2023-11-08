@@ -525,3 +525,49 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,visualstudiocode,visualstudio,sublimetext,notepadpp
+
+
+
+
+#Todolist 
+
+#revisi : 
+#1. tanggal created harus di kanan 
+#2. tanggal yang di keterangan merah tuh diganti menjadi dateline
+#3. ada 3 keterangan (hijau = masih lama, kuning= hampir, merah=habis)
+
+
+
+# Blog 
+
+# 1. tampilan kurang minimalis 
+# 2. category = itu harus satu section dan hanya dan di add
+# 3. memakai multi select (input data selected dan bisa dipilih saat sudah di input)di add Blog 
+# ref: notiion
+
+# * View blog 
+# 1. belum ada category baru article (++category) 
+# 2. category ditaro di atas judul
+
+
+# Pages
+# HomePage : itu dikerjakan nanti dengan frontend selesai
+
+
+# Career 
+
+# 1. Skill Requiretment ==
+# 2. Location atau domicili pilih satu (pake select notion)
+
+
+# Service 
+
+# 1. Service dan portofolio di merge --
+# 2. Superadmin cuman mau nambahin portofolinya --
+# 3. portofoio +filter di bawah tag (jadi bisa mana categori blalbla dan mana category yang lain)
+# 4. portofoio jangan digabungin di services
+# 5. di services ++ product tidak di masukaan di blodg category
+# 6. methodology diubah jadi tidak di blog category tapi sejajar dengan career, Service
+# 7. ++ dilievery technology & handle 
+
+
