@@ -1,67 +1,108 @@
-@extends('layouts.master')
+    @extends('layouts.master')
 
-@section('content')
-<div class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1 class="m-0">Edit Career</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a href="{{ route('adminpanel') }}">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{{ route('career') }}">Career</a></li>
-                    <li class="breadcrumb-item active">Edit Career</li>
-                </ol>
+    @section('content')
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Edit Career</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="{{ route('adminpanel') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('career') }}">Career</a></li>
+                        <li class="breadcrumb-item active">Edit Career</li>
+                    </ol>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="success-message" class="mt-3">
-        @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div id="success-message" class="mt-3">
+            @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+            @endif
         </div>
-        @endif
-    </div>
 
-    <style>
-        .qualification-field {
-            display: none;
-        }
-    </style>
+        <style>
+            .qualification-field {
+                display: none;
+            }
+        </style>
 
-    <div class="container">
-        <div class="mt-3">
-            <form action="" method="">
+        <div class="container">
+            <div class="mt-3">
+                <form action="{{ route('career-update', $career->id) }}" method="post" id="careerEditForm">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                    <div class="form-group">
+                        <label for="positionName">Position Name</label>
+                        <input type="text" class="form-control" id="positionName" name="name_position" value="{{ $career->name_position }}" required>
+                    </div>
 
-                <div class="form-group">
-                    <label for="positionName">Position Name</label>
-                    <input type="text" class="form-control" id="positionName" name="name_position" value="{{ $career->name_position }}" required>
-                </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <select class="form-control" id="location" name="location">
+                            <option value="Bandung">Bandung</option>
+                            <option value="Jakarta">Jakarta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" id="description" name="desc" rows="5" required>{{ $career->desc }}</textarea>
+                    </div>
 
 
-                <div class="form-group">
-                    <label for="location">Location</label>
-                </div>
 
-                <div class="form-group">
-                    <label for="location">Location</label>
-                    <select class="form-control" id="location" name="location">
-                        <option value="Bandung">Bandung</option>
-                        <option value="Jakarta">Jakarta</option>
+                    <div class="form-group">
+                        <label for="responsibilities">Responsibilities</label>
+                        <textarea class="form-control" id="responsibilities" name="responsibilities" rows="5" required>{{ $career->responsibilities }}</textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="link">Link</label>
+                        <input type="text" class="form-control" id="link" name="link" value="{{ $career->link }}">
+                    </div>
+
+
+                    <div class="form-group">
+                    <label for="gender">Gender</label>
+                    <select class="form-control" id="gender" name="gender" required>
+                        <option value="Man" {{ $career->jobQualification->gender == 'Man' ? 'selected' : '' }}>Man</option>
+                        <option value="Female" {{ $career->jobQualification->gender == 'Female' ? 'selected' : '' }}>Female</option>
+                        <option value="Man/Female" {{ $career->jobQualification->gender == 'Man/Female' ? 'selected' : '' }}>Man/Female</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea class="form-control" id="description" name="desc" rows="5" required>{{ $career->desc }}</textarea>
+                    <label for="domicile">Domicile</label>
+                    <input type="text" class="form-control" id="domicile" name="domicile" value="{{ $career->jobQualification->domicile }}" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="responsibilities">Responsibilities</label>
-                    <textarea class="form-control" id="responsibilities" name="responsibilities" rows="5" required>{{ $career->responsibilities }}</textarea>
+                    <label for="education">Education</label>
+                    <input type="text" class="form-control" id="education" name="education" value="{{ $career->jobQualification->education }}" required>
                 </div>
+
+                <div class="form-group">
+                    <label for="major">Major</label>
+                    <input type="text" class="form-control" id="major" name="major" value="{{ $career->jobQualification->major }}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="other">Other Qualifications</label>
+                    <input type="text" class="form-control" id="other" name="other" value="{{ $career->jobQualification->other }}" required>
+                </div>
+                <button class="btn btn-primary" type="submit">Update</button>
+                <a href="{{ URL::previous() }}" class="btn btn-primary">Back</a>
+            </form>
 
 
                 <div class="form-group">
@@ -150,31 +191,7 @@
 
 
 
-                <div class="form-group">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <h5 class="text-title">Qualification</h5>
-                        </div>
-                        <div class="d-flex" style="justify-content: space-between;">
-                            <div>php artisan serve
-                                <h6 class="text-bold">Gender</h6>
-                                <p>{{ $career->jobQualification->gender }}</p>
-                            </div>
-                            <div>
-                                <h6 class="text-bold">Education</h6>
-                                <p>{{ $career->jobQualification->education }}</p>
-                            </div>
-                            <div>
-                                <h6 class="text-bold">Major</h6>
-                                <p>{{ $career->jobQualification->major }}</p>
-                            </div>
-                            <div>
-                                <h6 class="text-bold">Other</h6>
-                                <p>{{ $career->jobQualification->other }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+
 
                 <div class="form-group">
                     <div class="card-body">
@@ -207,7 +224,7 @@
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="editPlusValueModalLabel">Edit Plus Value</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
+                                            l<span aria-hidden="true">&times;</span>
                                         </button>
                                     </div>
                                     <form method="POST" action="{{ route('edit-plus-value', ['career_id' => $career->id, 'plusvalue_id' => $plusValue->id]) }}">
@@ -280,131 +297,125 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- end Modal untuk menambahkan plus value -->
+                        </div><!-- end Modal untuk menambahkan plus value -->
                 </div>
-
-                <div class="form-group">
-                    <label for="link">Link</label>
-                    <input type="text" class="form-control" id="link" name="link" value="{{ $career->link }}">
-                </div>
-
-                <div class="form-group">
-                    <label for="gender">Gender</label>
-                    <select class="form-control" id="gender" name="gender" required>
-                        <option value="Man" {{ $career->jobQualification->gender == 'Man' ? 'selected' : '' }}>Man</option>
-                        <option value="Female" {{ $career->jobQualification->gender == 'Female' ? 'selected' : '' }}>Female</option>
-                        <option value="Man/Female" {{ $career->jobQualification->gender == 'Man/Female' ? 'selected' : '' }}>Man/Female</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="education">Education</label>
-                    <input type="text" class="form-control" id="education" name="education" value="{{ $career->jobQualification->education }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="major">Major</label>
-                    <input type="text" class="form-control" id="major" name="major" value="{{ $career->jobQualification->major }}" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="other">Other Qualifications</label>
-                <input type="text" class="form-control" id="other" name="other" value="{{ $career->jobQualification->other }}" required>
-                </div>
-        </div>
-    </div>
-</div>
-<div class="modal-footer">
-    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#updateCareerModal">Update</button>
-    <a href="{{ URL::previous() }}" class="btn btn-primary">Back</a>
-</div>
-
-</form>
-
-
-
-
-  <!-- Modal untuk menambahkan skill -->
-  <div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <!-- Form untuk menambahkan skill -->
-                            <form action="{{ route('career.add-skill', $career->id) }}" method="post">
-                                {{ csrf_field() }}
-                                <div class="form-group">
-                                    <label for="skill_name">Skill Name</label>
-                                    <input type="text" class="form-control" id="skill_name" name="skill_name" required>
-                                </div>
-                                <button type="submit" class="btn btn-primary">Add Skill</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-</div>
-
-<!-- Modal untuk mMengupadate career -->
-<div class="modal fade" id="updateCareerModal" tabindex="-1" aria-labelledby="updateCareerModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="updateCareerModalLabel">Update Career</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Form untuk menambahkan skill -->
-                <form action="{{ route('career-update', $career->id) }}" method="post">
-                    {{ csrf_field() }}
-                    {{ method_field('PUT') }}
-                    <div class="form-group">
-                        <label for="career_name">Are you sure the data is updated?</label>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update</button>
-                </form>
             </div>
         </div>
     </div>
-</div>
+    </form>
+    <div class="modal-footer">
+    </div>
 
 
-<!-- Modal untuk menambahkan skill -->
-<div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- Form untuk menambahkan skill -->
-                <form action="{{ route('career.add-skill', $career->id) }}" method="post">
-                    {{ csrf_field() }}
-                    <div class="form-group">
-                        <label for="skill_name">Skill Name</label>
-                        <input type="text" class="form-control" id="skill_name" name="skill_name" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Skill</button>
-                </form>
+
+
+
+    <!-- Modal untuk menambahkan skill -->
+    <div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form untuk menambahkan skill -->
+                    <form action="{{ route('career.add-skill', $career->id) }}" method="post">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label for="skill_name">Skill Name</label>
+                            <input type="text" class="form-control" id="skill_name" name="skill_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Skill</button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-</div>
-</div>
+    </div>
 
-</div>
-@endsection
+    <!-- Modal untuk mMengupadate career -->
+    <div class="modal fade" id="updateCareerModal" tabindex="-1" aria-labelledby="updateCareerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCareerModalLabel">Update Career</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form untuk menambahkan skill -->
+                    <form action="{{ route('career-update', $career->id) }}" method="post">
+                        {{ csrf_field() }}
+                        {{ method_field('PUT') }}
+                        <div class="form-group">
+                            <label for="career_name">Are you sure the data is updated?</label>
+                        </div>
+                        <button class="btn btn-primary" id="careerUpdateButton">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal untuk menambahkan skill -->
+    <div class="modal fade" id="addSkillModal" tabindex="-1" aria-labelledby="addSkillModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addSkillModalLabel">Add Skill</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form untuk menambahkan skill -->
+                    <form action="{{ route('career.add-skill', $career->id) }}" method="post">
+                        {{ csrf_field() }}
+                        <div class="form-group">
+                            <label for="skill_name">Skill Name</label>
+                            <input type="text" class="form-control" id="skill_name" name="skill_name" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Skill</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+    </div>
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#careerUpdateButton').on('click', function() {
+                var careerData = $('#careerEditForm').serialize();
+
+                $.ajax({
+                    type: "PUT",
+                    url: "{{ route('career-update', $career->id) }}",
+                    data: careerData,
+                    headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        alert('Career and Qualification updated successfully');
+                    },
+                    error: function(error) {
+                        console.log(error);
+
+                        alert('Failed to update Career and Qualification');
+                    }
+                });
+            });
+        });
+    </script>
+
+    @endsection

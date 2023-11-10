@@ -180,7 +180,9 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/career/{id}', [CareerController::class, 'deletecareer'])->name('delete-career');
     // edit & update career
     Route::get('career/{id}/edit', [CareerController::class, 'edit'])->name('career-edit');
+
     Route::put('career/{id}/update', [CareerController::class, 'update'])->name('career-update');
+
     // add skiill blade edit
     Route::post('/career/{career_id}/add-skiill', [CareerController::class, 'addSkillEdit'])->name('career.add-skill');
     // add plus value blade edit

@@ -10,6 +10,7 @@ class Job extends Model
 {
     use HasFactory;
 
+    protected $table = 'jobs';
     protected $fillable = [
         'name_position',
         'location',
@@ -19,10 +20,10 @@ class Job extends Model
         'jobs_qualification_id',
     ];
 
-    
+
     public function jobQualification()
     {
-        return $this->belongsTo(JobQualification::class, 'jobs_qualification_id', 'id');
+        return $this->hasOne(JobQualification::class, 'id');
     }
 
     public function jobPlusValues()

@@ -13,12 +13,14 @@ class JobQualification extends Model
     protected $fillable = [
         'gender',
         'education',
+        'domicile',
         'major',
         'other',
     ];
 
-    public function jobs()
+    public function job()
     {
-        return $this->hasMany(Job::class, 'jobs_qualification_id');
+        return $this->belongsTo(Job::class, 'id'); // Sesuaikan dengan nama kolom yang benar
     }
+
 }

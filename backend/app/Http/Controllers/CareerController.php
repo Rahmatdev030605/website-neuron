@@ -205,40 +205,23 @@ class CareerController extends Controller
     }
 
     public function update(Request $request, $id)
-{
-    $validatedData = $request->validate([
-        'name' => 'required|string',
-        'location' => 'required|string',
-        'desc' => 'required|string',
-        'responsibilities' => 'required|string',
-        'link' => 'nullable|string',
-        'gender' => 'required|in:Man,Female,Man/Female',
-        'education' => 'required|string',
-        'major' => 'required|string',
-        'other' => 'nullable|string',
-    ]);
+    {
 
-    $career = Job::findOrFail($id);
+        // return dd($request->all());
+        //code...
+        $career = Job::findOrFail($id);
 
-    // Update data karier dengan data baru
-    $career->update([
-        'name_position' => $validatedData['name'],
-        'location' => $validatedData['location'],
-        'desc' => $validatedData['desc'],
-        'responsibilities' => $validatedData['responsibilities'],
-        'link' => $validatedData['link'],
-    ]);
+    // Update data pada model Job
+    $career->update($request->only(['name_position', 'desc', 'responsibilities', 'link']));
 
-    // Perbarui data kualifikasi karier
-    $career->jobQualification->update([
-        'gender' => $validatedData['gender'],
-        'education' => $validatedData['education'],
-        'major' => $validatedData['major'],
-        'other' => $validatedData['other'],
-    ]);
+    // Pastikan kualifikasi dengan $id ditemukan
+    $qualification = JobQualification::where('id', $id)->firstOrFail();
 
-    return redirect()->route('career')->with('success', 'Career updated successfully');
-}
+    // Update data pada model JobQualification4
+    $qualification->update($request->only(['gender', 'domicile', 'education', 'major', 'other']));
+
+        return redirect()->route('career')->with('success', 'Career updated successfully');
+    }
 
 
     public function addSkillEdit(Request $request, $career_id)
@@ -317,4 +300,3 @@ class CareerController extends Controller
         return JobResource::collection($jobs);
     }
 }
-
