@@ -39,6 +39,7 @@
                     <p>{{ $blog->created_at->format('d/m/Y') }} | </p>
                     <p class="pl-1">{{ $blog->author }}</p>
                 </div>
+                <h3>{{}}</h3>
                 <h1 class="text-bold" style="font-size: 52px">{{ $blog->title }}</h1>
                 <p class="text-medium" style="font-size: 16px;">{{ $blog->desc }}</p>
                 <h5 class="text-bold" style="font-family: Raleway; font-size: 22px; color: red;">//</h5>

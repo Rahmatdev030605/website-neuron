@@ -14,7 +14,6 @@ class DropServiceCulumn extends Migration
     public function up()
     {
         Schema::table('services', function(Blueprint $table) {
-            $table->dropColumn('image');
             $table->dropColumn('isTopService');
         });
     }
@@ -27,7 +26,6 @@ class DropServiceCulumn extends Migration
     public function down()
     {
         Schema::table('services', function(Blueprint $table) {
-            $table->string('image');
             $table->enum('isTopService', ['true', 'false']);
         });
     }

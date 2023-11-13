@@ -3,15 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
-use App\Models\ServiceKey;
-use App\Models\Technology;
-use App\Models\ServicePages;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\DB;
 use App\Http\Resources\ServiceResource;
-use App\Http\Resources\TopServiceResource;
 use App\Http\Resources\ServicePageResource;
+use Illuminate\Support\Facades\File;
+use Ramsey\Uuid\Uuid;
 
 class ServiceController extends Controller
 {
@@ -30,15 +26,22 @@ class ServiceController extends Controller
         } else {
             $services = Service::all();
         }
-
+        // return dd();
+        foreach($services as $service){
+            $service['image'] = 'img/service/'.basename($service['image']);
+        }
+        // return dd($services);
         return view('cms.Service.service', compact('services'));
     }
 
     public function deleteService($id)
     {
         $services = Service::findOrFail($id);
+        $oldImagePath = public_path('img/service/') . basename($services['image']);
         $services->delete();
-
+        if(File::exist($oldImagePath)){
+            File::delete($oldImagePath);
+        }
         return redirect()->route('service')->with('success', 'Service has been deleted successfully.');
     }
 
@@ -56,11 +59,18 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'desc' => 'required|string'
         ]);
-        // Simpan data service ke database
         $service = new Service([
             'name' => $request->name,
             'desc' => $request->desc,
         ]);
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $imageName = Uuid::uuid4().$image->getClientOriginalName();
+            $image->move('img/service', $imageName);
+            $imagePath = '/img/service'.$imageName;
+            $service['image'] = url($imagePath);
+        }
+        // Simpan data service ke database
 
         $service->save();
 
@@ -83,10 +93,22 @@ class ServiceController extends Controller
             'name' => 'required|string|max:255',
             'desc' => 'required|string',
         ]);
-
         //update data service
         $service->name = $request->input('name');
         $service->desc = $request->input('desc');
+        if($request->hasFile('image')){
+            $image = $request->file('image');
+            $imageName = Uuid::uuid4().$image->getClientOriginalName();
+            $imagePath = '/img/service'.$imageName;
+            $oldImagePath = public_path('img/service/').basename($service['image']);
+            $service->image = url($imagePath);
+            if($service->save()){
+                $image->move('img/service', $imageName);
+                if(File::exists($oldImagePath) && !(basename($service['image'])==$imageName)){
+                    File::delete($oldImagePath);
+                }
+            };
+        }
         // // Simpan perubahan pada data service
         $service->save();
         // Redirect ke halaman service dengan pesan sukses

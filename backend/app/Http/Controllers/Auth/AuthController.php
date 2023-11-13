@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Auth;
 use App\Models\ToDoList;
 use Illuminate\Http\Request;
+use App\Models\EditRecord;
 use App\Http\Controllers\Controller;
 use App\Models\LoginRecord;
 use Illuminate\Support\Facades\Password;
@@ -21,8 +22,7 @@ use Google\Analytics\Data\V1beta\DateRange as DateRange;
 use Google\Analytics\Data\V1beta\Dimension as Dimension;
 use Google\Analytics\Data\V1beta\Metric as Metric;
 use Google\Analytics\Data\V1beta\RunReportRequest as RunReportRequest;
-
-
+use Illuminate\Support\Carbon;
 
 class AuthController extends Controller
 {
@@ -142,11 +142,14 @@ class AuthController extends Controller
             $portofolioData = Portofolio::all()->count();
             $productData = Product::all()->count();
             $todos = ToDoList::all();
+            $editRecord = EditRecord::query()
+                    ->with(['user','role'])
+                    ->paginate(10);
             // Membuat login record
             $loginRecords = LoginRecord::query()
                     ->with('user','role')
                     ->paginate(10);
-            $allData = array('jobData','articleData','portofolioData','productData','loginRecords', 'todos', 'activeUsers');
+            $allData = array('jobData','articleData','portofolioData','productData','loginRecords', 'todos', 'activeUsers','editRecord');
             return view('pages.dashboard',compact($allData));
         }
 

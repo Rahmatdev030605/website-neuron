@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EditRecord;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class EditRecordController extends Controller
 {
-   public function addEditRecord(int $action, string $text, int $user_id, int $role_id){
+    public function showEditRecord(){
+        $editRecord = EditRecord::with(['user', 'role'])->get();
+        return $editRecord;
+    }
 
-   }
 }

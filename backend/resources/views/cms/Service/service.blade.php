@@ -63,7 +63,7 @@
                 .service-img {
                     height: 300px;
                     width: 100%;
-                    object-fit: cover;
+                    object-fit: cover
                 }
             </style>
             @foreach($services as $service)
@@ -82,6 +82,7 @@
                                 @endif
                             </div>
                         </div>
+                        <img class="service-img" src="{{asset($service->image)}}" alt="gagal">
                     </div>
                     <!-- Modal Konfirmasi Hapus -->
                     <div class="modal fade" id="confirmDeleteModal{{ $service->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">

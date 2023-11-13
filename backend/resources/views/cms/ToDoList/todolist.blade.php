@@ -21,8 +21,15 @@
             <i class="ion ion-clipboard mr-1"></i>
             To Do List
         </h3>
-        <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
-            <i class="fas fa-plus"></i> Add item</a>
+        <div class="card-tools">
+            <ul class="pagination pagination-sm">
+                <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
+                <li class="page-item"><a href="#" class="page-link 1">1</a></li>
+                <li class="page-item"><a href="#" class="page-link">2</a></li>
+                <li class="page-item"><a href="#" class="page-link">3</a></li>
+                <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
+            </ul>
+        </div>
     </div>
 
     {{-- BODY --}}
@@ -43,12 +50,10 @@
                     <label for="todoCheck{{ $todo->id }}"></label>
                 </div>
 
-
                 <!-- todo text -->
                 <span class="text">{{ $todo->title }}</span>
                 <!-- Emphasis label -->
-                <small class="badge badge-danger" data-end="{{ $todo->date_end }}"><i class="far fa-clock toggle-desc"></i> Dateline {{ $todo->date_end }}</small>
-
+                <small class="badge badge-danger" data-end="{{ $todo->date_end }}"><i class="far fa-clock toggle-desc"></i> Deadline {{ $todo->date_end }}</small>
                 <!-- General tools such as edit or delete-->
 
                 <div class="tools">
@@ -59,32 +64,34 @@
                 <ul class="nav nav-treeview desc-list">
                     <li class="nav-item ">
                         <div class="toggle-desc-button">
-                            <span class="text desc-list" style="opacity: 0.6; font-size: 12px; margin-left: 73px;">{{ $todo->desc }}</span>
+                            <span class="date-start" data-start="{{ $todo->date_start }}"><i class="far fa-clock toggle-desc"></i> Start {{ $todo->date_start }}</span>
                         </div>
                     </li>
                 </ul>
-
-                <span class="date-start" data-start="{{ $todo->date_start }}"><i class="far fa-clock toggle-desc"></i> Start {{ $todo->date_start }}</span>
 
             </li>
             @endforeach
             @endif
         </ul>
+
+        <div class="card-footer clearfix">
+            <a href="{{ route('adminpanel.todolist.create') }}" name="adminpanel.todolist.create" class="btn btn-primary float-right">
+            <i class="fas fa-plus"></i> Add item</a>
+        </div>
     </div>
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
-        $('.desc-list').hide();
+ $(document).ready(function() {
+            $('.desc-list').hide();
 
-        $('.todo-item').click(function() {
-            var description = $(this).find('.desc-list');
-            description.slideToggle();
+            $('.todo-item').click(function() {
+                var description = $(this).find('.desc-list');
+                description.slideToggle();
         });
     });
 </script>
-
 <script>
     // Ambil semua elemen checkbox dengan atribut 'data-deadline'
     const checkboxes = document.querySelectorAll('input[data-deadline]');
@@ -146,6 +153,4 @@
     });
 </script>
 
-
-
-<!-- /
+    <!-- /

@@ -12,7 +12,8 @@ class Service extends Model
 
     protected $fillable = [
         'name',
-        'desc'
+        'desc',
+        'image'
     ];
 
     public function portofolio(){

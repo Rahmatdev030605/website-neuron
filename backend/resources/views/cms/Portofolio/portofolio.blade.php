@@ -18,12 +18,6 @@
 
     <div class="container">
         <div class="mt-3">
-            <div class="d-flex justify-content-start mb-3">
-                <a href="{{ route('portofolio') }}" class="btn btn-success mr-2">Portofolio</a>
-                <a href="{{ route('product') }}" class="btn btn-primary mr-2">Product</a>
-                <a href="{{ route('methadology') }}" class="btn btn-primary mr-2">Methodology</a>
-                <a href="{{ route('technology') }}" class="btn btn-primary mr-2">Technology</a>
-            </div>
             <form action="{{ route('show-portofolio') }}" method="GET">
                 @csrf
                 <div class="input-group" style="width: 100%;">
@@ -39,6 +33,30 @@
                 </div>
             </form>
         </div>
+
+        {{-- ! FILTER HERE NOT WORKING --}}
+        <form action="{{route('portofolio')}}" class="w-50 mt-3" method="POST">
+            @csrf
+            @method('GET')
+            <select name="filter" id="filter" class="btn btn-outline-secondary text-left">
+                <option selected>Filter</option>
+                @foreach($services as $service)
+                <option value="{{$service->id}}" {{($filter == $service->id)?'selected':''}}>{{$service->name}}</option>
+                @endforeach
+            </select>
+            <select name="sort" id="sort" class="btn btn-outline-secondary text-left ml-2">
+                <option selected>Sort By</option>
+                <option value="ascending" {{($sort == "ascending") ? 'selected' : ''}}>A-Z</option>
+                <option value="descending" {{($sort == "descending") ? 'selected' : ''}}>Z-A</option>
+                <option value="newest" {{($sort == "newest" ) ? 'selected' : ''}}>Newest</option>
+                <option value="oldest" {{($sort == "oldest" ) ? 'selected' : ''}}>Oldest</option>
+            </select>
+
+            <button type="submit" class="btn btn-info ml-2">Apply</button>
+        </form>
+
+        {{-- ! END FILTER HERE --}}
+
         <div id="success-message" class="mt-3">
             @if(session('success'))
                 <div class="alert alert-success">
@@ -241,7 +259,7 @@
                                                                     @endif
                                                                     {{ $portfolioTech->technology->name }}
                                                                 </div>
-                                                                <form method="POST" action="{{ route('delete-technology', ['portofolio_id' => $portofolio->id, 'technology_id' => $portfolioTech->technology->id]) }}">
+                                                                <form method="POST" action="{{ route('delete-technology-portofolio', ['portofolio_id' => $portofolio->id, 'technology_id' => $portfolioTech->technology->id]) }}">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     @if(auth()->user()->role->role_name !== 'HCM')

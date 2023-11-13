@@ -14,7 +14,6 @@ class CareerPages extends Model
     protected $fillable = [
         'title',
         'desc',
-        'image',
     ];
 
     public function ctaContact()

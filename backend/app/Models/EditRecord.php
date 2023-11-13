@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 
 class EditRecord extends Model
 {
@@ -12,8 +13,9 @@ class EditRecord extends Model
     protected $fillable = [
         'action',
         'section',
+        'message',
         'user_id',
-        'role_id'
+        'role_id',
     ];
 
     public function user()

@@ -19,9 +19,9 @@
 
     <div id="success-message" class="mt-3">
         @if(session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
         @endif
     </div>
 
@@ -42,7 +42,10 @@
 
                 <div class="form-group">
                     <label for="location">Location</label>
-                    <input type="text" class="form-control" id="location" name="location" required>
+                    <select class="form-control" id="location" name="location" requi>
+                        <option value="Bandung">Bandung</option>
+                        <option value="Jakarta">Jakarta</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -55,20 +58,63 @@
                     <textarea class="form-control" id="responsibilities" name="responsibilities" rows="5" required></textarea>
                 </div>
 
-                <div class="form-group" id="skill-container">
-                    <div class="d-flex">
-                        <label for="skillRequirements">Skill Requirement</label>
-                        <button type="button" class="btn btn-primary ml-auto" id="button-skill">Add Skill</button>
+
+
+                <div class="form-group">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="skillRequirements">Skill Requirement</label>
+                                <button type="button" class="btn btn-success addSkillRequirement">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="skillRequirementsContainer">
+                                <!-- Initial input field for skill -->
+                                <div class="skill-input">
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" class="form-control" name="skillRequirements[]" placeholder="Skill" required>
+                                        <button type="button" class="btn btn-danger ml-2 removeSkillRequirement">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
                     </div>
-                    <input type="text" class="form-control" id="skillRequirements" name="skillRequirements[]" placeholder="Skill" required>
                 </div>
-                
-                <div class="form-group" id="plusValue-container">
-                    <div class="d-flex">
-                        <label for="jobPlusValues">Plus Value</label>
-                        <button type="button" class="btn btn-primary ml-auto" id="button-plusValue">Add Plus Value</button>
+
+
+
+                <div class="form-group">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <label for="plusvalue">Plus Value</label>
+                                <button type="button" class="btn btn-success addPlusValue">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="plusValueContainer">
+                                <!-- Initial input field for Plus Value -->
+                                <div class="plus-value-input">
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" class="form-control" name="plusValues[]" placeholder="Plus Value" required>
+                                        <button type="button" class="btn btn-danger ml-2 removePlusValue">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
 
                 <div class="form-group">
                     <label for="link">Link</label>
@@ -109,23 +155,70 @@
             </form>
         </div>
     </div>
+
+
+
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Add Skill Requirement
+        $(document).on("click", ".addSkillRequirement", function() {
+            var newSkillField = '<div class="skill-input">';
+            newSkillField += '<div class="d-flex align-items-center">';
+            newSkillField += '<input type="text" class="form-control" name="skillRequirements[]" placeholder="Skill" required>';
+            newSkillField += '<button type="button" class="btn btn-danger removeSkillRequirement"><i class="fas fa-minus"></i></button>';
+            newSkillField += '</div>';
+            newSkillField += '</div>';
+            $("#skillRequirementsContainer").append(newSkillField);
+        });
+
+        // Remove Skill Requirement
+        $(document).on("click", ".removeSkillRequirement", function() {
+            $(this).closest(".skill-input").remove();
+        });
+    });
+</script>
+
+
 <script>
     $(document).ready(function () {
+        // Add Plus Value
+        $(document).on("click", ".addPlusValue", function () {
+            var newPlusValueField = '<div class="plus-value-input">';
+            newPlusValueField += '<div class="d-flex align-items-center">';
+            newPlusValueField += '<input type="text" class="form-control" name="plusValues[]" placeholder="Plus Value" required>';
+            newPlusValueField += '<button type="button" class="btn btn-danger ml-2 removePlusValue"><i class="fas fa-minus"></i></button>';
+            newPlusValueField += '</div>';
+            newPlusValueField += '</div>';
+            $("#plusValueContainer").append(newPlusValueField);
+        });
+
+        // Remove Plus Value
+        $(document).on("click", ".removePlusValue", function () {
+            $(this).closest(".plus-value-input").remove();
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
         var skillContainer = $('#skill-container');
-        
-        $('#button-skill').click(function () {
+
+        $('#button-skill').click(function() {
             var newInput = $('<input type="text" class="form-control" name="skillRequirements[]" placeholder="Skill" required>');
             skillContainer.append(newInput);
         });
     });
 </script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(function() {
         var plusValueContainer = $('#plusValue-container');
-        
-        $('#button-plusValue').click(function () {
+
+        $('#button-plusValue').click(function() {
             var newInput = $('<input type="text" class="form-control" id="jobPlusValues" name="jobPlusValues[]" placeholder="Plus Value">');
             plusValueContainer.append(newInput);
         });

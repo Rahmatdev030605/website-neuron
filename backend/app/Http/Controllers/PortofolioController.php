@@ -27,16 +27,38 @@ class PortofolioController extends Controller
     public function showportofolio(Request $request)
     {
         $search = $request->input('search'); // Ambil nilai dari input pencarian
-
+        $filter = $request->input('filter'); // Ambil nilai dari input filter
+        $sort = $request->input('sort'); // Ambil nilai dari input sort
         // Jika ada parameter pencarian, lakukan pencarian berdasarkan nama atau deskripsi
         if ($search) {
             $portofolios = Portofolio::where('name', 'like', '%' . $search . '%')
                 ->orWhere('desc', 'like', '%' . $search . '%')
                 ->with('deliverables')
                 ->get();
-        } else {
-            // Jika tidak ada parameter pencarian, ambil semua data portofolio
+        }else{
             $portofolios = Portofolio::with('deliverables')->get();
+        }
+
+        if($filter){
+            $portofolios = $portofolios->where('service_id', $filter);
+        }
+
+        switch($sort){
+            case 'ascending':
+                $portofolios = $portofolios->sortBy('name');
+                break;
+            case 'descending':
+                $portofolios = $portofolios->sortByDesc('name');
+                break;
+            case 'newest':
+                $portofolios = $portofolios->sortByDesc('created_at');
+                break;
+            case 'oldest':
+                $portofolios = $portofolios->sortBy('created_at');
+                break;
+            default:
+                $portofolios = $portofolios->sortBy('name');;
+                break;
         }
 
         // Query untuk mendapatkan data teknologi terkait dengan portofolio
@@ -45,8 +67,8 @@ class PortofolioController extends Controller
             ->join('portofolio_technologies', 'technologies.id', '=', 'portofolio_technologies.technologies_id')
             ->join('portofolios', 'portofolio_technologies.portofolio_id', '=', 'portofolios.id')
             ->get();
-
-        return view('cms.Portofolio.portofolio', compact('portofolios'));
+        $services = Service::all();
+        return view('cms.Portofolio.portofolio', compact('portofolios', 'services','filter', 'sort'));
     }
 
     // delete portofolio

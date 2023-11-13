@@ -18,12 +18,6 @@
 
     <div class="container">
         <div class="mt-3">
-            <div class="d-flex justify-content-start mb-3">
-                <a href="{{ route('portofolio') }}" class="btn btn-primary mr-2">Portofolio</a>
-                <a href="{{ route('product') }}" class="btn btn-primary mr-2">Product</a>
-                <a href="{{ route('methadology') }}" class="btn btn-success mr-2">Methodology</a>
-                <a href="{{ route('technology') }}" class="btn btn-primary mr-2">Technology</a>
-            </div>
             <form action="{{ route('show-methadology') }}" method="GET">
                 @csrf
                 <div class="input-group" style="width: 100%;">

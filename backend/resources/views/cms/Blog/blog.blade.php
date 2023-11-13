@@ -46,9 +46,10 @@
             @endif
         </div>
 
-        <!-- <div class="col-md-3">
+        {{--! SORT ERROR
+            <div class="col-md-3">
             <h4>Sort by</h4>
-            <ul class="list-group">
+            <ul class="list-g   roup">
                 <li class="list-group-item">
                     <a href="{{ route('show-blog', ['sort' => 'title']) }}">Title</a>
                 </li>
@@ -59,9 +60,10 @@
                     <a href="{{ route('show-blog', ['sort' => 'category']) }}">Category</a>
                 </li>
             </ul>
-        </div>
+        </div> --}}
 
-        <div class="col-md-3">
+        {{--! CATEGORY ERROR
+             <div class="col-md-3">
             <h4>Filter by Category</h4>
             <ul class="list-group">
                 <li class="list-group-item">
@@ -69,11 +71,11 @@
                 </li>
                 @foreach($blogs as $blog)
                 <li class="list-group-item">
-                    <a href="{{ route('show-blog', ['category' => $blog->id]) }}">{{ $blog->articleCategory->name }}</a>
+                    <a href="{{ route('show-blog') }}"></a>
                 </li>
                 @endforeach
             </ul>
-        </div> -->
+        </div> --}}
 
         <div class="row mt-3">
             <style>
@@ -132,7 +134,7 @@
                 @foreach($blogs as $blog)
                 <div class="blog-card">
                     <div class="blog-head">
-                        <h6 class="blog-category">{{ $blog->articleCategory->name }} | </h6>
+                        <h6 class="blog-category">test | </h6>
                         <p class="blog-date">{{ $blog->created_at->format('d/m/Y') }}</p>
                     </div>
                     <img class="blog-img" src="{{ asset($blog->image) }}" alt="{{ $blog->image }}">

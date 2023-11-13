@@ -14,6 +14,7 @@ use App\Http\Controllers\MethadologyController;
 use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\ToDoListController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\JobQualificationController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Register\RegisterController;
 use App\Models\About;
@@ -67,7 +68,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('portofolio/{id}/edit', [PortofolioController::class, 'edit'])->name('portofolio-edit');
     Route::put('portofolio/{id}/update', [PortofolioController::class, 'update'])->name('portofolio-update');
     // delete technology in portofolio
-    Route::delete('/delete-technology/{portofolio_id}/{technology_id}', [PortofolioController::class, 'deleteTechnology'])->name('delete-technology');
+    Route::delete('/delete-technology/{portofolio_id}/{technology_id}', [PortofolioController::class, 'deleteTechnology'])->name('delete-technology-portofolio');
     // add technology already exist blade edit
     Route::post('/portofolio/{id}/add-technology', [PortofolioController::class, 'addTechnology'])->name('portofolio-add-technology');
     // delete deliverable in portofolio
@@ -131,7 +132,7 @@ Route::middleware(['auth'])->group(function () {
     // add technology
     Route::post('/technology/store', [TechnologyController::class, 'store'])->name('technology-store');
     // add technology category
-    Route::post('/technology/category/store', [TechnologyController::class, 'store'])->name('store-category');
+    Route::post('/technology/category/store', [TechnologyController::class, 'storeCategory'])->name('store-category');
     // show technology
     Route::get('/technology', [TechnologyController::class, 'technology'])->name('technology');
     Route::get('/technology', [TechnologyController::class, 'technologyshow'])->name('technology');
@@ -180,13 +181,20 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/career/{id}', [CareerController::class, 'deletecareer'])->name('delete-career');
     // edit & update career
     Route::get('career/{id}/edit', [CareerController::class, 'edit'])->name('career-edit');
-
     Route::put('career/{id}/update', [CareerController::class, 'update'])->name('career-update');
-
     // add skiill blade edit
     Route::post('/career/{career_id}/add-skiill', [CareerController::class, 'addSkillEdit'])->name('career.add-skill');
     // add plus value blade edit
     Route::post('/career/{career_id}/add-plusValue', [CareerController::class, 'addPlusValueEdit'])->name('career.add-plusValue');
+
+    //! EDIT JOB QUALIFICATION
+    // edit general job qualification
+    Route::get('/career/jobQualification', [JobQualificationController::class, 'getJobQualification'])->name('career.get-jobQualification');
+    // Route::get('/career/jobQualification', [JobQualificationController::class, 'showJobQualification'])->name('career.show-jobQualification');
+    Route::delete('/career/jobQualification/delete/{id}', [JobQualificationController::class, 'deleteJobQualification'])->name('career.delete-jobQualification');
+    Route::put('/career/jobQualification/{id}/update', [JobQualificationController::class, 'updateJobQualification'])->name('career.update-jobQualification');
+    Route::get('/career/jobQualification/add', [JobQualificationController::class, 'addJobQualification'])->name('career.add-jobQualification');
+    Route::post('/career/jobQualification/store', [JobQualificationController::class, 'storeJobQualification'])->name('career.store-jobQualification');
 
     //! EDIT PAGES
     Route::get('/pages', [PagesController::class, 'pagesShow'])->name('pages');

@@ -33,21 +33,23 @@
                         <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                     @if(auth()->user()->role->role_name !== 'HCM')
-                    <a href="{{ route('technology-store') }}" class="btn btn-success ml-5" data-toggle="modal" data-target="#addTechnologyModal">Add New Technology</a>
-                    <a href="#" class="btn btn-success ml-2" data-toggle="modal" data-target="#addCategoryModal">Add Category</a>
+                        <a href="{{ route('technology-store') }}" class="btn btn-success ml-5" data-toggle="modal" data-target="#addTechnologyModal">Add New Technology</a>
+                        <a href="#" class="btn btn-success ml-2" data-toggle="modal" data-target="#addCategoryModal">Add Category</a>
                     @else
-                    <button class="btn btn-success ml-5" disabled>Add New Technology</button>
-                    <button class="btn btn-success ml-2" disabled>Add Category</button>
+                        <button class="btn btn-success ml-5" disabled>Add New Technology</button>
+                        <button class="btn btn-success ml-2" disabled>Add Category</button>
                     @endif
                 </div>
             </form>
         </div>
 
-        @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
+        <div id="success-message" class="mt-3">
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
         </div>
-        @endif
 
         <div class="table-responsive mt-3">
             <table class="table">
@@ -68,11 +70,11 @@
                         <td>{{ $technology->technologyCategory->name }}</td>
                         <td>
                             @if(auth()->user()->role->role_name !== 'HCM')
-                            <a href="{{ route('technology-edit', $technology->id) }}" class="btn btn-success">Edit</a>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $technology->id }}">Delete</button>
+                                <a href="{{ route('technology-edit', $technology->id) }}" class="btn btn-success">Edit</a>
+                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $technology->id }}">Delete</button>
                             @else
-                            <button class="btn btn-success" disabled>Edit</button>
-                            <button class="btn btn-danger" disabled>Delete</button>
+                                <button class="btn btn-success" disabled>Edit</button>
+                                <button class="btn btn-danger" disabled>Delete</button>
                             @endif
                         </td>
                     </tr>
@@ -130,7 +132,7 @@
                                     <select class="form-control" id="technology_category_id" name="technology_category_id" required>
                                         <option value="">Select Category</option>
                                         @foreach($categories as $category)
-                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -155,22 +157,20 @@
                         </div>
                         <div class="modal-body">
                             <form action="{{ route('store-category') }}" method="POST">
-                                {{ csrf_field() }}
+                                @csrf
                                 <div class="form-group">
                                     <label for="category_name">Category Name</label>
                                     <input type="text" class="form-control" id="category_name" name="category_name" required>
                                 </div>
-
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Add Category</button>
-                                </div>
                             </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add Category</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
@@ -188,45 +188,33 @@
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
         // Handle Add Technology button click
-        $('#addTechnologyButton').on('click', function() {
+        $('#addTechnologyButton').on('click', function () {
             // Serialize form data
             var formData = new FormData($('#addTechnologyForm')[0]);
 
             // Send AJAX request to add technology
             $.ajax({
-                url: '/technology/store',
+                url: '{{ route('technology-store') }}',
                 type: 'POST',
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     // Close the modal
                     $('#addTechnologyModal').modal('hide');
 
                     // Refresh halaman setelah teknologi berhasil ditambahkan
                     location.reload();
                 },
-                error: function(xhr) {
+                error: function (xhr) {
                     // Handle errors, display them to the user
                     console.log(xhr.responseText);
                     alert('Failed to add technology. Please try again.');
                 }
             });
         });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
-        // Check if the success message exists and is visible
-        if ($('#success-alert').length) {
-            // Automatically close the success message after 3 seconds
-            setTimeout(function () {
-                $('#success-alert').fadeOut('slow');
-            }, 3000); // 3000 milliseconds = 3 seconds
-        }
     });
 </script>
 @endsection

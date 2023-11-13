@@ -65,6 +65,14 @@
               </p>
             </a>
           </li>
+          <li class="nav-item" id="career">
+            <a href="{{ route('methadology') }}" class="nav-link">
+            <i class="nav-icon fas fa-chart-pie"></i>
+            <p>
+                Methadology
+              </p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>
@@ -84,6 +92,12 @@
                 <a href="{{ route('portofolio') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Portofolio</p>
+                </a>
+              </li>
+              <li class="nav-item" id="portofolio">
+                <a href="{{ route('product') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Product</p>
                 </a>
               </li>
             </ul>

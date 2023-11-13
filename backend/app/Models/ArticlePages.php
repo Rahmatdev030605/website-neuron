@@ -17,4 +17,8 @@ class ArticlePages extends Model
         'image',
     ];
 
+    public function ctaContact()
+    {
+        return $this->belongsTo(CtaContact::class);
+    }
 }

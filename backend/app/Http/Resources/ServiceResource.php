@@ -21,13 +21,6 @@ class ServiceResource extends JsonResource
             'image' => $this->image,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'technologies' => $this->technologies->map(function ($technology) {
-                return [
-                    'name' => $technology->name,
-                    'icon' => $technology->icon,
-                ];
-            }),
-            'serviceKeys' => $this->serviceKeys->pluck('name')->toArray(),
         ];
     }
 }

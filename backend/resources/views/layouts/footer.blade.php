@@ -27,7 +27,7 @@
 <!-- ChartJS -->
 <script src="{{ asset('AdminLTE/plugins/chart.js/Chart.min.js') }}"></script>
 <!-- Sparkline -->
-{{-- <script src="{{ asset('AdminLTE/plugins/sparklines/sparkline.js') }}"></script> --}}
+<script src="{{ asset('AdminLTE/plugins/sparklines/sparkline.js') }}"></script>
 <!-- JQVMap -->
 <script src="{{ asset('AdminLTE/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
 <script src="{{ asset('AdminLTE/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
@@ -47,6 +47,6 @@
 <!-- AdminLTE for demo purposes -->
 <script src="{{ asset('AdminLTE/dist/js/demo.js') }}"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-{{-- <script src="{{ asset('AdminLTE/dist/js/pages/dashboard.js') }}"></script> --}}
+<script src="{{ asset('AdminLTE/dist/js/pages/dashboard.js') }}"></script>
 </body>
 </html>

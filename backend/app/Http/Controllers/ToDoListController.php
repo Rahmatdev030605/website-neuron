@@ -47,7 +47,7 @@ class ToDoListController extends Controller
         ]);
 
         ToDoList::create($validatedData);
-        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
+        return redirect()->route('adminpanel')->with('success', 'Data can be saved');
     }
 
     /**

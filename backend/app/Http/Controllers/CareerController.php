@@ -33,7 +33,9 @@ class CareerController extends Controller
             $careers = Job::with('jobQualification')->get();
         }
 
-        return view('cms.Career.career', compact('careers'));
+        $JobQualifications   = JobQualification::all();
+
+        return view('cms.Career.career', compact('careers', 'JobQualifications'));
     }
 
     public function deleteSkill($career_id, $skill_id)
@@ -126,6 +128,7 @@ class CareerController extends Controller
             'desc' => 'required|string',
             'responsibilities' => 'required|string',
             'gender' => 'required|in:Man,Female,Man/Female',
+            'domicile' => 'required|string|max:255',
             'education' => 'required|string|max:255',
             'major' => 'required|string|max:255',
             'other' => 'required|string',
@@ -137,6 +140,7 @@ class CareerController extends Controller
         // Simpan data ke dalam tabel jobs_qualification
         $qualification = new JobQualification([
             'gender' => $request->input('gender'),
+            'domicile' => $request->input('domicile'),
             'education' => $request->input('education'),
             'major' => $request->input('major'),
             'other' => $request->input('other'),

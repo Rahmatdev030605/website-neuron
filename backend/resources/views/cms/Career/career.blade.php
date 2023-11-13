@@ -1,5 +1,21 @@
 @extends('layouts.master')
+
 @section('content')
+
+
+<style>
+    /* Add this to your CSS file or style tag */
+
+
+    /* If you want to increase the height */
+    .modal-dialog.modal-x1 {
+        /* Set your desired height */
+        width: 200%;
+        /* 80% of the viewport height */
+    }
+
+    /* If you want to center the modal vertically */
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -25,64 +41,71 @@
                         <button class="btn btn-primary" type="submit">Search</button>
                     </div>
                     <a href="{{ route('career-create') }}" class="btn btn-success ml-5">Add Career</a>
+                    <a href="{{ route('career.get-jobQualification') }}" class="btn btn-primary ml-2">Job Qualification</a>
                 </div>
             </form>
         </div>
 
         <div id="success-message" class="mt-3">
             @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
             @endif
         </div>
 
         <div class="accordion mt-3" style="background-color: white;" id="careerAccordion">
             @foreach($careers as $career)
-                <div data-toggle="collapse" data-target="#collapse{{ $career->id }}" aria-expanded="true" aria-controls="collapse{{ $career->id }}">
-                    <div class="card-header" id="heading{{ $career->id }}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex">
-                                <h5 class="font-weight-bold" style="font-size: 25px;">{{ $career->name_position }}</h5>
-                            </div>
-
-                            <div class="d-flex">
-                                <h5 class="font-weight-bold mr-5" style="font-size: 25px;">{{ $career->location }}</h5>
-                                <a href="{{ route('career-edit', $career->id) }}" class="btn btn-success mr-1">Edit</a>
-                                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $career->id }}">Delete</button>
-                            </div>
+            <div data-toggle="collapse" data-target="#collapse{{ $career->id }}" aria-expanded="true" aria-controls="collapse{{ $career->id }}">
+                <div class="card-header" id="heading{{ $career->id }}">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex">
+                            <h5 class="font-weight-bold" style="font-size: 25px;">{{ $career->name_position }}</h5>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h5 class="font-weight-bold mr-3" style="font-size: 25px;">{{ $career->location }}</h5>
+                            <a href="{{ route('career-edit', $career->id) }}" class="btn btn-success mr-2">Edit</a>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal{{ $career->id }}">Delete</button>
                         </div>
                     </div>
                 </div>
-                <!-- Modal Konfirmasi Hapus -->
-                <div class="modal fade" id="confirmDeleteModal{{ $career->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure you want to delete <strong>{{ $career->name_position }}</strong>?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-                                <form id="delete-form-{{ $career->id }}" action="{{ route('delete-career', $career->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger">Yes</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Modal Konfirmasi Hapus End -->
-            @endforeach
+            </div>
         </div>
+
+        <!-- Modal Konfirmasi Hapus -->
+        <div class="modal fade" id="confirmDeleteModal{{ $career->id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confirm Delete</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Are you sure you want to delete <strong>{{ $career->name_position }}</strong>?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                        <form id="delete-form-{{ $career->id }}" action="{{ route('delete-career', $career->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger">Yes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal Konfirmasi Hapus End -->
     </div>
 </div>
+@endforeach
+</div>
+
+
+
+
+
 <!-- Sertakan file JavaScript Bootstrap -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>

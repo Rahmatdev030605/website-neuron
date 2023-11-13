@@ -123,9 +123,9 @@ class TechnologyController extends Controller
         if ($technologies) {
             //delete the tehcnologies
             $technologies->delete();
-            return redirect()->route('technology')->with('success', 'Technology deleted successfully.');
+            return redirect()->route('technology');
         } else {
-            return redirect()->route('technology')->with('failed', 'Technology deleted failled.');;
+            return redirect()->route('technology');
         }
     }
 
