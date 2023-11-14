@@ -62,5 +62,8 @@ class PortofolioSeeder extends Seeder
                 'service_id'=>3
             ],
         ]);
+
+        \App\Models\Portofolio::factory(6)->create();
+
     }
 }

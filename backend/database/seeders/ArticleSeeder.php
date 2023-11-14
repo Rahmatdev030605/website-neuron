@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Article;
 use Illuminate\Support\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class ArticleSeeder extends Seeder
@@ -16,6 +18,7 @@ class ArticleSeeder extends Seeder
      */
     public function run()
     {
+
         DB::statement('ALTER TABLE articles AUTO_INCREMENT=1');
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
@@ -57,5 +60,8 @@ class ArticleSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
         ]);
+
+        \App\Models\Article::factory(10)->create();
+
     }
 }

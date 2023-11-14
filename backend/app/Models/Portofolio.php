@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Portofolio extends Model
 {
+
+    use HasFactory;
     protected $table = 'portofolios';
     protected $fillable = [
         'name', 'customer_name', 'desc', 'category', 'image', 'link', 'our_solution', 'details', 'created_at', 'successProject', 'service_id'
@@ -35,5 +37,6 @@ class Portofolio extends Model
     public function service()
     {
         return $this->belongsTo(Service::class, 'service_id');
+        
     }
 }
