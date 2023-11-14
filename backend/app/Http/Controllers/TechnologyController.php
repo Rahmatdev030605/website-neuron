@@ -6,6 +6,7 @@ use App\Http\Resources\TechnologyResource;
 use App\Models\Technology;
 use App\Models\TechnologyCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TechnologyController extends Controller
 {
@@ -54,6 +55,7 @@ class TechnologyController extends Controller
         $technologies->technology_category_id = $request->technology_category_id;
 
         $technologies->save();
+        addRec('Technology', Auth::id(), Auth::user()->role_id, $technologies->technology_category_id, );
 
         // Redirect kembali ke halaman technology dengan pesan sukses
         return redirect()->route('technology')->with('success', 'Technology added successfully.');
@@ -72,6 +74,7 @@ class TechnologyController extends Controller
         ]);
 
         $category->save();
+        addRec('Technology', Auth::id(), Auth::user()->role_id, $category);
 
         // Redirect kembali ke halaman sebelumnya dengan pesan sukses
         return back()->with('success', 'Category added successfully.');
@@ -112,6 +115,7 @@ class TechnologyController extends Controller
 
         // simpan perubahan
         $technology->save();
+        editRec('Technology', Auth::id(), Auth::user()->role_id, $technology->technology_category_id, $technology->name, $technology->icon);
 
         // redirect ke halaman technology dengan pesan sukses
         return redirect()->route('technology')->with('success', 'Technology updated successfully.');
@@ -123,6 +127,7 @@ class TechnologyController extends Controller
         if ($technologies) {
             //delete the tehcnologies
             $technologies->delete();
+            deleteRec('Technology', Auth::id(), Auth::user()->role_id, $technologies);
             return redirect()->route('technology');
         } else {
             return redirect()->route('technology');

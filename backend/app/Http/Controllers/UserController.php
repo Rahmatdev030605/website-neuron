@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserPending;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -22,7 +23,7 @@ class UserController extends Controller
                 ->orWhere('lastname', 'like', '%' . $search . '%')
                 ->get();
         } else {
-            // Jika tidak ada parameter pencarian, ambil semua data user 
+            // Jika tidak ada parameter pencarian, ambil semua data user
             $users = User::all();
         }
 
@@ -31,18 +32,24 @@ class UserController extends Controller
     public function deleteUser($id)
     {
         $user = User::findOrFail($id);
-        $user->delete();
+
+        if ($user) {
+            $userEmail = $user->email;
+            $user->delete();
+            deleteRec('User', Auth::id(), Auth::user()->role_id, $userEmail);
+            return redirect()->route('user')->with('success', 'User has been deleted successfully.');
+        }
 
         return redirect()->route('user')->with('success', 'User has been deleted successfully.');
     }
     public function edit($id)
     {
-        $user = User::findOrFail($id); 
+        $user = User::findOrFail($id);
         return view('cms.User.edit', compact('user'));
     }
     public function update(Request $request, $id)
     {
-        $user = User::findOrFail($id); 
+        $user = User::findOrFail($id);
 
         // Validasi data yang akan diupdate, jika diperlukan
         $validatedData = $request->validate([
@@ -54,12 +61,13 @@ class UserController extends Controller
         ]);
 
         // Update data pengguna
-        $user->firstname = $request->input('firstname');
-        $user->lastname = $request->input('lastname');
-        $user->email = $request->input('email');
-        $user->role_id = $request->input('role_id');
+       $firstname = $user->firstname = $request->input('firstname');
+       $lastname = $user->lastname = $request->input('lastname');
+        $email = $user->email = $request->input('email');
+        $role = $user->role_id = $request->input('role_id');
 
         $user->save();
+        editRec('User', Auth::id(), Auth::user()->role_id, $firstname, $lastname, $email, $role);
 
         // Redirect dengan pesan sukses
         return redirect()->route('user', $id)->with('success', 'User has been updated successfully.');

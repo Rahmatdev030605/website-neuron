@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MethadologyCategory;
+use Illuminate\Support\Facades\Auth;
 
 class MethadologyController extends Controller
 {
@@ -32,6 +33,7 @@ class MethadologyController extends Controller
     {
         $methodologyCategories = MethadologyCategory::findOrFail($id);
         $methodologyCategories->delete();
+        deleteRec('Methodology', Auth::id(), Auth::user()->role_id, $methodologyCategories );
 
         return redirect()->route('methadology')->with('success', 'Blog has been deleted successfully.');
     }
@@ -47,7 +49,7 @@ class MethadologyController extends Controller
         $request->validate([
             'category_title' => 'required|string|max:255',
             'category_name' => 'required|string|max:255',
-            'flow_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'flow_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('flow_image')) {
@@ -63,8 +65,9 @@ class MethadologyController extends Controller
             'category_name' => $request->category_name,
             'flow_image' => url($methadologyPath)
         ]);
-        
+
         $methadologies->save();
+        addRec('Methadology', Auth::id(), Auth::user()->role_id, $methadologies);
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('methadology')->with('success', 'Methadology added successfully.');
@@ -88,8 +91,8 @@ class MethadologyController extends Controller
         ]);
 
         // update data methadology
-        $methodology->category_title = $request->input('category_title');
-        $methodology->category_name = $request->input('category_name');
+        $titleCategories = $methodology->category_title = $request->input('category_title');
+        $nameCategories = $methodology->category_name = $request->input('category_name');
 
         // Periksa apakah ada file gambar yang diupload
         if ($request->hasFile('flow_image')) {
@@ -99,11 +102,12 @@ class MethadologyController extends Controller
             $methadologyPath = '/img/methodology/' . $methadologyName;
 
             // Update path gambar portofolio
-            $methodology->flow_image = url($methadologyPath);
+            $image = $methodology->flow_image = url($methadologyPath);
         }
 
         // Simpan perubahan
         $methodology->save();
+        editRec('Methodology', Auth::id(), Auth::user()->role_id, $titleCategories, $nameCategories, $image);
 
         // Redirect ke halaman methadology dengan pesan sukses
         return redirect()->route('methadology')->with('success', 'Methadology updated successfully.');

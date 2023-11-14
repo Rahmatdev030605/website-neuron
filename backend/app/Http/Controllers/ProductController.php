@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -32,6 +33,7 @@ class ProductController extends Controller
     {
         $products = Product::findOrFail($id);
         $products->delete();
+        deleteRec('Product', Auth::id(), Auth::user()->role_id, $products);
 
         return redirect()->route('product')->with('success', 'Product has been deleted successfully.');
     }
@@ -58,8 +60,9 @@ class ProductController extends Controller
             'desc' => $request->desc,
             'link' => $request->link
         ]);
-        
+
         $products->save();
+        addRec('Product', Auth::id(), Auth::user()->role_id, $products);
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('product')->with('success', 'Product added successfully.');
@@ -84,13 +87,14 @@ class ProductController extends Controller
         ]);
 
         // Update data product
-        $product->name = $request->input('name');
-        $product->subtitle = $request->input('subtitle');
-        $product->link = $request->input('link');
-        $product->desc = $request->input('desc');
+       $name = $product->name = $request->input('name');
+       $subtitle = $product->subtitle = $request->input('subtitle');
+       $link = $product->link = $request->input('link');
+       $desc =  $product->desc = $request->input('desc');
 
         // Simpan perubahan
         $product->save();
+        editRec('Product', Auth::id(), Auth::user()->role_id, $name, $subtitle, $link, $desc);
 
         // Redirect ke halaman portofolio dengan pesan sukses
         return redirect()->route('product')->with('success', 'product updated successfully.');

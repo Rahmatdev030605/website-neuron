@@ -6,6 +6,8 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ServicePageResource;
+use Google\Service\CloudSearch\Id;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Ramsey\Uuid\Uuid;
 
@@ -39,6 +41,7 @@ class ServiceController extends Controller
         $services = Service::findOrFail($id);
         $oldImagePath = public_path('img/service/') . basename($services['image']);
         $services->delete();
+        deleteRec('Service', Auth::id(), Auth::user()->role_id, $services);
         if(File::exist($oldImagePath)){
             File::delete($oldImagePath);
         }
@@ -63,7 +66,7 @@ class ServiceController extends Controller
             'name' => $request->name,
             'desc' => $request->desc,
         ]);
-        if($request->hasFile('image')){
+        if($image = $request->hasFile('image')){
             $image = $request->file('image');
             $imageName = Uuid::uuid4().$image->getClientOriginalName();
             $image->move('img/service', $imageName);
@@ -73,6 +76,7 @@ class ServiceController extends Controller
         // Simpan data service ke database
 
         $service->save();
+        addRec('Service'. Auth::id(), Auth::user()->role_id ,$image,$service);
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('service')->with('success', 'Service added successfully.');
@@ -94,9 +98,9 @@ class ServiceController extends Controller
             'desc' => 'required|string',
         ]);
         //update data service
-        $service->name = $request->input('name');
-        $service->desc = $request->input('desc');
-        if($request->hasFile('image')){
+       $name = $service->name = $request->input('name');
+       $desc = $service->desc = $request->input('desc');
+        if($image = $request->hasFile('image')){
             $image = $request->file('image');
             $imageName = Uuid::uuid4().$image->getClientOriginalName();
             $imagePath = '/img/service'.$imageName;
@@ -111,6 +115,7 @@ class ServiceController extends Controller
         }
         // // Simpan perubahan pada data service
         $service->save();
+        editRec('Service', Auth::id(), Auth::user()->role_id, $name, $desc, $image);
         // Redirect ke halaman service dengan pesan sukses
         return redirect()->route('service')->with('success', 'Service updated successfully.');
     }
