@@ -51,7 +51,7 @@
                     </div>
                 </li>
             </ul>
-            
+
             <div class="modal-footer">
                 <button type="submit" class="btn btn-primary">Update</button>
                 <a href="{{ route('career') }}" class="btn btn-secondary" data-dismiss="modal">Close</a>

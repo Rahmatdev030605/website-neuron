@@ -12,6 +12,10 @@
         overflow: hidden;
         transition: max-height 0.3s;
     }
+
+    .badge, .date-start {
+        font-size: 20px;
+    }
 </style>
 
 <div class="card">
@@ -54,6 +58,7 @@
                 <span class="text">{{ $todo->title }}</span>
                 <!-- Emphasis label -->
                 <small class="badge badge-danger" data-end="{{ $todo->date_end }}"><i class="far fa-clock toggle-desc"></i> Deadline {{ $todo->date_end }}</small>
+                <span class="date-start" data-start="{{ $todo->date_start }}"><i class="far fa-clock toggle-desc"></i> Start {{ $todo->date_start }}</span>
                 <!-- General tools such as edit or delete-->
 
                 <div class="tools">
@@ -64,8 +69,8 @@
                 <ul class="nav nav-treeview desc-list">
                     <li class="nav-item ">
                         <div class="toggle-desc-button">
-                            <span class="date-start" data-start="{{ $todo->date_start }}"><i class="far fa-clock toggle-desc"></i> Start {{ $todo->date_start }}</span>
-                        </div>
+                            <span class="text" style="font-size: 12px; padding-left: 67px ">{{ $todo->desc }}</span>
+                            </div>
                     </li>
                 </ul>
 
@@ -152,5 +157,38 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function () {
+        // Fungsi untuk menyesuaikan ukuran font
+        function adjustFontSize(element) {
+            var maxFontSize = 20; // Ukuran font maksimal yang diizinkan
+            var minFontSize = 12; // Ukuran font minimal yang diizinkan
+            var originalText = element.text();
+            var textLength = originalText.length;
+
+            // Hitung ukuran font yang sesuai dengan panjang teks
+            var fontSize = maxFontSize / (textLength / 10);
+
+            // Batasi ukuran font antara nilai minimal dan maksimal
+            fontSize = Math.max(minFontSize, Math.min(maxFontSize, fontSize));
+
+            // Atur ukuran font elemen
+            element.css('font-size', fontSize + 'px');
+        }
+
+        // Panggil fungsi untuk badge dan span saat dokumen dimuat
+        adjustFontSize($('.badge'));
+        adjustFontSize($('.date-start'));
+    });
+</script>
+
+
+
+
+
+
+
+
 
     <!-- /

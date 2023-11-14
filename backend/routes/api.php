@@ -129,3 +129,8 @@ Route::get('/career-page', [CareerController::class, 'getCareerPage']);
 
 // Career
 Route::get('/career', [CareerController::class, 'getCareer']);
+
+
+
+//! API Search in Portofolio
+Route::get('/show-portofolio', [PortofolioController::class, 'showPortofolio'])->name('show-portofolio');

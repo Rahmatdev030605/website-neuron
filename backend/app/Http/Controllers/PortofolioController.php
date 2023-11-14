@@ -33,10 +33,9 @@ class PortofolioController extends Controller
         if ($search) {
             $portofolios = Portofolio::where('name', 'like', '%' . $search . '%')
                 ->orWhere('desc', 'like', '%' . $search . '%')
-                ->with('deliverables')
                 ->get();
         }else{
-            $portofolios = Portofolio::with('deliverables')->get();
+            $portofolios = Portofolio::all();
         }
 
         if($filter){
@@ -61,50 +60,24 @@ class PortofolioController extends Controller
                 break;
         }
 
-        // Query untuk mendapatkan data teknologi terkait dengan portofolio
-        $portfolioTech = DB::table('technologies')
-            ->select('portofolios.name as portfolio_name', 'technologies.name as tech_name', 'technologies.icon')
-            ->join('portofolio_technologies', 'technologies.id', '=', 'portofolio_technologies.technologies_id')
-            ->join('portofolios', 'portofolio_technologies.portofolio_id', '=', 'portofolios.id')
-            ->get();
         $services = Service::all();
         return view('cms.Portofolio.portofolio', compact('portofolios', 'services','filter', 'sort'));
     }
 
-    // delete portofolio
-    public function deletePortofolio($id)
-    {
-        $portofolios = Portofolio::findOrFail($id);
-
-        Deliverable::where('portofolio_id', $id)->delete();
-
-        Handle::where('portofolio_id', $id)->delete();
-
-        // Hapus terlebih dahulu relasi dengan teknologi
-        $portofolios->technologies()->detach();
-        $oldImageNamePath = public_path('img/portofolios/'.basename($portofolios['image']));
-        if(File::exists($oldImageNamePath)){
-            File::delete($oldImageNamePath);
-        }
-        // Kemudian hapus portofolio
-        $portofolios->delete();
-
-        return redirect()->route('portofolio')->with('success', 'Portofolio has been deleted successfully.');
-    }
 
     // show add portofolio
     public function create()
     {
-        $technologies = Technology::all();
         $portofolio = new Portofolio();
         $services = Service::all();
         $successProjectOption = [
             'true' => 'Yes',
             'false' => 'No',
         ];
-        return view('cms.Portofolio.add', compact('technologies', 'portofolio', 'successProjectOption', 'services'));
+        return view('cms.Portofolio.add', compact('portofolio', 'successProjectOption', 'services'));
     }
 
+    // store portofolio
     public function store(Request $request)
     {
         // Validasi data yang diterima dari formulir
@@ -117,19 +90,9 @@ class PortofolioController extends Controller
             'details' => 'required|string',
             'created_at' => 'required|date',
             'successProject' => Rule::in(['true', 'false']),
-            'technologies' => 'nullable|array',
-            'deliverables' => 'required|array',
-            'handles' => 'required|array',
             'service_id' => 'required|numeric'
         ]);
 
-        if ($request->hasFile('image')) {
-            $profilePicture = $request->file('image');
-            // Image diberi Uuid untuk menghindari penamaan yang sama dengan image lain pada portofolio lain
-            $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
-            $profilePicture->move('img/portofolios', $profilePictureName);
-            $profilePicturePath = '/img/portofolios/' . $profilePictureName;
-        }
 
         $successProject = $request->input('successProject');
 
@@ -141,36 +104,23 @@ class PortofolioController extends Controller
             'our_solution' => $request->our_solution,
             'details' => $request->details,
             'created_at' => $request->created_at,
-            'image' => url($profilePicturePath),
             'successProject' => $successProject,
         ]);
 
-        $portofolio->save();
-
-        // Menyimpan teknologi terkait dengan portofolio
-        $selectedTechnologies = $request->input('technologies', []); // Ambil array teknologi yang dipilih
-        $portofolio->technologies()->attach($selectedTechnologies); // Menyambungkan teknologi yang dipilih dengan portofolio
-
-        // Proses deliverables
-        $deliverables = $request->input('deliverables');
-        if (!empty($deliverables)) {
-            foreach ($deliverables as $deliverable) {
-                Deliverable::create([
-                    'name' => $deliverable,
-                    'portofolio_id' => $portofolio->id,
-                ]);
+        // cek apakah ada image
+        if ($request->hasFile('image')) {
+            $profilePicture = $request->file('image');
+            // Image diberi Uuid untuk menghindari penamaan yang sama dengan image lain pada portofolio lain
+            $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
+            $profilePicturePath = '/img/portofolios/' . $profilePictureName;
+            $portofolio['image'] = url($profilePicturePath);
+            if($portofolio->save()){
+                //Jika save berhasil maka image akan disimpan di server
+                $profilePicture->move('img/portofolios', $profilePictureName);
             }
-        }
-
-        // Proses handles
-        $handles = $request->input('handles');
-        if (!empty($handles)) {
-            foreach ($handles as $handle) {
-                Handle::create([
-                    'name' => $handle,
-                    'portofolio_id' => $portofolio->id,
-                ]);
-            }
+        }else{
+            // jika tidak ada image maka akan langsung di simpan ke database
+            $portofolio->save();
         }
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
@@ -181,16 +131,13 @@ class PortofolioController extends Controller
     {
         $portofolio = Portofolio::findOrFail($id);
 
-        $technologies = Technology::all();
-
         $services = Service::all();
 
         $successProjectOption = [
             'true' => 'Yes',
             'false' => 'No',
         ];
-        $selectedTechnologies = $portofolio->technologies->pluck('id')->toArray();
-        return view('cms.Portofolio.edit', compact('portofolio', 'technologies', 'selectedTechnologies', 'successProjectOption', 'services'));
+        return view('cms.Portofolio.edit', compact('portofolio', 'successProjectOption', 'services'));
     }
 
     public function update(Request $request, $id)
@@ -209,7 +156,6 @@ class PortofolioController extends Controller
                 'details' => 'required|string',
                 'created_at' => 'required|date',
                 'successProject' => 'required|in:true,false',
-                'technologies' => 'required|array',
                 'service_id' => 'required|numeric'
             ]);
 
@@ -222,28 +168,27 @@ class PortofolioController extends Controller
             $portofolio->created_at = $request->input('created_at');
             $portofolio->successProject = $request->input(('successProject'));
             $portofolio->service_id = $request->input('service_id');
-            // Update teknologi terkait dengan portofolio
-            $selectedTechnologies = $request->input('technologies', []); // Ambil array teknologi yang dipilih
-            $portofolio->technologies()->sync($selectedTechnologies); // Synchronize teknologi yang dipilih
             // Periksa apakah ada file gambar yang diupload
             if ($request->hasFile('image')) {
-                $profilePicture = $request->file('image');
+                $PortofolioImage = $request->file('image');
                 // Image diberi nama untuk menghindari penamaan yang sama dengan image lain di portofolio lain
-                $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
-                $profilePicturePath = '/img/portofolios/' . $profilePictureName;
+                $portofolioImageName = Uuid::uuid4().$PortofolioImage->getClientOriginalName();
+                $portofolioImagePath = '/img/portofolios/' . $portofolioImageName;
                 // Update path gambar portofolio
                 $oldImageNamePath = public_path('img/portofolios/'.basename($portofolio['image']));
-                $portofolio->image = url($profilePicturePath);
+                $portofolio->image = url($portofolioImagePath);
                 if($portofolio->save()){
-                    $profilePicture->move('img/portofolios', $profilePictureName);
-                    if(File::exists($oldImageNamePath)){
+                    $PortofolioImage->move('img/portofolios', $portofolioImageName);
+                    if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $portofolioImageName)){
                         File::delete($oldImageNamePath);
                     }
                 }else{
                     throw new \Exception;
                 }
+            }else{
+                // jika tidak ada image maka akan langsung update
+                $portofolio->save();
             }
-            $portofolio->save();
             // Redirect ke halaman portofolio dengan pesan sukses
             return redirect()->route('portofolio')->with('success', 'Portofolio updated successfully.');
         } catch (\Exception $th) {
@@ -251,123 +196,22 @@ class PortofolioController extends Controller
         }
     }
 
-    public function addTechnology(Request $request, $id)
+    // delete portofolio
+    public function deletePortofolio($id)
     {
-        $portofolio = Portofolio::findOrFail($id);
-        $technologyId = $request->input('technology_id');
+        $portofolios = Portofolio::findOrFail($id);
+        // Mengambil nama image yang dipakai portofolio
+        $oldImageNamePath = public_path('img/portofolios/'.basename($portofolios['image']));
 
-        // Cek apakah teknologi tersebut sudah ada dalam portofolio
-        if (!$portofolio->technologies->contains($technologyId)) {
-            // Jika belum ada, tambahkan teknologi ke portofolio
-            $portofolio->technologies()->attach($technologyId);
+        // Kemudian hapus portofolio dan cek apakah berhasil
+        if($portofolios->delete()){
+            //jika berhasil maka akan mengapus image yang digunakan portofolio juga
+            if(File::exists($oldImageNamePath)){
+                File::delete($oldImageNamePath);
+            }
         }
 
-        return redirect()->route('portofolio-edit', ['id' => $portofolio->id])->with('success', 'Technology added to portofolio successfully');
-    }
-
-    public function deleteTechnology($portofolio_id, $technology_id)
-    {
-        try {
-            // Ensure both IDs are valid
-            $portofolio = Portofolio::findOrFail($portofolio_id);
-            $technology = Technology::findOrFail($technology_id);
-
-            // Remove the technology from the portfolio's technologies
-            $portofolio->technologies()->detach($technology);
-
-            return redirect()->route('portofolio')->with('success', 'Technology deleted successfully');
-        } catch (\Exception $e) {
-            // Handle any errors that occur during the process
-            return redirect()->route('portofolio')->withErrors(['error' => 'Failed to delete technology']);
-        }
-    }
-
-    public function deleteDeliverable($portofolio_id, $deliverable_id)
-    {
-        // Temukan portofolio berdasarkan ID
-        $portofolio = Portofolio::find($portofolio_id);
-
-        // Pastikan portofolio ditemukan
-        if (!$portofolio) {
-            return redirect()->route('portofolio')->with('error', 'Portofolio not found.');
-        }
-
-        // Temukan deliverable berdasarkan ID
-        $deliverable = Deliverable::find($deliverable_id);
-
-        // Pastikan deliverable ditemukan
-        if (!$deliverable) {
-            return redirect()->route('portofolio')->with('error', 'Deliverable not found.');
-        }
-
-        // Hapus deliverable dari portofolio
-        $deliverable->delete();
-
-        return redirect()->route('portofolio')->with('success', 'Deliverable deleted successfully.');
-    }
-
-    public function addDeliverableEdit(Request $request, $portofolio_id)
-    {
-        // Validasi data inputan
-        $this->validate($request, [
-            'deliverable_name' => 'required|string|max:255',
-        ]);
-
-        // Temukan portofolio berdasarkan ID
-        $portofolio = Portofolio::find($portofolio_id);
-
-        // Buat deliverable baru
-        $deliverable = new Deliverable();
-        $deliverable->name = $request->input('deliverable_name');
-
-        // Simpan deliverable ke dalam portofolio
-        $portofolio->deliverables()->save($deliverable);
-
-        return redirect()->route('portofolio-edit', $portofolio->id)->with('success', 'Deliverable has been added successfully.');
-    }
-
-    public function deleteHandle($portofolio_id, $handle_id)
-    {
-        // Temukan portofolio berdasarkan ID
-        $portofolio = Portofolio::find($portofolio_id);
-
-        // Pastikan portofolio ditemukan
-        if (!$portofolio) {
-            return redirect()->route('portofolio')->with('error', 'Portofolio not found.');
-        }
-
-        // Temukan deliverable berdasarkan ID
-        $handle = Handle::find($handle_id);
-
-        // Pastikan deliverable ditemukan
-        if (!$handle) {
-            return redirect()->route('portofolio')->with('error', 'Handle not found.');
-        }
-
-        // Hapus deliverable dari portofolio
-        $handle->delete();
-
-        return redirect()->route('portofolio')->with('success', 'Handle deleted successfully.');
-    }
-
-    public function addHandleEdit(Request $request, $portofolio_id)
-    {
-        // Validasi data inputan
-        $this->validate($request, [
-            'handle_name' => 'required|string|max:255',
-        ]);
-
-        // Temukan portofolio berdasarkan ID
-        $portofolio = Portofolio::find($portofolio_id);
-
-        //buat handle baru
-        $handle = new Handle();
-        $handle->name = $request->input('handle_name');
-
-        //simpan handle ke dalam portofolio
-        $portofolio->handles()->save($handle);
-
-        return redirect()->route('portofolio-edit', $portofolio->id)->with('success', 'Handle has been added successfully.');
+        return redirect()->route('portofolio')->with('success', 'Portofolio has been deleted successfully.');
     }
 
     // API
