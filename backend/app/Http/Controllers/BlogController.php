@@ -99,7 +99,7 @@ class BlogController extends Controller
     public function edit($id)
     {
         //! CATEGORY ARTICLE
-        $groupCategories = 
+        $groupCategories =
         $categories = ArticleCategory::all();
         $blog = Article::findOrFail($id);
         return view('cms.Blog.edit', compact('blog', 'categories'));

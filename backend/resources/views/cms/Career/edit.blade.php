@@ -29,6 +29,19 @@
         .qualification-field {
             display: none;
         }
+
+        .form-group {
+            width: 100%;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+
+        /* Tambahkan class CSS ke parent container, misalnya class="button-container" */
     </style>
 
     <div class="container">
@@ -36,6 +49,20 @@
             <form action="{{ route('career-update', $career->id) }}" method="post" id="careerEditForm">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
+
+                <div class="form-group">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <div class="d-flex justify-content-end align-items-center">
+                                <a href="{{ URL::previous() }}" class="btn btn-primary mr-2">Back</a>
+                                <button class="btn btn-primary" type="submit">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
                 <div class="form-group">
                     <label for="positionName">Position Name</label>
                     <input type="text" class="form-control" id="positionName" name="name_position" value="{{ $career->name_position }}" required>
@@ -71,38 +98,7 @@
                     <input type="text" class="form-control" id="link" name="link" value="{{ $career->link }}">
                 </div>
 
-
-                <div class="form-group">
-                <label for="gender">Gender</label>
-                <select class="form-control" id="gender" name="gender" required>
-                    <option value="Man" {{ $career->jobQualification->gender == 'Man' ? 'selected' : '' }}>Man</option>
-                    <option value="Female" {{ $career->jobQualification->gender == 'Female' ? 'selected' : '' }}>Female</option>
-                    <option value="Man/Female" {{ $career->jobQualification->gender == 'Man/Female' ? 'selected' : '' }}>Man/Female</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="domicile">Domicile</label>
-                <input type="text" class="form-control" id="domicile" name="domicile" value="{{ $career->jobQualification->domicile }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="education">Education</label>
-                <input type="text" class="form-control" id="education" name="education" value="{{ $career->jobQualification->education }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="major">Major</label>
-                <input type="text" class="form-control" id="major" name="major" value="{{ $career->jobQualification->major }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="other">Other Qualifications</label>
-                <input type="text" class="form-control" id="other" name="other" value="{{ $career->jobQualification->other }}" required>
-            </div>
-            <button class="btn btn-primary" type="submit">Update</button>
-            <a href="{{ URL::previous() }}" class="btn btn-primary">Back</a>
-        </form>
+            </form>
 
 
             <div class="form-group">
@@ -395,7 +391,7 @@
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         // Move the Update and Back buttons below the form
         var form = document.getElementById('careerEditForm');
         var updateButton = document.querySelector('button[type="submit"]');
@@ -439,4 +435,3 @@
 </script>
 
 @endsection
-
