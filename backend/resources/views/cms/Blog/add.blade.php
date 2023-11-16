@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Add Blog</h1>
+                <h1 class="m-0"><strong>Add Blog</strong></h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -51,7 +51,7 @@
                             @endforeach
                         </select>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="body">Body</label>
                         <textarea class="ckeditor form-control" id="body" name="body"></textarea>

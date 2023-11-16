@@ -119,9 +119,9 @@ class ToDoListController extends Controller
             $todoTitle = $todo->title;
             $todo->delete();
             deleteRec('To Do List', Auth::id(), Auth::user()->role_id, $todoTitle);
-            return redirect()->route('todolist.index')->with('error', 'Item not found.');
+            return redirect()->route('adminpanel')->with('error', 'Item not found.');
         } else {
-            return redirect()->route('todolist.index')->with('success', 'Item has been deleted.');
+            return redirect()->route('adminpanel')->with('success', 'Item has been deleted.');
 
         }
 
