@@ -44,12 +44,12 @@ class HomeResource extends JsonResource
             'partner' => [
                 'partner_title' => $this->partner_title,
                 'partner_desc' => $this->partner_desc,
-                'partners' => $this->partners->map(function ($partner) {
+                'partners' => $this->partners->map(function ($partner){
                     return [
                         'id' => $partner->id,
-                        'image' => $partner->image,
+                        'image' => $partner->image
                     ];
-                }),
+                })->chunk(15)->toArray(),
             ],
             'testimonials' => $this->testimonials->map(function ($testimonial) {
                 return [

@@ -17,7 +17,7 @@ class CreatePortofoliosTable extends Migration
             $table->id();
             $table->string('name');
             // $table->unsignedBigInteger('service_id');
-            $table->enum('category', ['Web App', 'Mobile App', 'Workflow Management System', 'System Integrator', 'Business Intelligence', 'CRM App']);
+            // $table->enum('category', ['Web App', 'Mobile App', 'Workflow Management System', 'System Integrator', 'Business Intelligence', 'CRM App']);
             $table->string('customer_name');
             $table->text('desc');
             $table->string('link');

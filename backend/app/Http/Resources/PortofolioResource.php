@@ -25,14 +25,8 @@ class PortofolioResource extends JsonResource
             'details' => $this->details,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'technologies' => $this->technologies->map(function ($technology) {
-                return [
-                    'name' => $technology->name,
-                    'icon' => $technology->icon,
-                ];
-            }),
-            'deliverables' => $this->deliverables->pluck('name')->toArray(),
-            'handles' => $this->handles->pluck('name')->toArray(),
+            'service_name' => $this->service->name,
+            'service_id' => $this->service->id,
         ];
     }
 }

@@ -22,7 +22,7 @@ class ServicePageResource extends JsonResource
             'portofolio' => $this->portofolio->map(function ($portofolio){
                 return [
                     'name'=>$portofolio->name,
-                    'costumer_name' => $portofolio->costumer_name,
+                    'customer_name' => $portofolio->customer_name,
                     'desc' => $portofolio->desc,
                     'category' => $portofolio->category,
                     'image' => $portofolio->image,
@@ -31,6 +31,7 @@ class ServicePageResource extends JsonResource
                     'details' => $portofolio->details,
                     'created_at' => $portofolio->created_at,
                     'successProject'=>$portofolio->successProject,
+                    'service_name'=>$portofolio->service->name,
                     'service_id'=>$portofolio->service_id
                 ];
             }),

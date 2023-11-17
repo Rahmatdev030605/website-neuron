@@ -1,4 +1,4 @@
-@extends('layouts.master')
+    @extends('layouts.master')
 @section('content')
 {{-- PAGE /CARD --}}
 <div class="row mt-3">

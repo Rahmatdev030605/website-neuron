@@ -6,8 +6,6 @@ use Database\Seeders\PortofolioSeeder;
 use Database\Seeders\RoleSeeder;
 use Database\Seeders\UserSeeder;
 use Illuminate\Database\Seeder;
-use Database\Factories\ArticleFactory;
-
 
 class DatabaseSeeder extends Seeder
 {
@@ -17,9 +15,7 @@ class DatabaseSeeder extends Seeder
      * @return void
      */
     public function run()
-
     {
-
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
@@ -29,11 +25,6 @@ class DatabaseSeeder extends Seeder
             ArticleSeeder::class,
             MethadologyCategorySeeder::class,
             ServiceSeeder::class,
-            TechnologyCategorySeeder::class,
-            TechnologySeeder::class,
-            PortofolioTechnologySeeder::class,
-            DeliverableSeeder::class,
-            HandleSeeder::class,
             JobQualificationSeeder::class,
             JobSeeder::class,
             JobPlusValueSeeder::class,
@@ -54,6 +45,5 @@ class DatabaseSeeder extends Seeder
             ArticlePageSeeder::class,
             CareerPageSeeder::class,
         ]);
-
     }
 }

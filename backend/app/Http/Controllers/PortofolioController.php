@@ -10,7 +10,6 @@ use App\Models\Portofolio;
 use App\Models\Service;
 use App\Models\Technology;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
@@ -35,15 +34,15 @@ class PortofolioController extends Controller
             $portofolios = Portofolio::where('name', 'like', '%' . $search . '%')
                 ->orWhere('desc', 'like', '%' . $search . '%')
                 ->get();
-        } else {
+        }else{
             $portofolios = Portofolio::all();
         }
 
-        if ($filter) {
+        if($filter){
             $portofolios = $portofolios->where('service_id', $filter);
         }
 
-        switch ($sort) {
+        switch($sort){
             case 'ascending':
                 $portofolios = $portofolios->sortBy('name');
                 break;
@@ -62,7 +61,7 @@ class PortofolioController extends Controller
         }
 
         $services = Service::all();
-        return view('cms.Portofolio.portofolio', compact('portofolios', 'services', 'filter', 'sort'));
+        return view('cms.Portofolio.portofolio', compact('portofolios', 'services','filter', 'sort'));
     }
 
 
@@ -112,17 +111,16 @@ class PortofolioController extends Controller
         if ($request->hasFile('image')) {
             $profilePicture = $request->file('image');
             // Image diberi Uuid untuk menghindari penamaan yang sama dengan image lain pada portofolio lain
-            $profilePictureName = Uuid::uuid4() . $profilePicture->getClientOriginalName();
+            $profilePictureName = Uuid::uuid4().$profilePicture->getClientOriginalName();
             $profilePicturePath = '/img/portofolios/' . $profilePictureName;
             $portofolio['image'] = url($profilePicturePath);
-            if ($portofolio->save()) {
+            if($portofolio->save()){
                 //Jika save berhasil maka image akan disimpan di server
                 $profilePicture->move('img/portofolios', $profilePictureName);
             }
-        } else {
+        }else{
             // jika tidak ada image maka akan langsung di simpan ke database
             $portofolio->save();
-            addRec('portofolio', Auth::id(), Auth::user()->role_id, $request, $successProject);
         }
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
@@ -162,35 +160,34 @@ class PortofolioController extends Controller
             ]);
 
             // Update data portofolio
-            $name = $portofolio->name = $request->input('name');
-            $customerName = $portofolio->customer_name = $request->input('customer_name');
-            $desc = $portofolio->desc = $request->input('desc');
-            $solution = $portofolio->our_solution = $request->input('our_solution');
-            $details = $portofolio->details = $request->input('details');
-            $createAt = $portofolio->created_at = $request->input('created_at');
-            $succesProjext = $portofolio->successProject = $request->input(('successProject'));
-            $service = $portofolio->service_id = $request->input('service_id');
+            $portofolio->name = $request->input('name');
+            $portofolio->customer_name = $request->input('customer_name');
+            $portofolio->desc = $request->input('desc');
+            $portofolio->our_solution = $request->input('our_solution');
+            $portofolio->details = $request->input('details');
+            $portofolio->created_at = $request->input('created_at');
+            $portofolio->successProject = $request->input(('successProject'));
+            $portofolio->service_id = $request->input('service_id');
             // Periksa apakah ada file gambar yang diupload
             if ($request->hasFile('image')) {
                 $PortofolioImage = $request->file('image');
                 // Image diberi nama untuk menghindari penamaan yang sama dengan image lain di portofolio lain
-                $portofolioImageName = Uuid::uuid4() . $PortofolioImage->getClientOriginalName();
+                $portofolioImageName = Uuid::uuid4().$PortofolioImage->getClientOriginalName();
                 $portofolioImagePath = '/img/portofolios/' . $portofolioImageName;
                 // Update path gambar portofolio
-                $oldImageNamePath = public_path('img/portofolios/' . basename($portofolio['image']));
+                $oldImageNamePath = public_path('img/portofolios/'.basename($portofolio['image']));
                 $portofolio->image = url($portofolioImagePath);
-                if ($portofolio->save()) {
+                if($portofolio->save()){
                     $PortofolioImage->move('img/portofolios', $portofolioImageName);
-                    if (File::exists($oldImageNamePath) && !($oldImageNamePath == $portofolioImageName)) {
+                    if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $portofolioImageName)){
                         File::delete($oldImageNamePath);
                     }
-                } else {
+                }else{
                     throw new \Exception;
                 }
-            } else {
+            }else{
                 // jika tidak ada image maka akan langsung update
                 $portofolio->save();
-                editRec('Portofolio', Auth::id(), Auth::user()->role_id, $name, $customerName, $desc, $solution, $details, $createAt, $succesProjext, $service);
             }
             // Redirect ke halaman portofolio dengan pesan sukses
             return redirect()->route('portofolio')->with('success', 'Portofolio updated successfully.');
@@ -204,14 +201,12 @@ class PortofolioController extends Controller
     {
         $portofolios = Portofolio::findOrFail($id);
         // Mengambil nama image yang dipakai portofolio
-        $oldImageNamePath = public_path('img/portofolios/' . basename($portofolios['image']));
+        $oldImageNamePath = public_path('img/portofolios/'.basename($portofolios['image']));
 
         // Kemudian hapus portofolio dan cek apakah berhasil
-        if ($deletePorto = $portofolios->delete() ) {
-
-            deleteRec('Portofolio', Auth::id(), Auth::user()->role_id, $deletePorto);
+        if($portofolios->delete()){
             //jika berhasil maka akan mengapus image yang digunakan portofolio juga
-            if (File::exists($oldImageNamePath)) {
+            if(File::exists($oldImageNamePath)){
                 File::delete($oldImageNamePath);
             }
         }
@@ -249,10 +244,16 @@ class PortofolioController extends Controller
         $sortBy = $request->input('sort_by', 'date');
         $filterBy = $request->input('filter_by', 'asc');
 
+        $search = $request->input('search');
+        if ($search) {
+            $portofolioQuery  = Portofolio::where('name', 'like', '%' . $search . '%')
+                ->orWhere('desc', 'like', '%' . $search . '%')
+                ->get();
+        }else{
+            $portofolioQuery = Portofolio::where('service_id', $service_id);
+        }
+        
         // Buat kueri berdasarkan sort_by dan filter_by
-        $portofolioQuery = Portofolio::where('service_id', $service_id)
-            ->with('technologies', 'deliverables');
-
         if (!is_null($startYear)) {
             $portofolioQuery->whereYear('created_at', '>=', $startYear);
         }

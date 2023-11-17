@@ -1,6 +1,27 @@
 @extends('layouts.master')
 
 @section('content')
+
+<style>
+    .modal-body {
+        position: relative;
+    }
+
+    .delete-button {
+        position: absolute;
+        right: 1;
+        /* Menempatkan tombol di sudut kanan atas */
+        background-color: #ff0000;
+        /* Warna latar belakang tombol */
+        color: #fff;
+        /* Warna teks tombol */
+        border: none;
+        padding: 5px 10px;
+        /* Atur padding sesuai kebutuhan Anda */
+        cursor: pointer;
+    }
+</style>
+
 <div class="form-group">
     <div class="card-body">
         <div class="card-header">
@@ -8,7 +29,6 @@
                 <h5 class="text-title"> <strong>Job Qualification</strong> </h5>
                 <div class="modal-footer d-flex justify-content-end">
                     <a href="{{ route('career.add-jobQualification') }}" class="btn btn-success"><i class="fas fa-plus"></i></a>
-                    <button class="btn btn-danger" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash"></i></button>
                 </div>
             </div>
         </div>
@@ -49,6 +69,7 @@
                         <label for="other">Other Qualifications</label>
                         <input type="text" class="form-control" id="other" name="other" value="{{ $JobQualification->other }}" required>
                     </div>
+                    <button class="btn btn-danger delete-button" data-toggle="modal" data-target="#confirmDeleteModal"><i class="fas fa-trash"></i></button>
                 </li>
             </ul>
 

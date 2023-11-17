@@ -8,7 +8,6 @@ use App\Models\JobPlusValue;
 use App\Models\JobQualification;
 use App\Models\SkillRequirement;
 use Google\Cloud\Talent\V4\JobQuery;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class JobQualificationController extends Controller
@@ -57,10 +56,7 @@ class JobQualificationController extends Controller
             'other' => 'required',
         ]);
 
-        $qualification = JobQualification::create($validateData);
-
-        addRec('Job Qualification', Auth::id(), Auth::user()->role_id, 'Job Qualification ID: ' . $qualification->id);
-
+        JobQualification::create($validateData);
         return redirect()->route('career')->with('success', 'Job Qualification added successfully.');
     }
 
@@ -98,10 +94,7 @@ class JobQualificationController extends Controller
 
         $data = $request->only(['gender', 'domicile', 'education', 'major', 'other']);
 
-        $qualification= $jobQualification->update($data);
-        editRec('Qualification', Auth::id(), Auth::user()->role_id, $qualification->id, $qualification);
-
-
+        $jobQualification->update($data);
 
         return redirect()->route('career')
             ->with('success', 'Job Qualification updated successfully.');
@@ -127,24 +120,21 @@ class JobQualificationController extends Controller
 
         foreach ($jobs as $job) {
             // Delete related records
-            $jobPlusValue = JobPlusValue::where('jobs_id', $job->id)->delete();
-            $SkillRequirement = SkillRequirement::where('jobs_id', $job->id)->delete();
+            JobPlusValue::where('jobs_id', $job->id)->delete();
+            SkillRequirement::where('jobs_id', $job->id)->delete();
 
             // Delete the job
             $job->delete();
-            deleteRec('Job', Auth::id(), Auth::user()->role_id, $jobPlusValue, $SkillRequirement);
-
         }
 
         // $jobs = Job::where('jobs_qualification_id', $id);
         // foreach($jobs as $job){
-            //     JobPlusValue::where('jobs_id', $job->id)->delete();
-            //     SkillRequirement::where('jobs_id', $job->id)->delete();
-            //     echo 'ini'.$job->id;
-            //     // $job->delete();
+        //     JobPlusValue::where('jobs_id', $job->id)->delete();
+        //     SkillRequirement::where('jobs_id', $job->id)->delete();
+        //     echo 'ini'.$job->id;
+        //     // $job->delete();
 
-            $JobQualifications->delete();
-            deleteRec('Job Qualification', Auth::id(), Auth::user()->role_id, $jobPlusValue, $SkillRequirement);
+        $JobQualifications->delete();
 
         return redirect()->route('career')->with('success', 'Item has been deleted.');
     }

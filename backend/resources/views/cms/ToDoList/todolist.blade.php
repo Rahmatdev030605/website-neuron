@@ -182,13 +182,4 @@
         adjustFontSize($('.date-start'));
     });
 </script>
-
-
-
-
-
-
-
-
-
-    <!-- /
+    

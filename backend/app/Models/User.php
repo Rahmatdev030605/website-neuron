@@ -43,9 +43,11 @@ class User extends Authenticatable
      * @var array<string, string>
      */
 
+
+
     public function role()
     {
-        return $this->belongsTo(Role::class, 'role_id', 'id');
+        return $this->belongsTo(Role::class, 'role_id', 'id',);
     }
 
     public function article()
@@ -61,5 +63,9 @@ class User extends Authenticatable
     public function edit_records()
     {
         return $this->hasMany(EditRecord::class);
+    }
+    public function hasRole($role)
+    {
+        return $this->role && $this->role->role_name === $role;
     }
 }

@@ -5,9 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h1 class="m-0"> <strong>User</strong>  </h1>
-                    </div>
+                <h1 class="m-0">User</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">

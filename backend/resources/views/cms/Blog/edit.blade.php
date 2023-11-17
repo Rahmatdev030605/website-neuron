@@ -1,13 +1,12 @@
 @extends('layouts.master')
 
 @section('content')
-
-<div class="form-group">
-    <div class="card-body">
-    <div class="content-header">
+<div class="content-header">
     <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center">
-            <h4 class="m-0"><strong>Edit Blog</strong></h4>
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1 class="m-0">Edit Blog</h1>
+            </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ route('adminpanel') }}">Home</a></li>
@@ -17,9 +16,6 @@
             </div>
         </div>
     </div>
-    </div>
-</div>
-
     <div class="container">
         <div class="col-md-12">
             <div class="card">
@@ -27,7 +23,7 @@
                     <form action="{{ route('blog-update', $blog->id) }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
-
+                        
                         <div class="form-group">
                             <label for="image">Image</label>
                             <input type="file" class="form-control-file" id="image" name="image">
@@ -57,7 +53,7 @@
                                 @endforeach
                             </select>
                         </div>
-
+                        
                         <div class="form-group">
                             <label for="body">Body</label>
                             <textarea class="ckeditor form-control" id="body" name="body">{{ $blog->body }}</textarea>

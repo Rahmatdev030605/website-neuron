@@ -59,7 +59,7 @@
           </li>
           <li class="nav-item" id="career">
             <a href="{{ route('career') }}" class="nav-link">
-            <i class="nav-icon fas fa-house-user"></i>
+            <i class="nav-icon fas fa-briefcase"></i>
               <p>
                 Career
               </p>
@@ -70,6 +70,14 @@
             <i class="nav-icon fas fa-chart-pie"></i>
             <p>
                 Methadology
+              </p>
+            </a>
+          </li>
+          <li class="nav-item" id="career">
+            <a href="{{ route('partner') }}" class="nav-link">
+            <i class="nav-icon fas fa-hands-helping"></i>
+            <p>
+                Partner
               </p>
             </a>
           </li>
@@ -102,7 +110,7 @@
               </li>
             </ul>
           </li>
-          @if(Auth::user()->role_id === 1) <!-- Check if user role is superadmin -->
+          @if(Auth::user()->role_id === 1 || Auth::user()->role_id === 2) <!-- Check if user role is superadmin -->
           <li class="nav-item" id="user">
             <a href="{{ route('user') }}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>

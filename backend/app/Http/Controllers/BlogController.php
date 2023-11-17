@@ -10,6 +10,7 @@ use App\Http\Resources\BlogResource;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BlogDetailResource;
 use App\Http\Resources\ArticlePagesResource;
+use App\Models\ArticleCategoryGroup;
 use App\Models\EditRecord;
 
 class BlogController extends Controller
@@ -57,10 +58,10 @@ class BlogController extends Controller
         $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            'articles_categories_id' => 'required|exists:articles_categories,id',
             'body' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'author' => 'required'
+            'author' => 'required',
+            'category' => 'nullable|array'
         ]);
 
         if ($request->hasFile('image')) {
@@ -74,7 +75,6 @@ class BlogController extends Controller
         $blog = new Article([
             'title' => $request->title,
             'desc' => $request->desc,
-            'articles_categories_id' => $request->articles_categories_id,
             'body' => $request->body,
             'author' => $request->author,
             'image' => url($profilePicturePath)
@@ -84,6 +84,20 @@ class BlogController extends Controller
         $blog->user_id = Auth::id();
 
         $blog->save();
+        $articleCategories = ArticleCategory::all();
+        $categoryGroup = $request->input('category', []);
+        foreach ($categoryGroup as $category) {
+            // Cek apakah kategori sudah ada
+            $existingCategory = $articleCategories->where('name', $category)->first();
+
+            if (!$existingCategory) {
+                // Kategori belum ada, tambahkan ke article category
+                $newCategory = ArticleCategory::create(['name' => $category]);
+                $blog->articleCategoryGroup()->articleCategory()->attach($newCategory);
+            }elseif($existingCategory){
+                $blog->articleCategoryGroup()->articleCategory()->attach($existingCategory);
+            }
+        }
         addRec('Blog', Auth::id(), Auth::user()->role_id, $blog->title);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('blog')->with('success', 'Blog added successfully.');
@@ -99,7 +113,7 @@ class BlogController extends Controller
     public function edit($id)
     {
         //! CATEGORY ARTICLE
-        $groupCategories =
+        // $groupCategories =
         $categories = ArticleCategory::all();
         $blog = Article::findOrFail($id);
         return view('cms.Blog.edit', compact('blog', 'categories'));
@@ -145,6 +159,44 @@ class BlogController extends Controller
         // editEdRec('Blog', Auth::id(), Auth::user()->role_id, $blog);
         // Redirect ke halaman portofolio dengan pesan sukses
         return redirect()->route('blog')->with('success', 'Blog updated successfully.');
+    }
+
+
+    //TODO BLOG CATEGORY
+    public function blogCategory(){
+
+    }
+
+    public function storeCategory(Request $request, $article_id){
+        // Validasi Value
+        $validatedData = $request->validate([
+            'name' =>'required|max:255',
+        ]);
+
+        //Membuat instansi baru
+        $category = new ArticleCategory([
+            'name' => $request->input('name'),
+        ]);
+        // Menyimpan ke database
+        $category->save();
+
+        //Membuat instansi baru
+        $categoryGroup = new ArticleCategoryGroup([
+            'article_id' => $article_id,
+            'category_id' => $category->id,
+        ]);
+        // Menyimpan ke database
+        $categoryGroup->save();
+
+        return redirect()->route('blogCategory')->with('success', 'Category added successfully.');
+    }
+
+    public function updateCategory($category_id){
+
+    }
+
+    public function deleteCategory($article_id, $category_id){
+
     }
 
     //API

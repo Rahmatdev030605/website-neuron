@@ -34,7 +34,6 @@
             </form>
         </div>
 
-        {{-- ! FILTER HERE NOT WORKING --}}
         <form action="{{route('portofolio')}}" class="w-50 mt-3" method="POST">
             @csrf
             @method('GET')
@@ -54,8 +53,6 @@
 
             <button type="submit" class="btn btn-info ml-2">Apply</button>
         </form>
-
-        {{-- ! END FILTER HERE --}}
 
         <div id="success-message" class="mt-3">
             @if(session('success'))
@@ -177,7 +174,7 @@
                     <img class="product-img" src="{{ asset($portofolio->image) }}" alt="{{ $portofolio->name }}" data-toggle="modal" data-target="#viewPortofolioModal{{ $portofolio->id }}">
                     <div>
                         <div class="category-container">
-                            <span class="category">{{ $portofolio->category }}</span>
+                            <span class="category">{{ $portofolio->service->name }}</span>
                         </div>
                         <h5 class="product-name">{{ $portofolio->name }}</h5>
                         <h6 class="product-customer">{{ $portofolio->customer_name }}</h6>
@@ -243,91 +240,6 @@
                                         <h5 class="product-name">Our Solution</h5>
                                         <p class="product-desc">{!! $portofolio->our_solution !!}</p>
                                         <p class="product-date">{{ $portofolio->created_at->format('d/m/Y') }}</p>
-                                    </div>
-                                    <div class="d-flex" style="justify-content: center;">
-                                        <!-- Tampilkan daftar teknologi -->
-                                        <div class="technology-card">
-                                            <h5 class="text-bold">Technology Used</h5>
-                                            <ul style="list-style: none;">
-                                                @foreach ($portofolio->portofolioTechnology as $portfolioTech)
-                                                    @if ($portfolioTech->technology)
-                                                        <li class="pb-3">
-                                                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                                <div>
-                                                                    @if (!empty($portfolioTech->technology->icon))
-                                                                        <img src="{{ $portfolioTech->technology->icon }}" alt="{{ $portfolioTech->technology->name }}">
-                                                                    @endif
-                                                                    {{ $portfolioTech->technology->name }}
-                                                                </div>
-                                                                <form method="POST" action="{{ route('delete-technology-portofolio', ['portofolio_id' => $portofolio->id, 'technology_id' => $portfolioTech->technology->id]) }}">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    @if(auth()->user()->role->role_name !== 'HCM')
-                                                                        <button type="submit" class="btn btn-danger ml-3">Delete</button>
-                                                                    @else
-                                                                        <button class="btn btn-danger ml-3" disabled>Delete</button>
-                                                                    @endif
-                                                                </form>
-                                                            </div>
-                                                        </li>
-                                                    @endif
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        <!-- Tampilkan daftar deliverables -->
-                                        <div class="deliverable-card">
-                                            <h5 class="text-bold">Deliverables</h5>
-                                            <ul>
-                                                @foreach ($portofolio->deliverables as $deliverable)
-                                                <li class="pb-3">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                        <div>
-                                                            {{ $deliverable->name }}
-                                                        </div>
-                                                        <div>
-                                                            <form method="POST" action="{{ route('delete-deliverable', ['portofolio_id' => $portofolio->id, 'deliverable_id' => $deliverable->id]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                @if(auth()->user()->role->role_name !== 'HCM')
-                                                                    <button type="submit" class="btn btn-danger ml-3">Delete</button>
-                                                                @else
-                                                                    <button type="button" class="btn btn-danger ml-3" disabled>Delete</button>
-                                                                @endif
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
-                                        <!-- Tampilan daftar handle -->
-                                    </div>
-                                    <div class="d-flex" style="justify-content: center;">
-                                        <div class="handle-card">
-                                            <h5 class="text-bold">Handles</h5>
-                                            <ul>
-                                                @foreach ($portofolio->handles as $handle)
-                                                <li class="pb-3">
-                                                    <div style="display: flex; justify-content: space-between; align-items: center;">
-                                                        <div>
-                                                            {{ $handle->name }}
-                                                        </div>
-                                                        <div>
-                                                            <form method="POST" action="{{ route('delete-handle', ['portofolio_id' => $portofolio->id, 'handle_id' => $handle->id]) }}">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                @if(auth()->user()->role->role_name !== 'HCM')
-                                                                    <button type="submit" class="btn btn-danger ml-3">Delete</button>
-                                                                @else
-                                                                    <button type="button" class="btn btn-danger ml-3" disabled>Delete</button>
-                                                                @endif
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                @endforeach
-                                            </ul>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">

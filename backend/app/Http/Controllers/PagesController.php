@@ -8,7 +8,6 @@ use App\Models\ServicePages;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class PagesController extends Controller
 {
@@ -66,7 +65,6 @@ class PagesController extends Controller
             $oldHomeImageName = basename($DBHome['hero_image']);
             $oldHomeImagePath = public_path('img/home/').$oldHomeImageName;
             $DBHome->update($reqHome);
-            // editRec('Home', Auth::id(), Auth::user()->role_id, $reqHome);
             if(File::exists($oldHomeImagePath) && ($oldHomeImageName != basename($DBHome['hero_image']))){
                 File::delete($oldHomeImagePath);
             }
@@ -146,7 +144,6 @@ class PagesController extends Controller
             $oldMissionImagePath = $publicImg.$oldMissionImageName;
 
             $aboutUpdate->update($reqAbout);
-            // editRec('About', Auth::id(), Auth::user()->role_id, );
             if(File::exists($oldHeroImagePath) && $oldHeroImageName != basename($aboutUpdate['hero_image'])){File::delete($oldHeroImagePath);}
             if(File::exists($oldActivityImagePath) && $oldActivityImageName != basename($aboutUpdate['activity_image'])){File::delete($oldActivityImagePath);}
             if(File::exists($oldVisionImagePath) && $oldVisionImageName != basename($aboutUpdate['vision_image'])){File::delete($oldVisionImagePath);}
@@ -176,7 +173,6 @@ class PagesController extends Controller
             $pageSetting = ServicePages::find($id);
 
             $pageSetting->update($validatedData);
-            // editRec('Service', Auth::id(), Auth::user()->role_id, $pageSetting->id);
 
             return redirect()->route('pages')->with('success', 'Service Page Updated Successfully');
         } catch (\Throwable $th) {

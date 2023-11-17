@@ -3,9 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ToDoList;
-use Google\Cloud\MigrationCenter\V1\ReportSummary\UtilizationChartData;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class ToDoListController extends Controller
@@ -48,13 +46,8 @@ class ToDoListController extends Controller
             'date_end' => 'required',
         ]);
 
-        $TodoList = new ToDoList([
-            'title' => $request->title
-        ]);
-
         ToDoList::create($validatedData);
-        addRec('To Do List', Auth::id(), Auth::user()->role_id, $TodoList->title);
-        return redirect()->route('adminpanel')->with('success', 'Data can be saved');
+        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
     }
 
     /**
@@ -89,21 +82,9 @@ class ToDoListController extends Controller
      */
     public function updateToDoList(Request $request, $id)
     {
-        $todo = ToDoList::findOrFail($id);
-        $validatedData = $request->validate([
-            'title' => 'required',
-            'desc' => 'required',
-            'date_start' => 'required',
-            'date_end' => 'required',
-        ]);
-
-        $titleBefore = $todo->title;
-        $todo->title = $request->input('title');
-
-
+        $todo = ToDoList::find($id);
         $todo->update($request->all());
-        editRec('To Do Lis', Auth::id(), Auth::user()->role_id, $titleBefore, $todo->title);
-        return redirect()->route('adminpanel');
+        return redirect('/adminpanel/todolist');
     }
     /**
      * Remove the specified resource from storage.
@@ -113,18 +94,14 @@ class ToDoListController extends Controller
      */
     public function deleteToDoList($id)
     {
-        $todo = ToDoList::findOrFail($id);
+        $todo = ToDoList::find($id);
 
-        if ($todo) {
-            $todoTitle = $todo->title;
-            $todo->delete();
-            deleteRec('To Do List', Auth::id(), Auth::user()->role_id, $todoTitle);
-            return redirect()->route('adminpanel')->with('error', 'Item not found.');
-        } else {
-            return redirect()->route('adminpanel')->with('success', 'Item has been deleted.');
-
+        if (!$todo) {
+            return redirect()->route('todolist.index')->with('error', 'Item not found.');
         }
 
+        $todo->delete();
 
+        return redirect()->route('todolist.index')->with('success', 'Item has been deleted.');
     }
 }

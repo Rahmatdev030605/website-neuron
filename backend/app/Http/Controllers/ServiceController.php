@@ -6,8 +6,6 @@ use App\Models\Service;
 use Illuminate\Http\Request;
 use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ServicePageResource;
-use Google\Service\CloudSearch\Id;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Ramsey\Uuid\Uuid;
 
@@ -28,11 +26,9 @@ class ServiceController extends Controller
         } else {
             $services = Service::all();
         }
-        // return dd();
         foreach($services as $service){
             $service['image'] = 'img/service/'.basename($service['image']);
         }
-        // return dd($services);
         return view('cms.Service.service', compact('services'));
     }
 
@@ -40,10 +36,10 @@ class ServiceController extends Controller
     {
         $services = Service::findOrFail($id);
         $oldImagePath = public_path('img/service/') . basename($services['image']);
-        $services->delete();
-        deleteRec('Service', Auth::id(), Auth::user()->role_id, $services);
-        if(File::exist($oldImagePath)){
-            File::delete($oldImagePath);
+        if($services->delete()){
+            if(File::exist($oldImagePath)){
+                File::delete($oldImagePath);
+            }
         }
         return redirect()->route('service')->with('success', 'Service has been deleted successfully.');
     }
@@ -60,23 +56,28 @@ class ServiceController extends Controller
         // Validasi data yang diterima dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
-            'desc' => 'required|string'
+            'desc' => 'required|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         $service = new Service([
             'name' => $request->name,
             'desc' => $request->desc,
         ]);
-        if($image = $request->hasFile('image')){
+        if($request->hasFile('image')){
             $image = $request->file('image');
             $imageName = Uuid::uuid4().$image->getClientOriginalName();
-            $image->move('img/service', $imageName);
             $imagePath = '/img/service'.$imageName;
             $service['image'] = url($imagePath);
+            // Simpan data service ke database
+            if($service->save()){
+                // Jika service berhasil disimpan maka gambar akan disimpan juga
+                $image->move('img/service', $imageName);
+            }
+        }else{
+            // jika tidak ada image langsung simpan ke database
+            $service->save();
         }
-        // Simpan data service ke database
 
-        $service->save();
-        addRec('Service'. Auth::id(), Auth::user()->role_id ,$image,$service);
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('service')->with('success', 'Service added successfully.');
@@ -85,6 +86,7 @@ class ServiceController extends Controller
     public function edit($id)
     {
         $service = Service::findOrFail($id);
+        $service['image'] = 'img/service/'.basename($service['image']);
         return view('cms.Service.edit', compact('service'));
     }
 
@@ -96,14 +98,15 @@ class ServiceController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'desc' => 'required|string',
+            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
         //update data service
-       $name = $service->name = $request->input('name');
-       $desc = $service->desc = $request->input('desc');
-        if($image = $request->hasFile('image')){
+        $service->name = $request->input('name');
+        $service->desc = $request->input('desc');
+        if($request->hasFile('image')){
             $image = $request->file('image');
             $imageName = Uuid::uuid4().$image->getClientOriginalName();
-            $imagePath = '/img/service'.$imageName;
+            $imagePath = '/img/service/'.$imageName;
             $oldImagePath = public_path('img/service/').basename($service['image']);
             $service->image = url($imagePath);
             if($service->save()){
@@ -112,10 +115,10 @@ class ServiceController extends Controller
                     File::delete($oldImagePath);
                 }
             };
+        }else{
+            // jika tidak ada gambar maka akan langsung disimpan di database
+            $service->save();
         }
-        // // Simpan perubahan pada data service
-        $service->save();
-        editRec('Service', Auth::id(), Auth::user()->role_id, $name, $desc, $image);
         // Redirect ke halaman service dengan pesan sukses
         return redirect()->route('service')->with('success', 'Service updated successfully.');
     }

@@ -21,5 +21,6 @@ class JobQualification extends Model
     public function jobs()
     {
         return $this->hasMany(Job::class, 'jobs_qualification_id');
+
     }
 }

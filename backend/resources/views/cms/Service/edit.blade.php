@@ -1,6 +1,21 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+    #image-tampil{
+        width: 200px;
+        height: auto;
+        border: 1px solid black;
+    }
+    #imageDB{
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .form-group{
+        margin-bottom: 30px
+    }
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -32,6 +47,14 @@
                     <form action="{{ route('service-update', $service->id) }}" method="post" enctype="multipart/form-data">
                         {{ csrf_field() }}
                         {{ method_field('PUT') }}
+
+                        <div class="form-group">
+                            <label for="hero_image">Service Image</label><br>
+                            <div id="image-tampil">
+                                <img id="imageDB"src="{{asset($service->image)}}" alt="gagal">
+                            </div>
+                            <input type="file" name="image" class="form-control" accept="image/*">
+                        </div>
 
                         <div class="form-group">
                             <label for="name">Name</label>

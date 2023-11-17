@@ -57,7 +57,7 @@ Route::get('/methodology/by-category', [MethadologyController::class, 'getMethad
 Route::get('/products', [ProductController::class, 'getProduct']);
 
 // Home
-Route::get('/home', [HomeController::class, 'getHome']);
+Route::get('home', [HomeController::class, 'getHome']);
 
 // About
 Route::get('/about', [AboutController::class, 'getAbout']);

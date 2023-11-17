@@ -29,19 +29,6 @@
         .qualification-field {
             display: none;
         }
-
-        .form-group {
-            width: 100%;
-        }
-
-        .card-header {
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-        }
-
-
-        /* Tambahkan class CSS ke parent container, misalnya class="button-container" */
     </style>
 
     <div class="container">
@@ -49,28 +36,9 @@
             <form action="{{ route('career-update', $career->id) }}" method="post" id="careerEditForm">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
-
-                <div class="form-group">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <div class="d-flex justify-content-end align-items-center">
-                                <a href="{{ URL::previous() }}" class="btn btn-primary mr-2">Back</a>
-                                <button class="btn btn-primary" type="submit">Update</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
                 <div class="form-group">
                     <label for="positionName">Position Name</label>
                     <input type="text" class="form-control" id="positionName" name="name_position" value="{{ $career->name_position }}" required>
-                </div>
-
-
-                <div class="form-group">
-                    <label for="location">Location</label>
                 </div>
 
                 <div class="form-group">
@@ -86,8 +54,6 @@
                     <textarea class="form-control" id="description" name="desc" rows="5" required>{{ $career->desc }}</textarea>
                 </div>
 
-
-
                 <div class="form-group">
                     <label for="responsibilities">Responsibilities</label>
                     <textarea class="form-control" id="responsibilities" name="responsibilities" rows="5" required>{{ $career->responsibilities }}</textarea>
@@ -98,7 +64,11 @@
                     <input type="text" class="form-control" id="link" name="link" value="{{ $career->link }}">
                 </div>
 
-            </form>
+
+
+            <button class="btn btn-primary" type="submit">Update</button>
+            <a href="{{ URL::previous() }}" class="btn btn-primary">Back</a>
+        </form>
 
 
             <div class="form-group">
@@ -293,14 +263,14 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end Modal untuk menambahkan plus value -->
+                    </div><!-- end Modal untuk menambahkan plus value -->
             </div>
         </div>
     </div>
 </div>
 </form>
-
+<div class="modal-footer">
+</div>
 
 
 
@@ -387,51 +357,5 @@
 </div>
 </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Move the Update and Back buttons below the form
-        var form = document.getElementById('careerEditForm');
-        var updateButton = document.querySelector('button[type="submit"]');
-        var backButton = document.querySelector('a[href="{{ URL::previous() }}"]');
-        var modalFooter = document.querySelector('.modal-footer');
-
-        // Remove buttons from their current positions
-        updateButton.parentNode.removeChild(updateButton);
-        backButton.parentNode.removeChild(backButton);
-
-        // Append buttons to the modal footer
-        modalFooter.appendChild(updateButton);
-        modalFooter.appendChild(backButton);
-    });
-</script>
-
-<script>
-    $(document).ready(function() {
-        $('#careerUpdateButton').on('click', function() {
-            var careerData = $('#careerEditForm').serialize();
-
-            $.ajax({
-                type: "PUT",
-                url: "{{ route('career-update', $career->id) }}",
-                data: careerData,
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    console.log(response);
-                    alert('Career and Qualification updated successfully');
-                },
-                error: function(error) {
-                    console.log(error);
-
-                    alert('Failed to update Career and Qualification');
-                }
-            });
-        });
-    });
-</script>
 
 @endsection

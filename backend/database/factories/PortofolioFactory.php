@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\Portofolio;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Portofolio;
 
 class PortofolioFactory extends Factory
 {
@@ -14,9 +14,6 @@ class PortofolioFactory extends Factory
      */
     public function definition()
     {
-
-        $portofolio = Portofolio::all();
-
         return [
             'name' => $this->faker->word,
             'category' => $this->faker->randomElement(['Web App', 'Mobile App', 'Workflow Management System', 'System Integrator', 'Business Intelligence', 'CRM App']),

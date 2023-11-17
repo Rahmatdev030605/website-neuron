@@ -82,8 +82,11 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="image">Image</label>
-                            <input type="file" class="form-control-file" id="image" name="image">
+                            <label for="image" class="label-upload">Choose an image:</label>
+                            <label for="image" class="custom-file">
+                                <input type="file" class="custom-file-input" id="image" name="image">
+                                <span class="custom-file-label">No file chosen</span>
+                            </label>
                             <img src="{{ asset($portofolio->image) }}" alt="{{ $portofolio->name }}" class="mt-2" style="max-width: 200px;">
                         </div>
 
@@ -104,6 +107,15 @@
         .catch( error => {
             console.error( error );
         } );
+</script>
+<script>
+    // Menangkap perubahan pada input file
+    document.getElementById('image').addEventListener('change', function (e) {
+        // Mengupdate label dengan nama file yang dipilih
+        var fileName = e.target.files[0].name;
+        var label = document.querySelector('.custom-file-label');
+        label.innerHTML = fileName;
+    });
 </script>
 {{-- <script>
     $(document).ready(function () {

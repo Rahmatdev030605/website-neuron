@@ -20,10 +20,10 @@ class Job extends Model
     ];
 
 
-        public function jobQualification()
-        {
-            return $this->belongsTo(JobQualification::class, 'jobs_qualification_id', 'id');
-        }
+    public function jobQualification()
+    {
+        return $this->belongsTo(JobQualification::class, 'jobs_qualification_id', 'id');
+    }
 
     public function jobPlusValues()
     {

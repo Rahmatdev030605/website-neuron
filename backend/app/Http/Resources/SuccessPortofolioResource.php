@@ -19,12 +19,6 @@ class SuccessPortofolioResource extends JsonResource
             'name' => $this->name,
             'desc' => $this->desc,
             'image' => $this->image,
-            'technologies' => $this->technologies->map(function ($technology) {
-                return [
-                    'icon' => $technology->icon,
-                ];
-            }),
-            'deliverables' => $this->deliverables->pluck('name')->toArray(),
         ];
     }
 }

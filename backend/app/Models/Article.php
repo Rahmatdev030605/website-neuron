@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Article extends Model
 {
     use HasFactory;
-    
     protected $table = 'articles';
 
     protected $fillable = [
@@ -23,9 +22,9 @@ class Article extends Model
         'articles_categories_id'
     ];
 
-    public function articleCategory()
+    public function articleCategoryGroup()
     {
-        return $this->belongsTo(ArticleCategory::class, 'articles_categories_id', 'id');
+        return $this->hasMany(ArticleCategoryGroup::class);
     }
 
     public function user()
