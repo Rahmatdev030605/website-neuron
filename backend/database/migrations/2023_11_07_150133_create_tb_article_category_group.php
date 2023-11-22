@@ -13,7 +13,7 @@ class CreateTbArticleCategoryGroup extends Migration
      */
     public function up()
     {
-        Schema::create('articles_categories_group', function (Blueprint $table) {
+        Schema::create('article_category_groups', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('article_id');
             $table->foreign('article_id')->references('id')->on('articles');
@@ -30,6 +30,6 @@ class CreateTbArticleCategoryGroup extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('articles_categories_group');
+        Schema::dropIfExists('article_category_groups');
     }
 }

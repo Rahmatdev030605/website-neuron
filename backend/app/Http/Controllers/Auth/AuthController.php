@@ -16,14 +16,7 @@ use App\Models\Job;
 use App\Models\Article;
 use App\Models\Portofolio;
 use App\Models\Product;
-use Illuminate\Support\Facades\Log;
-use Google\Analytics\Data\V1beta\Client\BetaAnalyticsDataClient as BetaAnalyticsDataClient;
-use Google\Analytics\Data\V1beta\DateRange as DateRange;
-use Google\Analytics\Data\V1beta\Dimension as Dimension;
-use Google\Analytics\Data\V1beta\Metric as Metric;
-use Google\Analytics\Data\V1beta\RunReportRequest as RunReportRequest;
-use Illuminate\Support\Carbon;
-
+use App\Helper\GAnalytics;
 class AuthController extends Controller
 {
     public function loginpage()
@@ -79,7 +72,7 @@ class AuthController extends Controller
         return redirect('/adminpanel')->with('auth_token', $token);
     }
 
-    public function adminpanel()
+    public function adminpanel(Request $req)
     {
         // Periksa apakah token masih berlaku (belum kedaluwarsa)
         $user = Auth::user();
@@ -88,55 +81,11 @@ class AuthController extends Controller
         if ($tokenIsValid) {
             // Token masih berlaku, beri akses ke halaman adminpanel
             // Mengambil data untuk halaman adminpanel
-
-            // Mangmbil Google Analytics Credentials
-            $GACredentials = base_path('/app/Analytics/'.env('ANALYTICS_CREDENTIALS'));
-
-            // Credentials Authorization
-            $analyticsClient = new BetaAnalyticsDataClient([
-                'credentials' => $GACredentials
-            ]);
-
-            // Configurasi Permintaan yang ingin diminta
-            $analyticsConfig = (new RunReportRequest())
-                ->setProperty('properties/' . env('ANALYTICS_PROPERTY_ID'))
-                // Jarak Waktu Yang diambil
-                ->setDateRanges([
-                    new DateRange([
-                        'start_date' => '2023-01-01',
-                        'end_date' => 'today',
-                    ]),
-                ])
-                // Detail Tambahan
-                ->setDimensions([new Dimension([
-                        'name' => 'country',
-                    ]),
-                ])
-                // Mengambil Data
-                ->setMetrics([new Metric([
-                        'name' => 'activeUsers',
-                    ])
-                ]);
-
-            // Mengirimkan request ke Google Analytic Properties
-            $analyticsData = $analyticsClient->runReport($analyticsConfig);
-            // return dd($analyticsData);
-            if (!empty($analyticsData->getRows())) {
-                $activeUsers = 0;
-                for($i = 0; $i < $analyticsData->getRowCount(); $i++) {
-                    // Akses baris pertama (karena Anda hanya memiliki satu baris)
-                    $firstRow = $analyticsData->getRows()[$i];
-
-                    // Akses metrik dalam baris pertama
-                    $metrics = $firstRow->getMetricValues();
-
-                    // Mengambil banyak visitor
-                    $activeUsers = $activeUsers + $metrics[0]->getValue();
-                }
-            } else {
-                $activeUsers = null;
-            }
-
+            $analytics = new GAnalytics();
+            $activeUsers = GAnalytics::getVisitor();
+            $dataGraph = GAnalytics::getGraphAnalytics($req);
+            $dataMap = GAnalytics::getMapAnalytics($req);
+            // return dd($dataMap);
             $jobData =  Job::all()->count();
             $articleData = Article::all()->count();
             $portofolioData = Portofolio::all()->count();
@@ -144,12 +93,12 @@ class AuthController extends Controller
             $todos = ToDoList::all();
             $editRecord = EditRecord::query()
                     ->with(['user','role'])
-                    ->paginate(10);
+                    ->paginate(5);
             // Membuat login record
             $loginRecords = LoginRecord::query()
                     ->with('user','role')
                     ->paginate(10);
-            $allData = array('jobData','articleData','portofolioData','productData','loginRecords', 'todos', 'activeUsers','editRecord');
+            $allData = array('jobData','articleData','portofolioData','productData','loginRecords', 'todos', 'activeUsers','editRecord', 'dataGraph', 'dataMap');
             return view('pages.dashboard',compact($allData));
         }
 

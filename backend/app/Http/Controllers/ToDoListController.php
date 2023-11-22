@@ -3,27 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Models\ToDoList;
+use Google\Cloud\MigrationCenter\V1\ReportSummary\UtilizationChartData;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpKernel\Event\ViewEvent;
 
 class ToDoListController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+
     public function getToDoList()
     {
         $todos = ToDoList::all();
         return view('cms.ToDoList.todolist', compact('todos'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function addToDoList()
     {
         $todo = ToDoList::find(1);
@@ -31,14 +24,8 @@ class ToDoListController extends Controller
     }
 
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function storeToDoList(Request $request)
-    {
+    {try{
         $validatedData = $request->validate([
             'title' => 'required',
             'desc' => 'required',
@@ -46,62 +33,64 @@ class ToDoListController extends Controller
             'date_end' => 'required',
         ]);
 
+        $TodoList = new ToDoList([
+            'title' => $request->title
+        ]);
+
         ToDoList::create($validatedData);
-        return redirect()->route('adminpanel')->with('Data Berhasil Di Update');
+        addRec('To Do List', Auth::id(), Auth::user()->role_id, $TodoList->title);
+        return redirect()->route('adminpanel')->with('success', 'Data can be saved');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function editToDoList($id)
     {
         $todo = ToDoList::find($id);
         return view('cms.ToDoList.edit', compact('todo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function updateToDoList(Request $request, $id)
-    {
-        $todo = ToDoList::find($id);
+    {try{
+        $todo = ToDoList::findOrFail($id);
+        $validatedData = $request->validate([
+            'title' => 'required',
+            'desc' => 'required',
+            'date_start' => 'required',
+            'date_end' => 'required',
+        ]);
+
+        $todoBefore = clone $todo;
+        $todo->title = $request->input('title');
+
+
         $todo->update($request->all());
-        return redirect('/adminpanel/todolist');
+        editRec('To Do Lis', Auth::id(), Auth::user()->role_id, $todoBefore, $todo, $todoBefore->title);
+        return redirect()->route('adminpanel');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
     }
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    }
+
+
     public function deleteToDoList($id)
-    {
-        $todo = ToDoList::find($id);
+    {try{
+        $todo = ToDoList::findOrFail($id);
 
-        if (!$todo) {
-            return redirect()->route('todolist.index')->with('error', 'Item not found.');
+        if ($todo) {
+            $todoTitle = $todo->title;
+            $todo->delete();
+            deleteRec('To Do List', Auth::id(), Auth::user()->role_id, $todoTitle);
+            return redirect()->route('adminpanel')->with('success', 'Item has been deleted.');
+        } else {
+            return redirect()->route('adminpanel')->with('error', 'Item not found.');
         }
-
-        $todo->delete();
-
-        return redirect()->route('todolist.index')->with('success', 'Item has been deleted.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
     }
+    }
+
 }

@@ -15,7 +15,6 @@ class AddColumnPortofolios extends Migration
     {
         Schema::table('portofolios', function(Blueprint $table) {
             $table->string('service_id')->default(1);
-            $table->dropColumn('category');
         });
     }
 

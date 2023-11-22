@@ -7,6 +7,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Auth;
 class PartnerController extends Controller
 {
     // Show Partner
@@ -28,74 +29,88 @@ class PartnerController extends Controller
     public function storePartner(Request $request){
         try {
             //code...
-        $validatedData = $request->validate([
-            // 'name' => 'required|string|max:255',
-            'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+            $validatedData = $request->validate([
+                'name' => 'required|string|max:255',
+                'image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        $partner = new Partner();
-        // $partner['name'] = $validatedData['name'];
-        if($request->hasFile('image')){
-            $partnerImage = $request->file('image');
-            // Image diberi UUID untuk menghindari penamaan yang sama dengan image lain di portofolio lain
-            $partnerImageName = Uuid::uuid4().$partnerImage->getClientOriginalName();
-            $partnerImagePath = '/img/partner/'. $partnerImageName;
-            $partner['image'] = url($partnerImagePath);
-            if($partner->save()){
-                $partnerImage->move('img/partner', $partnerImageName);
+            $partner = new Partner();
+            $partner['name'] = $validatedData['name'];
+            if($request->hasFile('image')){
+                $partnerImage = $request->file('image');
+                // Image diberi UUID untuk menghindari penamaan yang sama dengan image lain di portofolio lain
+                $partnerImageName = Uuid::uuid4().$partnerImage->getClientOriginalName();
+                $partnerImagePath = '/img/partner/'. $partnerImageName;
+                $partner['image'] = url($partnerImagePath);
+                if($partner->save()){
+                    $partnerImage->move('img/partner', $partnerImageName);
+                }
             }
+            $partner->save();
+            addRec('Partner', Auth::id(), Auth::user()->role_id, $partner->name);
+            return redirect()->route('partner')->with('success', 'Partner Added Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
         }
-        $partner->save();
-        return redirect()->route('partner')->with('success', 'Partner Added Successfully');
-    } catch (\Throwable $th) {
-        return dd($th);
-        return redirect()->back()->with('error', $th->getMessage());
-    }
     }
 
     public function updatePartner(Request $request, $id){
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
+        try {
+            //code...
+            $validatedData = $request->validate([
+                'name' => 'nullable|string|max:255',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            ]);
 
-        $partner = Partner::findOrFail($id);
-        $partner->name = $validatedData['name'];
+            $partner = Partner::findOrFail($id);
+            $partnerBefore = clone $partner;
+            $partner->name = $validatedData['name'];
 
-        if ($request->hasFile('image')) {
-            $partnerImage = $request->file('image');
-            // Image diberi nama untuk menghindari penamaan yang sama dengan image lain di portofolio lain
-            $partnerImageName = Uuid::uuid4().$partnerImage->getClientOriginalName();
-            $partnerImagePath = '/img/portofolios/' . $partnerImageName;
-            // Update path gambar portofolio
-            $oldImageNamePath = public_path('img/partner/'.basename($partner['image']));
-            $partner->image = url($partnerImagePath);
-            if($partner->save()){
-                $partnerImage->move('img/portofolios', $partnerImageName);
-                if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $partnerImageName)){
-                    File::delete($oldImageNamePath);
+            if ($request->hasFile('image')) {
+                $partnerImage = $request->file('image');
+                // Image diberi nama untuk menghindari penamaan yang sama dengan image lain di portofolio lain
+                $partnerImageName = Uuid::uuid4().$partnerImage->getClientOriginalName();
+                $partnerImagePath = '/img/partner/' . $partnerImageName;
+                // Update path gambar portofolio
+                $oldImageNamePath = public_path('img/partner/'.basename($partner['image']));
+                $partner->image = url($partnerImagePath);
+                if($partner->save()){
+                    $partnerImage->move('img/partner', $partnerImageName);
+                    if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $partnerImageName)){
+                        File::delete($oldImageNamePath);
+                    }
                 }
+            }else{
+                // jika tidak ada image maka akan langsung update
+                $partner->save();
             }
-        }else{
-            // jika tidak ada image maka akan langsung update
-            $partner->save();
+            editRec('Partner', Auth::id(), Auth::user()->role_id,$partnerBefore, $partner, $partnerBefore->name);
+            return redirect()->route('partner')->with('success', 'Partner Updated Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
         }
-        return redirect()->route('partner')->with('success', 'Partner Updated Successfully');
     }
 
     // Delete Partner
     public function deletePartner($id){
-        $partner = Partner::findOrFail($id);
-        $oldImageNamePath = public_path('img/partner/'.basename($partner['image']));
+        try {
+            //code...
+            $partner = Partner::findOrFail($id);
+            $oldImageNamePath = public_path('img/partner/'.basename($partner['image']));
 
-        // Kemudian hapus partner dan cek apakah berhasil
-        if($partner->delete()){
-            //jika berhasil maka akan mengapus image yang digunakan partner juga
-            if(File::exists($oldImageNamePath)){
-                File::delete($oldImageNamePath);
+            // Kemudian hapus partner dan cek apakah berhasil
+            if($partner->delete()){
+                //jika berhasil maka akan mengapus image yang digunakan partner juga
+                if(File::exists($oldImageNamePath)){
+                    File::delete($oldImageNamePath);
+                }
             }
+            deleteRec('Partner', Auth::id(), Auth::user()->role_id, $partner->name);
+            return redirect()->route('partner')->with('success', 'Partner Deleted Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        //throw $th;
         }
-        return redirect()->route('partner')->with('success', 'Partner Deleted Successfully');
     }
 
 

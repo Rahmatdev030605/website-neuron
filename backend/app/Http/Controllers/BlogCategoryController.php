@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ArticleCategory;
+use App\Models\ArticleCategoryGroup;
 use App\Models\EditRecord;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,22 +17,31 @@ class BlogCategoryController extends Controller
 
     public function blogcategoriesshow(Request $request)
     {
-        $categories = ArticleCategory::all();
+        $categories = ArticleCategory::with('articleCategoryGroup')->get();
+        return dd($categories);
         return view('cms.Blog.Categories.categories', compact('categories'));
     }
 
     public function deleteBlogCategory($id)
     {
+        try {
+            //code...
         $category = ArticleCategory::findOrFail($id); // Assuming Category is the model for categories
 
         if ($category) {
+
+            ArticleCategoryGroup::where('category_id', $category->id)->delete();
             // Delete the category
-            $categoryName = $category->name;
             $category->delete();
-            deleteRec('Blog Category', Auth::id(), Auth::user()->role_id, $categoryName);
+
+            //Data For Record
+            deleteRec('Blog Category', Auth::id(), Auth::user()->role_id, $category->name);
             return redirect()->route('blog-categories')->with('success', 'Category deleted successfully');
         } else {
             return redirect()->route('blog-categories')->with('error', 'Category not found');
+        }
+        } catch (\Throwable $th) {
+            return redirect()->route('blog-categories')->with('error', $th->getMessage());
         }
     }
 
@@ -43,6 +53,8 @@ class BlogCategoryController extends Controller
 
     public function store(Request $request)
     {
+        try {
+            //code...
         $request->validate([
             'name' => 'required'
         ]);
@@ -56,6 +68,9 @@ class BlogCategoryController extends Controller
         addRec('Blog Category', Auth::id(), Auth::user()->role_id, $category->name);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('blog-categories')->with('success', 'Blog Categories added successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->route('blog-categories')->with('error', $th->getMessage());
+        }
     }
 
     public function edit($id)
@@ -66,6 +81,8 @@ class BlogCategoryController extends Controller
 
     public function update(Request $request, $id)
     {
+        try {
+            //code...
         $category = ArticleCategory::findOrFail($id);
 
         // Validasi data yang akan diupdate
@@ -74,12 +91,14 @@ class BlogCategoryController extends Controller
         ]);
 
         // Update data portofolio
-        $categoryNameBefore = $category->name;
+        $categoryBefore = clone $category;
         $category->name = $request->input('name');
-
         $category->save();
-        editRec('Blog Category', Auth::id(), Auth::user()->role_id, $categoryNameBefore, $category->name);
+        editRec('Blog Category', Auth::id(), Auth::user()->role_id, $categoryBefore, $category, $categoryBefore->name);
         // Redirect ke halaman portofolio dengan pesan sukses
         return redirect()->route('blog-categories')->with('success', 'Blog category updated successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->route('blog-categories')->with('error', $th->getMessage());
+        }
     }
 }

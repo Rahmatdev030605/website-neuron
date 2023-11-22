@@ -1,6 +1,26 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+        .dropdown-menu {
+    min-width: 240px;
+    max-height: 240px;
+    overflow-y: auto;
+    }
+    .table-qualification{
+        min-width: 500px;
+        width: auto;
+        max-width: 800px;
+    }
+    .partner-button {
+  margin:0.5em 1em 0 0;
+}
+.job_quali_select{
+    display: none;
+    width: 0;
+    height: 0;
+}
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
@@ -17,11 +37,11 @@
         </div>
     </div>
 
-    <div id="success-message" class="mt-3">
-        @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+    <div id="info-message" class="mt-3">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
         @endif
     </div>
 
@@ -57,6 +77,12 @@
                 <div class="form-group">
                     <label for="responsibilities">Responsibilities</label>
                     <textarea class="form-control" id="responsibilities" name="responsibilities" rows="5" required>{{ $career->responsibilities }}</textarea>
+                </div>
+
+                <input class="job_quali_select" type="radio" value="{{$career->jobs_qualification_id}}" checked name="jobs_qualification_id">
+                <a class="show-job-qualification btn btn-success" data-qualification="{{$career->jobQualification}}">Show Job Qualification</a>
+
+                 <div class="mx-auto job-qualification-section">
                 </div>
 
                 <div class="form-group">
@@ -155,10 +181,6 @@
                 </ul>
             </div>
 
-
-
-
-
             <div class="form-group">
                 <div class="card-body">
                     <div class="card-header">
@@ -190,7 +212,7 @@
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="editPlusValueModalLabel">Edit Plus Value</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        l<span aria-hidden="true">&times;</span>
+                                        <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <form method="POST" action="{{ route('edit-plus-value', ['career_id' => $career->id, 'plusvalue_id' => $plusValue->id]) }}">
@@ -357,5 +379,88 @@
 </div>
 </div>
 </div>
+<script>
+$(document).ready(function () {
+
+    $('.show-job-qualification').click(function (e) {
+        e.preventDefault();
+        var data = $(this).data('qualification');
+        $('.job-qualification-section').append(`
+        <div class="btn-group dropdown">
+                        <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="false">
+                        Job Qualification
+                      </button>
+                      <div class="dropdown-menu">
+                        @foreach($jobQualification as $quali)
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <input type="radio" id="job_qualification_id{{$quali->id}}" name="jobs_qualification_id" class="partner-button dropdown-item" data-partner="{{$quali}}" value="{{$quali->id}}" {{($career->jobs_qualification_id == $quali->id)?'checked':''}}>
+                            </div>
+                            <div class="col-sm-8">
+                                <label for="job_qualification_id{{$quali->id}}">Job Qualification {{$quali->id}}</label>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                    </div>
+                  <table class="table-qualification table mx-auto" >
+                    <thead class="thead-dark"><tr><th colspan="3" class="text-center job-name">Job Qualification `+data.id+`</th></tr></thead>
+                    <tbody class="border border-dark mb-2">
+                        <tr>
+                            <td>Gender</td>
+                        <td>:</td>
+                        <td class="gender">`+data.gender+`</td>
+                    </tr>
+                        <tr>
+                            <td>Domicile</td>
+                        <td>:</td>
+                        <td class="domicile">`+data.domicile+`</td>
+                    </tr>
+                    <tr>
+                        <td>Education</td>
+                        <td>:</td>
+                        <td class="education">`+data.education+`</td>
+                    </tr>
+                    <tr>
+                        <td>Major</td>
+                        <td>:</td>
+                        <td class="major">`+data.major+`</td>
+                    </tr>
+                        <tr>
+                            <td>Other</td>
+                            <td>:</td>
+                            <td class="other">`+data.other+`</td>
+                        </tr>
+                    </tbody>
+                </table>
+        `)
+        $(this).remove();
+        $('.job_quali_select').remove();
+    })
+
+        $(document).on('click', '.partner-button', function(){
+        var partner = $(this).data('partner');
+
+        // Mengisi nilai tabel dengan sesuai
+        $('.table-qualification .job-name').text("Job Qualification "+ partner.id);
+        $('.table-qualification .gender').text( partner.gender);
+        $('.table-qualification .domicile').text(partner.domicile);
+        $('.table-qualification .education').text( partner.education);
+        $('.table-qualification .major').text(partner.major);
+        $('.table-qualification .other').text(partner.other);
+    })})
+</script>
+<script>
+    // Cari elemen pesan sukses
+    var successMessage = document.getElementById('info-message');
+
+    // Periksa apakah pesan sukses ada
+    if (successMessage) {
+        // Sembunyikan pesan sukses setelah 5 detik
+        setTimeout(function() {
+            successMessage.style.display = 'none';
+        }, 3000); // 5000 milidetik (5 detik)
+    }
+</script>
 
 @endsection

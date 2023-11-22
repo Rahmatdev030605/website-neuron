@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddNameToPartnerTable extends Migration
+class AddNeuronProgramsIdToNeuronProgramsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddNameToPartnerTable extends Migration
      */
     public function up()
     {
-        Schema::table('partners', function (Blueprint $table) {
-            $table->string('name');
+        Schema::table('neuron_programs', function (Blueprint $table) {
+            $table->unsignedBigInteger('neuronPrograms_id')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddNameToPartnerTable extends Migration
      */
     public function down()
     {
-        Schema::table('partners', function (Blueprint $table) {
-            $table->dropColumn('name');
+        Schema::table('neuron_programs', function (Blueprint $table) {
+            $table->dropColumn('neuronPrograms_id');
         });
     }
 }

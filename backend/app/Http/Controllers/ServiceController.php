@@ -8,6 +8,7 @@ use App\Http\Resources\ServiceResource;
 use App\Http\Resources\ServicePageResource;
 use Illuminate\Support\Facades\File;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Auth;
 
 class ServiceController extends Controller
 {
@@ -33,7 +34,7 @@ class ServiceController extends Controller
     }
 
     public function deleteService($id)
-    {
+    {try{
         $services = Service::findOrFail($id);
         $oldImagePath = public_path('img/service/') . basename($services['image']);
         if($services->delete()){
@@ -41,7 +42,11 @@ class ServiceController extends Controller
                 File::delete($oldImagePath);
             }
         }
+        deleteRec('Service', Auth::id(), Auth::user()->role_id, $services->name);
         return redirect()->route('service')->with('success', 'Service has been deleted successfully.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     public function create()
@@ -52,7 +57,7 @@ class ServiceController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {try{
         // Validasi data yang diterima dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
@@ -78,9 +83,12 @@ class ServiceController extends Controller
             $service->save();
         }
 
-
+        addRec('Service', Auth::id(), Auth::user()->role_id, $service->name);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('service')->with('success', 'Service added successfully.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     public function edit($id)
@@ -91,9 +99,9 @@ class ServiceController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    {try{
         $service = Service::findOrFail($id);
-
+        $serviceBefore = clone $service;
         // Validasi data yang akan diupdate
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
@@ -119,8 +127,12 @@ class ServiceController extends Controller
             // jika tidak ada gambar maka akan langsung disimpan di database
             $service->save();
         }
+        editRec('Service', Auth::id(), Auth::user()->role_id, $serviceBefore, $service, $serviceBefore->name);
         // Redirect ke halaman service dengan pesan sukses
         return redirect()->route('service')->with('success', 'Service updated successfully.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     //API

@@ -31,10 +31,17 @@
             </form>
         </div>
 
-        <div id="success-message" class="mt-3">
+        <div id="info-message" class="mt-3">
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
+                </div>
+            @endif
+        </div>
+        <div id="info-message" class="mt-3">
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
                 </div>
             @endif
         </div>
@@ -89,7 +96,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     // Cari elemen pesan sukses
-    var successMessage = document.getElementById('success-message');
+    var successMessage = document.getElementById('info-message');
 
     // Periksa apakah pesan sukses ada
     if (successMessage) {

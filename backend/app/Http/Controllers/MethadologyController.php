@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MethadologyCategory;
-
+use Illuminate\Support\Facades\Auth;
+use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\File;
 class MethadologyController extends Controller
 {
     public function methadology()
@@ -29,11 +31,20 @@ class MethadologyController extends Controller
     }
 
     public function deleteMethadology($id)
-    {
+    {try{
         $methodologyCategories = MethadologyCategory::findOrFail($id);
-        $methodologyCategories->delete();
-
+        $oldImageNamePath = public_path('img/methodology/' . basename($methodologyCategories['flow_image']));
+        if($methodologyCategories->delete()){
+            //jika berhasil maka akan mengapus image yang digunakan methodology juga
+            if(File::exists($oldImageNamePath)){
+                File::delete($oldImageNamePath);
+            }
+        };
+        deleteRec("Methadology", Auth::id(), Auth::user()->role_id, $methodologyCategories->category_name);
         return redirect()->route('methadology')->with('success', 'Blog has been deleted successfully.');
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     public function create()
@@ -42,18 +53,17 @@ class MethadologyController extends Controller
     }
 
     public function store(Request $request)
-    {
+    {try{
         // Validasi data yang diterima dari formulir
         $request->validate([
             'category_title' => 'required|string|max:255',
             'category_name' => 'required|string|max:255',
-            'flow_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048', 
+            'flow_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($request->hasFile('flow_image')) {
             $methadology = $request->file('flow_image');
-            $methadologyName = $methadology->getClientOriginalName();
-            $methadology->move('img/methodology', $methadologyName);
+            $methadologyName = Uuid::uuid4() . $methadology->getClientOriginalName();
             $methadologyPath = '/img/methodology/' . $methadologyName;
         }
 
@@ -63,11 +73,17 @@ class MethadologyController extends Controller
             'category_name' => $request->category_name,
             'flow_image' => url($methadologyPath)
         ]);
-        
-        $methadologies->save();
+
+        if($methadologies->save()){
+            $methadology->move('img/methodology', $methadologyName);
+        }
+        addRec("Methadology", Auth::id(), Auth::user()->role_id, $methadologies->category_name);
 
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('methadology')->with('success', 'Methadology added successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function edit($id)
@@ -77,8 +93,9 @@ class MethadologyController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
+    {try{
         $methodology = MethadologyCategory::findOrFail($id);
+        $methodologyBefore = clone $methodology;
 
         // Validasi data yang akan diupdate
         $validatedData = $request->validate([
@@ -94,19 +111,26 @@ class MethadologyController extends Controller
         // Periksa apakah ada file gambar yang diupload
         if ($request->hasFile('flow_image')) {
             $methadology = $request->file('flow_image');
-            $methadologyName = $methadology->getClientOriginalName();
-            $methadology->move('img/methodology', $methadologyName);
+            $methadologyName = Uuid::uuid4().$methadology->getClientOriginalName();
             $methadologyPath = '/img/methodology/' . $methadologyName;
-
+            $oldImageNamePath = public_path('img/methodology/'.basename($methodology['flow_image']));
             // Update path gambar portofolio
             $methodology->flow_image = url($methadologyPath);
+            // Simpan perubahan
+            if($methodology->save()){
+                $methadology->move('img/methodology', $methadologyName);
+                if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $methadologyName)){
+                    File::delete($oldImageNamePath);
+                }
+            };
         }
 
-        // Simpan perubahan
-        $methodology->save();
-
+        editRec('Methodology', Auth::id(), Auth::user()->role_id, $methodologyBefore, $methodology, $methodology->category_name);
         // Redirect ke halaman methadology dengan pesan sukses
         return redirect()->route('methadology')->with('success', 'Methadology updated successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function getMethadology(Request $request)

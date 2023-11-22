@@ -15,11 +15,12 @@ class NeuronProgram extends Model
         'title',
         'desc',
         'video',
-        'tagline'
+        'tagline',
+        'neuronPrograms_id'
     ];
 
     public function home()
     {
-        return $this->hasOne(Home::class, 'neuron_program_id');
+        return $this->belongsTo(Home::class, 'neuronPrograms_id');
     }
 }

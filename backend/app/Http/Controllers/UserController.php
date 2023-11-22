@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UserPending;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -22,27 +23,30 @@ class UserController extends Controller
                 ->orWhere('lastname', 'like', '%' . $search . '%')
                 ->get();
         } else {
-            // Jika tidak ada parameter pencarian, ambil semua data user 
+            // Jika tidak ada parameter pencarian, ambil semua data user
             $users = User::all();
         }
 
         return view('cms.User.user', compact('users'));
     }
     public function deleteUser($id)
-    {
+    {try{
         $user = User::findOrFail($id);
         $user->delete();
-
+        deleteRec('User', Auth::id(), Auth::user()->role_id, $user->firstname);
         return redirect()->route('user')->with('success', 'User has been deleted successfully.');
+        }catch(\Throwable $th){
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
     public function edit($id)
     {
-        $user = User::findOrFail($id); 
+        $user = User::findOrFail($id);
         return view('cms.User.edit', compact('user'));
     }
     public function update(Request $request, $id)
-    {
-        $user = User::findOrFail($id); 
+    {try{
+        $user = User::findOrFail($id);
 
         // Validasi data yang akan diupdate, jika diperlukan
         $validatedData = $request->validate([
@@ -63,5 +67,8 @@ class UserController extends Controller
 
         // Redirect dengan pesan sukses
         return redirect()->route('user', $id)->with('success', 'User has been updated successfully.');
+        }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 }

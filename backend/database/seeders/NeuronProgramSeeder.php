@@ -26,6 +26,7 @@ class NeuronProgramSeeder extends Seeder
             'desc' => 'Launch at 2022, Neuron 3.0 Start to Lead program aimed the Neuronworks team to reach out the corporate vision and mission. This program is dedicated to bolstering the passions and performance of all member within the Neuronworks family, thereby driving swift and substantial positive change for our organization. This Neuron 3.0 Start to Lead program has been designed to accelerate the realization of Leading self, Leading team & Leading business.',
             'video' => 'https://www.youtube.com/embed/Zvc3DgDhzhw',
             'tagline'=> 'Leading Self - Leading Team - Leading Business',
+            'neuronPrograms_id'=> '1',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

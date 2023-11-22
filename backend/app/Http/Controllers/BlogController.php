@@ -11,8 +11,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BlogDetailResource;
 use App\Http\Resources\ArticlePagesResource;
 use App\Models\ArticleCategoryGroup;
-use App\Models\EditRecord;
-
+use Illuminate\Support\Facades\File;
+use Ramsey\Uuid\Uuid;
 class BlogController extends Controller
 {
     public function blog()
@@ -38,13 +38,22 @@ class BlogController extends Controller
 
     public function deleteBlog($id)
     {
-        Article::where('user_id', $id)->delete();
-
+        try {
         $blogs = Article::findOrFail($id);
+        $oldImageNamePath = public_path('img/blog/' . basename($blogs['image']));
         $blogName = $blogs->title;
-        $blogs->delete();
+        ArticleCategoryGroup::where('article_id', $blogs->id)->delete();
+        if($blogs->delete()){
+            //jika berhasil maka akan mengapus image yang digunakan portofolio juga
+            if(File::exists($oldImageNamePath)){
+                File::delete($oldImageNamePath);
+            }
+        };
         deleteRec('Blog', Auth::id(), Auth::user()->role_id, $blogName);
         return redirect()->route('blog')->with('success', 'Blog has been deleted successfully.');
+        } catch (\Throwable $th) {
+            return redirect()->route('blog')->with('error', $th->getMessage());
+        }
     }
 
     public function create()
@@ -55,21 +64,18 @@ class BlogController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        try {
+            //code...
+            // return dd($request->all());
+        $dataBlog = $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
             'body' => 'required|string',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
             'author' => 'required',
-            'category' => 'nullable|array'
+            'categoryExist' => 'required|array',
+            'categoryNew' => 'nullable|array'
         ]);
-
-        if ($request->hasFile('image')) {
-            $profilePicture = $request->file('image');
-            $profilePictureName = $profilePicture->getClientOriginalName();
-            $profilePicture->move('img/blog', $profilePictureName);
-            $profilePicturePath = '/img/blog/' . $profilePictureName;
-        }
 
         // Simpan data blog ke database
         $blog = new Article([
@@ -77,43 +83,61 @@ class BlogController extends Controller
             'desc' => $request->desc,
             'body' => $request->body,
             'author' => $request->author,
-            'image' => url($profilePicturePath)
         ]);
-
         // Mengisi 'user_id' dengan ID pengguna yang sedang login
         $blog->user_id = Auth::id();
 
-        $blog->save();
-        $articleCategories = ArticleCategory::all();
-        $categoryGroup = $request->input('category', []);
-        foreach ($categoryGroup as $category) {
-            // Cek apakah kategori sudah ada
-            $existingCategory = $articleCategories->where('name', $category)->first();
+        $profilePicture = $request->file('image');
+        $profilePictureName = Uuid::uuid4() .  $profilePicture->getClientOriginalName();
+        $profilePicturePath = '/img/blog/' . $profilePictureName;
+        $blog['image'] = url($profilePicturePath);
 
-            if (!$existingCategory) {
-                // Kategori belum ada, tambahkan ke article category
-                $newCategory = ArticleCategory::create(['name' => $category]);
-                $blog->articleCategoryGroup()->articleCategory()->attach($newCategory);
-            }elseif($existingCategory){
-                $blog->articleCategoryGroup()->articleCategory()->attach($existingCategory);
+        $blog->save();
+
+        $profilePicture->move('img/blog', $profilePictureName);
+
+        // Memasukkan kategori yang sudah ada sebelumnya ke category group
+        foreach($dataBlog['categoryExist'] as $exist){
+            ArticleCategoryGroup::create([
+                'article_id' => $blog->id,
+                'category_id' => $exist
+            ]);
+        }
+
+        //Jika ada category baru maka akan membuat category baru lalu memasukkannya ke category group
+        if(isset($validatedData['categoryNew']) && is_array($validatedData['categoryNew'])){
+            foreach($dataBlog['categoryNew'] as $new){
+                $newCate = ArticleCategory::create([
+                    'name' => $new
+                ]);
+                ArticleCategoryGroup::create([
+                    'article_id' => $blog->id,
+                    'category_id' => $newCate->id
+                ]);
             }
         }
+
         addRec('Blog', Auth::id(), Auth::user()->role_id, $blog->title);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('blog')->with('success', 'Blog added successfully.');
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     public function viewBlog($id)
     {
-        $blog = Article::findOrFail($id);
-
-        return view('cms.Blog.view', compact('blog'));
+        try {
+            //code...
+            $blog = Article::findOrFail($id);
+            return view('cms.Blog.view', compact('blog'));
+        } catch (\Throwable $th) {
+            return redirect()->back()->with('error', $th->getMessage());
+        }
     }
 
     public function edit($id)
     {
-        //! CATEGORY ARTICLE
-        // $groupCategories =
         $categories = ArticleCategory::all();
         $blog = Article::findOrFail($id);
         return view('cms.Blog.edit', compact('blog', 'categories'));
@@ -121,82 +145,79 @@ class BlogController extends Controller
 
     public function update(Request $request, $id)
     {
+        try {
+            //code...
+
         $blog = Article::findOrFail($id);
+        $blogBefore = clone $blog;
 
         // Validasi data yang akan diupdate
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'desc' => 'required',
-            'articles_categories_id' => 'required|exists:articles_categories,id',
             'body' => 'required|string',
-            'author' => 'required'
+            'author' => 'required',
+            'categoryExist' => 'required|array',
+            'categoryNew' => 'nullable|array'
         ]);
-
         // Update data portofolio
         $blog->title = $request->input('title');
         $blog->desc = $request->input('desc');
-        $blog->articles_categories_id = $request->input('articles_categories_id');
         $blog->body = $request->input('body');
         $blog->author = $request->input('author');
+        // Mengisi 'user_id' dengan ID pengguna yang sedang login
+        $blog->user_id = Auth::id();
 
         // Periksa apakah ada file gambar yang diupload
         if ($request->hasFile('image')) {
             // Proses gambar baru jika ada
             $imageBlog = $request->file('image');
-            $imageBlogName = $imageBlog->getClientOriginalName();
-            $imageBlog->move('img/blog', $imageBlogName);
+            $imageBlogName = Uuid::uuid4() .  $imageBlog->getClientOriginalName();
             $imageBlogPath = '/img/blog/' . $imageBlogName;
 
+            // Mengambil nama yang lama untuk bahan perbandingan
+            $oldImageNamePath = public_path('img/blog/' . basename($blog['image']));
             // Update path gambar portofolio
             $blog->image = url($imageBlogPath);
+            if($blog->save()){
+                $imageBlog->move('img/blog', $imageBlogName);
+                if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $imageBlogName)){
+                    File::delete($oldImageNamePath);
+                }
+            }
+        }else{
+            // Simpan perubahan
+            $blog->save();
         }
 
-        // Mengisi 'user_id' dengan ID pengguna yang sedang login
-        $blog->user_id = Auth::id();
+        // Menghapus Category Group yang lama karena terdapat perubahan
+        ArticleCategoryGroup::where('article_id', $blog->id)->delete();
+        // Memasukkan kategori yang sudah ada sebelumnya ke category group
+        foreach ($validatedData['categoryExist'] as $key => $category) {
+            ArticleCategoryGroup::create([
+                'article_id' => $blog->id,
+                'category_id' => $category
+            ]);
+        }
 
-        // Simpan perubahan
-        $blog->save();
-        // editEdRec('Blog', Auth::id(), Auth::user()->role_id, $blog);
+        //Jika ada category baru maka akan membuat category baru lalu memasukkannya ke category group
+        if(isset($validatedData['categoryNew']) && is_array($validatedData['categoryNew'])){
+            foreach($validatedData['categoryNew'] as $new){
+                $newCate = ArticleCategory::create([
+                    'name' => $new
+                ]);
+                ArticleCategoryGroup::create([
+                    'article_id' => $blog->id,
+                    'category_id' => $newCate->id
+                ]);
+            }
+        }
+        editRec('Blog', Auth::id(), Auth::user()->role_id, $blogBefore, $blog, $blogBefore->title);
         // Redirect ke halaman portofolio dengan pesan sukses
         return redirect()->route('blog')->with('success', 'Blog updated successfully.');
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error', $th->getMessage());
     }
-
-
-    //TODO BLOG CATEGORY
-    public function blogCategory(){
-
-    }
-
-    public function storeCategory(Request $request, $article_id){
-        // Validasi Value
-        $validatedData = $request->validate([
-            'name' =>'required|max:255',
-        ]);
-
-        //Membuat instansi baru
-        $category = new ArticleCategory([
-            'name' => $request->input('name'),
-        ]);
-        // Menyimpan ke database
-        $category->save();
-
-        //Membuat instansi baru
-        $categoryGroup = new ArticleCategoryGroup([
-            'article_id' => $article_id,
-            'category_id' => $category->id,
-        ]);
-        // Menyimpan ke database
-        $categoryGroup->save();
-
-        return redirect()->route('blogCategory')->with('success', 'Category added successfully.');
-    }
-
-    public function updateCategory($category_id){
-
-    }
-
-    public function deleteCategory($article_id, $category_id){
-
     }
 
     //API
@@ -207,9 +228,9 @@ class BlogController extends Controller
         $query = Article::query();
 
         if ($category) {
-            //! ARTICLE CATEGORY
-            $query->whereHas('articleCategory', function ($query) use ($category) {
+            $query->whereHas('articleCategoryGroup.articleCategory', function ($query) use ($category) {
                 $query->where('name', $category);
+
             });
         }
 

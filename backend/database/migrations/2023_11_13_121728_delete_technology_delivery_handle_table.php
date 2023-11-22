@@ -43,13 +43,10 @@ class DeleteTechnologyDeliveryHandleTable extends Migration
             $table->foreign('portofolio_id')->references('id')->on('portofolios');
         });
 
-        Schema::create('portofolio_technologies', function (Blueprint $table) {
+        Schema::create('technology_categories', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
             $table->timestamps();
-            $table->unsignedBigInteger('portofolio_id');
-            $table->unsignedBigInteger('technologies_id');
-            $table->foreign('portofolio_id')->references('id')->on('portofolios');
-            $table->foreign('technologies_id')->references('id')->on('technologies');
         });
 
         Schema::create('technologies', function (Blueprint $table) {
@@ -61,10 +58,14 @@ class DeleteTechnologyDeliveryHandleTable extends Migration
             $table->foreign('technology_category_id')->references('id')->on('technology_categories');
         });
 
-        Schema::create('technology_categories', function (Blueprint $table) {
+
+        Schema::create('portofolio_technologies', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
             $table->timestamps();
+            $table->unsignedBigInteger('portofolio_id');
+            $table->unsignedBigInteger('technologies_id');
+            $table->foreign('portofolio_id')->references('id')->on('portofolios');
+            $table->foreign('technologies_id')->references('id')->on('technologies');
         });
     }
 }

@@ -1,11 +1,23 @@
 @extends('layouts.master')
 
 @section('content')
+<style>
+            #category-check{
+            pointer-events: none;
+            width: 0px;
+            height: 0px;
+        }
+        .item-of-dropdown{
+    min-width: 240px;
+    max-height: 240px;
+    overflow-y: auto;
+    }
+</style>
 <div class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Add Blog</h1>
+                <h1 class="m-0"><strong>Add Blog</strong> </h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -18,6 +30,13 @@
     </div>
 </div>
 <div class="container">
+    <div id="success-message" class="mt-3">
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+    </div>
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
@@ -26,7 +45,7 @@
                     @method('POST')
                     <div class="form-group">
                         <label for="image">Image</label>
-                        <input type="file" class="form-control-file" id="image" name="image" >
+                        <input type="file" class="form-control-file" id="image" name="image" accept="image/*">
                     </div>
 
                     <div class="form-group">
@@ -48,7 +67,8 @@
                         <label for="articles_categories_id">Category</label>
                         <div id="category-container" class="border border-secondary p-2 rounded">
                             <strong><span class="ml-1 badge badge-secondary border border-dark align-middle" id="categoryExample">
-                                <input type="checkbox" value="Example" disabled name="categoryNew[]" checked style="visibility: hidden">Example
+                                <input id="category-check" type="checkbox" value="Example" disabled name="categoryNew[]" checked
+                                style="visibility: hidden" >Example
                                 <a class="btn-outline-light rounded-circle p-1 fas fa-times delete-category" onclick="removeCategory('categoryExample')"></a>
                             </span></strong>
                         </div>
@@ -109,40 +129,36 @@
             var category = $(this).data('category');
             var categoryId = $(this).data('category-id');
             var elementId = 'category-exist-' + categoryId;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" value="Example" disabled name="categoryExist[]" checked style="visibility: hidden" value="'+categoryId+'">'+category
+            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check"name="categoryExist[]" checked style="visibility: hidden" value="'+categoryId+'">'
+                +category
                 +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+category+'\')"></a></span></strong>');
             categoryArrayExist.push(categoryId);
             categoryContainer.append(newInput);
             $(this).remove();
-            console.log(categoryArrayExist);
         });
 
         $(document).on('click','.button-category-new', function () {
             var category = $(this).data('category');
-            var categoryId = $(this).data('category-id');
             var elementId = 'category-new-' + categoryArrayNew.length;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle">'
+            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryNew[]" checked style="visibility: hidden" value="'+category+'">'
                 +category
                 +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+category+'\')"></a></span></strong>');
             categoryArrayNew.push(category);
             categoryContainer.append(newInput);
             $(this).remove();
-            console.log(categoryArrayNew);
         });
 
         $(document).on( 'click', '.new-category-form-add', function(e){
             e.preventDefault();
             var newCategory = $('.new-category-form').val();
-            console.log(newCategory);
             var elementId = 'category-new-' + categoryArrayNew.length;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle">'
+            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryNew[]" checked style="visibility: hidden" value="'+newCategory+'">'
                 +newCategory
                 +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+newCategory+'\')"></a></span></strong>');
             categoryArrayNew.push(newCategory);
             categoryContainer.append(newInput);
             $('.col-new-category').remove()
             $('.button-new-category').removeAttr('disabled');
-            console.log(categoryArrayNew);
         })
 
 
@@ -165,30 +181,18 @@
         var dropdownSection = $('.item-of-dropdown')
         if(categoryElement && categoryElementId.includes('exist')){
             var categoryId = categoryElementId.match(/\d+/);
-            if (categoryId) {
-                var categoryIdToRemove = Number(categoryId[0]);
-                categoryArrayExist = categoryArrayExist.filter(category => category !== categoryIdToRemove);
-                dropdownSection.append(`
-                <a class="dropdown-item button-category-exist" data-category="`+categoryName+`" data-category-id="`+categoryId+`">`+categoryName+`</a>
-                `)
-                // Remove the category element
-                categoryElement.remove();
-
-            } else {
-                console.error("Unable to extract numeric part from categoryElementId:", categoryElementId);
-            }
+            dropdownSection.append(`
+            <a class="dropdown-item button-category-exist" data-category="`+categoryName+`" data-category-id="`+categoryId+`">`+categoryName+`</a>
+            `)
+            // Remove the category element
+            categoryElement.remove();
         }else if(categoryElement && categoryElementId.includes('new')){
             if (categoryName) {
-                console.log('before:', categoryArrayNew);
-                categoryArrayNew = categoryArrayNew.filter(category => category !== categoryName);
-                console.log('after:', categoryArrayNew);
                 dropdownSection.append(`
-                <a class="dropdown-item button-category-new" data-category="`+categoryName+`" data-category-id="`+categoryId+`">`+categoryName+`</a>
+                <a class="dropdown-item button-category-new" data-category="`+categoryName+`">`+categoryName+`</a>
                 `)
                 // Remove the category element
                 categoryElement.remove();
-        }else {
-                console.error("Unable to extract numeric part from categoryElementId:", categoryElementId);
             }
         }
     }

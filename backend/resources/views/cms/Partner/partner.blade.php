@@ -100,7 +100,7 @@
 
         <!-- Modal Add Partner -->
         <div class="modal fade" id="addPartnerModal" tabindex="-1" aria-labelledby="addPartnerModal" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-m">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="viewPortofolioModalLabel">Add Partner</h5>
@@ -125,12 +125,10 @@
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </form>
                     </div>
                 </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -138,10 +136,10 @@
 
         <!-- Modal Edit Partner -->
         <div class="modal fade" id="editPartnerModal" tabindex="-1" aria-labelledby="editPartnerModal" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-m">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="viewPortofolioModalLabel">Add Partner</h5>
+                        <h5 class="modal-title" id="viewPortofolioModalLabel">Edit Partner</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -162,13 +160,11 @@
                                 <label for="name">Partner Name</label>
                                 <input type="text" class="form-control" id="name" name="name" required value="">
                             </div>
-                            <button type="submit" class="btn btn-primary">Add</button>
+                            <button type="submit" class="btn btn-success">Edit</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </form>
                     </div>
                 </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -176,7 +172,7 @@
 
         <!-- Modal Delete Partner -->
         <div class="modal fade" id="deletePartnerModal" tabindex="-1" aria-labelledby="deletePartnerModal" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-m">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="viewPortofolioModalLabel">Delete Partner</h5>
@@ -184,11 +180,14 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body">
-                        <form id="partner-delete" action="" method="POST">
+                    <div class="modal-body text-center  ">
+                        <form class="align-items-center mx-auto" id="partner-delete" action="" method="POST">
                             @csrf
                             @method('DELETE')
-                            <p>are you sure you want to delete <bold></bold></p>
+                            <div class="mx-auto">
+                                <img class="partner-img img-modal-delete" src="" alt="Partner Image">
+                            </div>
+                            <p>are you sure you want to delete <strong></strong></p>
                             <button type="submit" class="btn btn-danger">Delete</button>
                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         </form>
@@ -205,13 +204,14 @@
 {{-- SCRIPT UNTUK DELETE MODAL --}}
 <script>
     $(document).ready(function() {
-        $('.delete-btn').click(function() {
+        $('.delete-btn').on('click', function (event) {
             var partner = $(this).data('partner-for-del');
             // Set the value for the delete form action
             $('#partner-delete').attr('action','/partner/'+partner.id+'/delete');
 
             // Update the text in the modal body
-            $('#deletePartnerModal').find('.modal-body').find('bold').text(partner.name);
+            $('#deletePartnerModal').find('.modal-body').find('.img-modal-delete').attr('src', partner.image);
+            $('#deletePartnerModal').find('.modal-body').find('strong').text(partner.name);
         });
     });
 </script>

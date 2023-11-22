@@ -17,7 +17,7 @@ class JobQualificationSeeder extends Seeder
     public function run()
     {
         DB::statement('ALTER TABLE jobs_qualification AUTO_INCREMENT=1');
-        
+
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('jobs_qualification')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');

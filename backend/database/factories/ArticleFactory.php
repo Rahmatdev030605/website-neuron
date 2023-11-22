@@ -15,12 +15,11 @@ class ArticleFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'desc' => $this->faker->paragraph,
+            'desc' => $this->faker->paragraph($nbSentence = 3),
             'body' => $this->faker->text,
             'author' => $this->faker->name,
             'image' => $this->faker->imageUrl,
             'user_id' => \App\Models\User::all()->random()->id,
-            'articles_categories_id' => \App\Models\ArticleCategory::all()->random()->id,
             'created_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
             'updated_at' => $this->faker->dateTimeBetween('-1 year', 'now'),
         ];

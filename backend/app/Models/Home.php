@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
- 
+
 class Home extends Model
 {
     use HasFactory;
@@ -23,9 +23,9 @@ class Home extends Model
         'article_desc',
     ];
 
-    public function neuronProgram()
+    public function neuronPrograms()
     {
-        return $this->belongsTo(NeuronProgram::class);
+        return $this->hasMany(NeuronProgram::class, 'neuronPrograms_id');
     }
 
     public function testimonials()

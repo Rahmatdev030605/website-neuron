@@ -110,7 +110,7 @@
               </li>
             </ul>
           </li>
-          @if(Auth::user()->role_id === 1 || Auth::user()->role_id === 2) <!-- Check if user role is superadmin -->
+          @if(Auth::user()->role_id === 1) <!-- Check if user role is superadmin -->
           <li class="nav-item" id="user">
             <a href="{{ route('user') }}" class="nav-link">
             <i class="nav-icon fas fa-user"></i>

@@ -5,7 +5,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Blog</h1>
+                <h1 class="m-0"><strong>Blog</strong></h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
@@ -42,6 +42,14 @@
             @if(session('success'))
                 <div class="alert alert-success">
                     {{ session('success') }}
+                </div>
+            @endif
+        </div>
+
+        <div id="success-message" class="mt-3">
+            @if(session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
                 </div>
             @endif
         </div>
@@ -134,10 +142,17 @@
                 @foreach($blogs as $blog)
                 <div class="blog-card">
                     <div class="blog-head">
-                        <h6 class="blog-category">test | </h6>
+                        <h6 class="blog-category">{{$blog->author}} | </h6>
                         <p class="blog-date">{{ $blog->created_at->format('d/m/Y') }}</p>
                     </div>
                     <img class="blog-img" src="{{ asset($blog->image) }}" alt="{{ $blog->image }}">
+                    <div id="category-container" >
+                        @foreach ($blog->articleCategoryGroup as $cateGroup)
+                        <strong><span class="ml-0 badge badge-danger border border-dark align-middle" id="categoryExample">
+                            {{$cateGroup->articleCategory->name}}
+                        </span></strong>
+                        @endforeach
+                        </div>
                     <h5 class="card-title">{{ $blog->title }}</h5>
                     <p class="card-text">{{\Illuminate\Support\Str::limit ($blog->desc, 95) }}</p>
                     <div class="float-right">

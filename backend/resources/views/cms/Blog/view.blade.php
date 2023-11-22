@@ -39,7 +39,13 @@
                     <p>{{ $blog->created_at->format('d/m/Y') }} | </p>
                     <p class="pl-1">{{ $blog->author }}</p>
                 </div>
-                <h3>{{}}</h3>
+                <div id="category-container" >
+                @foreach ($blog->articleCategoryGroup as $cateGroup)
+                <strong><span class="ml-0 badge badge-danger border border-dark align-middle" id="categoryExample">
+                    {{$cateGroup->articleCategory->name}}
+                </span></strong>
+                @endforeach
+                </div>
                 <h1 class="text-bold" style="font-size: 52px">{{ $blog->title }}</h1>
                 <p class="text-medium" style="font-size: 16px;">{{ $blog->desc }}</p>
                 <h5 class="text-bold" style="font-family: Raleway; font-size: 22px; color: red;">//</h5>

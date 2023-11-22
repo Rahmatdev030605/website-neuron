@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Facades\Auth;
 
 class PortofolioController extends Controller
 {
@@ -80,6 +81,7 @@ class PortofolioController extends Controller
     // store portofolio
     public function store(Request $request)
     {
+        try{
         // Validasi data yang diterima dari formulir
         $request->validate([
             'name' => 'required|string|max:255',
@@ -122,9 +124,12 @@ class PortofolioController extends Controller
             // jika tidak ada image maka akan langsung di simpan ke database
             $portofolio->save();
         }
-
+        addRec('Portofolio', Auth::id(), Auth::user()->role_id, $portofolio->name);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
         return redirect()->route('portofolio')->with('success', 'Portfolio added successfully.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     public function edit($id)
@@ -145,6 +150,7 @@ class PortofolioController extends Controller
         try {
             //code...
             $portofolio = Portofolio::findOrFail($id);
+            $portfolioBefore = clone $portofolio;
 
             // Validasi data yang akan diupdate
             $validatedData = $request->validate([
@@ -189,16 +195,18 @@ class PortofolioController extends Controller
                 // jika tidak ada image maka akan langsung update
                 $portofolio->save();
             }
+            editRec('Portofolio', Auth::id(), Auth::user()->role_id, $portfolioBefore, $portofolio, $portfolioBefore->name);
             // Redirect ke halaman portofolio dengan pesan sukses
             return redirect()->route('portofolio')->with('success', 'Portofolio updated successfully.');
-        } catch (\Exception $th) {
-            return redirect()->route('portofolio')->with('error', 'Failed to Update Portofolio.');
+        }catch(\Throwable $th){
+            return redirect()->back()->with('error', $th->getMessage());
         }
     }
 
     // delete portofolio
     public function deletePortofolio($id)
     {
+        try{
         $portofolios = Portofolio::findOrFail($id);
         // Mengambil nama image yang dipakai portofolio
         $oldImageNamePath = public_path('img/portofolios/'.basename($portofolios['image']));
@@ -210,8 +218,11 @@ class PortofolioController extends Controller
                 File::delete($oldImageNamePath);
             }
         }
-
+        deleteRec('Portofolio', Auth::id(), Auth::user()->role_id, $portofolios->name);
         return redirect()->route('portofolio')->with('success', 'Portofolio has been deleted successfully.');
+    }catch(\Throwable $th){
+        return redirect()->back()->with('error', $th->getMessage());
+    }
     }
 
     // API
@@ -252,7 +263,7 @@ class PortofolioController extends Controller
         }else{
             $portofolioQuery = Portofolio::where('service_id', $service_id);
         }
-        
+
         // Buat kueri berdasarkan sort_by dan filter_by
         if (!is_null($startYear)) {
             $portofolioQuery->whereYear('created_at', '>=', $startYear);

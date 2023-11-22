@@ -107,38 +107,59 @@
         <div class="row">
           <!-- Left col -->
           <section class="col-lg-7 connectedSortable">
-            <!-- Custom tabs (Charts with tabs)-->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-chart-pie mr-1"></i>
-                  Sales
-                </h3>
-                <div class="card-tools">
-                  <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                    </li>
-                  </ul>
+            <!-- solid sales graph -->
+            <div class="card bg-gradient-info">
+                <div class="card-header border-0">
+                    <h3 class="card-title">
+                    <i class="fas fa-th mr-1"></i>
+                    Visitor Graph
+                    </h3>
+
+                    <div class="card-tools">
+                        <button type="button" class="btn btn-primary btn-sm daterange-chart" title="Date range">
+                            <i class="far fa-calendar-alt"></i>
+                          </button>
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    </div>
                 </div>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
-                  <div class="chart tab-pane active" id="revenue-chart"
-                       style="position: relative; height: 300px;">
-                      <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                   </div>
-                  <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                  </div>
+                <div class="card-body">
+                    <canvas class="chart" id="line-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                 </div>
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
+                <!-- /.card-body -->
+                <div class="card-footer bg-transparent">
+                    <div class="row">
+                    <div class="col-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" value="20" data-width="60" data-height="60"
+                                data-fgColor="#39CCCC">
+
+                        <div class="text-white">Mail-Orders</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" value="50" data-width="60" data-height="60"
+                                data-fgColor="#39CCCC">
+
+                        <div class="text-white">Online</div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-4 text-center">
+                        <input type="text" class="knob" data-readonly="true" value="30" data-width="60" data-height="60"
+                                data-fgColor="#39CCCC">
+
+                        <div class="text-white">In-Store</div>
+                    </div>
+                    <!-- ./col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.card-footer -->
+                </div>
+                <!-- /.card -->
 
             <!-- DIRECT CHAT -->
             <div class="card direct-chat direct-chat-primary">
@@ -155,7 +176,7 @@
               </div>
               <!-- /.card-header -->
               <div class="card-body">
-                <table class="table text-center">
+                <table class="table">
                     <tr>
                         <th>Action</th>
                         <th>Section</th>
@@ -168,7 +189,7 @@
                     <tr>
                         <td>{{$record->action}}</td>
                         <td>{{$record->section}}</td>
-                        <td>{{$record->message}}</td>
+                        <td class="w-25">{!! $record->message !!}</td>
                         <td>{{$record->user->firstname ." ". $record->user->lastname}}</td>
                         <td>{{$record->user->role->role_name}}</td>
                         <td>{{$record->created_at}}</td>
@@ -197,7 +218,7 @@
               <div class="card-header border-0">
                 <h3 class="card-title">
                   <i class="fas fa-map-marker-alt mr-1"></i>
-                  Visitors
+                  Visitors Geomap
                 </h3>
                 <!-- card tools -->
                 <div class="card-tools">
@@ -326,4 +347,184 @@
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
+<script>
+
+$(function () {
+  'use strict'
+
+  var mapData={};
+  var arrayMap = {!!json_encode($dataMap)!!}
+  for(var i = 0; i < arrayMap[0].length; i++){
+    mapData[arrayMap[0][i]] = arrayMap[1][i];
+  }
+  console.log(mapData);
+
+
+
+
+  // jvectormap data
+  var visitorsData = {
+    US: 398, // USA
+    SA: 400, // Saudi Arabia
+    CA: 1000, // Canada
+    DE: 500, // Germany
+    FR: 760, // France
+    CN: 300, // China
+    AU: 700, // Australia
+    BR: 600, // Brazil
+    IN: 800, // India
+    GB: 320, // Great Britain
+    RU: 3000 // Russia
+  }
+  // World map by jvectormap
+  $('#world-map').vectorMap({
+    map: 'indonesia_id',
+    backgroundColor: 'transparent',
+    regionStyle: {
+      initial: {
+        fill: 'rgba(255, 255, 255, 0.7)',
+        'fill-opacity': 1,
+        stroke: 'rgba(0,0,0,.2)',
+        'stroke-width': 1,
+        'stroke-opacity': 1
+      }
+    },
+    series: {
+      regions: [{
+        values: visitorsData,
+        scale: ['#ffffff', '#0154ad'],
+        normalizeFunction: 'polynomial'
+      }]
+    },
+    onRegionLabelShow: function (e, el, code) {
+      if (typeof visitorsData[code] !== 'undefined') {
+        el.html(el.html() + ': ' + visitorsData[code] + ' new visitors')
+      }
+    },onRegionOver: function (e, code) {
+      // Tindakan yang akan diambil saat provinsi dihover
+      // Misalnya, menampilkan data kunjungan untuk provinsi tertentu
+      if (typeof visitorsData[code] !== 'undefined') {
+          console.log('Data kunjungan untuk ' + code + ': ' + visitorsData[code]);
+          // Tambahkan logika atau tindakan lain sesuai kebutuhan Anda
+      }
+  }
+  })
+
+
+
+
+
+
+
+      // Sales graph chart
+  var salesGraphChartCanvas = $('#line-chart').get(0)
+  salesGraphChartCanvas.getContext('2d')
+  // $('#revenue-chart').get(0).getContext('2d');
+
+  var salesGraphChartData = {
+    // labels: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2', '2012 Q3', '2012 Q4', '2013 Q1', '2013 Q2'],
+    labels: {!! json_encode($dataGraph[0]) !!},
+    datasets: [
+      {
+        label: 'Visitors',
+        fill: false,
+        borderWidth: 2,
+        lineTension: 0,
+        spanGaps: true,
+        borderColor: '#efefef',
+        pointRadius: 3,
+        pointHoverRadius: 7,
+        pointColor: '#efefef',
+        pointBackgroundColor: '#efefef',
+        data: {!! json_encode($dataGraph[1]) !!}
+        // data: [2666, 2778, 4912, 3767, 6810, 5670, 4820, 15073, 10687, 8432]
+      }
+    ]
+  }
+
+  var salesGraphChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 5,
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: true,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var salesGraphChart = new Chart(salesGraphChartCanvas, { // lgtm[js/unused-local-variable]
+    type: 'line',
+    data: salesGraphChartData,
+    options: salesGraphChartOptions
+  })
+
+
+
+  $('.daterange-chart').daterangepicker({
+    ranges: {
+      Today: [moment(), moment()],
+      Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    },
+    startDate: moment().subtract(29, 'days'),
+    endDate: moment()
+  }, function (start, end) {
+    // eslint-disable-next-line no-alert
+    var startDate = start.format('YYYY-MM-DD')
+    var endDate = end.format('YYYY-MM-DD')
+    $.ajax({
+        type: "GET",
+        url: '{{route('ga-costum')}}',
+        dataType: "json",
+        data: {
+        'startDate': start.format('YYYY-MM-DD'),
+        'endDate': end.format('YYYY-MM-DD'),
+        },
+        success: function (response) {
+            salesGraphChartData.labels = response[0]
+            salesGraphChartData.datasets[0].data = response[1];
+            salesGraphChart.update()
+        },
+        error: function (xhr, status, error) {
+        console.log('gagal');
+            // console.log(xhr.responseText);  // Tampilkan respon kesalahan lengkap
+            // console.log(status);  // Tampilkan status kesalahan (misalnya: "Not Found", "Internal Server Error", dll.)
+            // console.log(error);  // Tampilkan pesan kesalahan jika ada
+    }
+    });
+  })
+
+
+
+
+
+
+})
+</script>
 @endsection
