@@ -23,49 +23,25 @@ class ValueListSeeder extends Seeder
 
         DB::table('value_lists')->insert([
             [
-                'title' => 'INNOVATION FOR SOLUTIONS',
-                'desc' => ' Every challenge is an opportunity, and every solution is a step toward progress.',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg', //random vall
+                'title' => 'Satisfied Customer',
+                'desc' => ' Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
+                'image' => 'img/valuelist/val_img_1.jpg', //random vall
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'title' => 'CUSTOMER SATISFACTION',
-                'desc' => 'Delivering Professional Service with a Focus on Win-Win Solutions, Ensuring Rapid Responses within 24 Hours.',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
+                'title' => 'Inovation for Solutions',
+                'desc' => 'Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
+                'image' => 'img/valuelist/val_img_2.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
-                'title' => 'RELIABLE APPLICATION',
-                'desc' => 'We are committed to always focusing and being disciplined in adhering to scientific principles in developing reliable software to create zero-bug software.',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
-                'about_id' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'title' => 'EFFECTIVE TEAMWORK',
-                'desc' => 'An Environment of Collaborative Excellence, Mutual Respect, and Common Objectives',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
-                'about_id' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'title' => 'INNOVATE IN TECHNOLOGICAL ADVANCES',
-                'desc' => 'Explore emerging technologies and ideate creative solutions.',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
-                'about_id' => '1',
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ],
-            [
-                'title' => 'RESPONSIBILITY AND  PRIORITY IN EVERY PROJECT',
-                'desc' => 'Accountable for every aspect of a project',
-                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
+                'title' => 'Excellent Software',
+                'desc' => 'Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
+                'image' => 'img/valuelist/val_img_3.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
