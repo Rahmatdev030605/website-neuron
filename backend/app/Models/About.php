@@ -14,6 +14,8 @@ class About extends Model
     protected $fillable = [
         'hero_title',
         'hero_desc',
+        'about_title',
+        'about_desc',
         'hero_image',
         'vision_desc',
         'vision_image',

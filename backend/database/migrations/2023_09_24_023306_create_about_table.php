@@ -18,6 +18,7 @@ class CreateAboutTable extends Migration
             $table->string('about_title');
             $table->string('about_desc');
             $table->string('hero_title');
+            $table->string('mission_title');
             $table->string('hero_image');
             $table->string('vision_title');
             $table->string('vision_desc');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Partner;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class AboutResource extends JsonResource
@@ -14,19 +15,15 @@ class AboutResource extends JsonResource
      */
     public function toArray($request)
     {
+        $partners = Partner::all();
         return [
             'hero_title' => $this->hero_title,
-            'hero_desc' => $this->hero_desc,
             'hero_image' => $this->hero_image,
-            'activity_image' => $this->activity_image,
+            'about_title' => $this->about_title,
+            'about_desc' => $this->about_desc,
             'vision_title' => $this->vision_title,
-            'vision_subtitle' => $this->vision_subtitle,
             'vision_desc' => $this->vision_desc,
-            'vision_image' => $this->vision_image,
-            'mission_image' => $this->mission_image,
             'mission_title' => $this->mission_title,
-            'mission_subtitle' => $this->mission_subtitle,
-            'mission_desc' => $this->mission_desc,
             'mission_lists' => $this->missionLists->pluck('name')->toArray(),
             'value_title' => $this->value_title,
             'value_subtitle' => $this->value_subtitle,
@@ -37,32 +34,27 @@ class AboutResource extends JsonResource
                     'desc' => $valueList->desc,
                 ];
             }),
-            'director_title' => $this->director_title,
-            'director_subtitle' => $this->director_subtitle,
-            'director_lists' => $this->directorLists->map(function ($directorList) {
+            'part_cert_title' => $this->part_cert_title,
+            'part_cert_desc' => $this->part_cert_desc,
+            'partnership_title' => $this->partnership_title,
+            'partner_list' => $partners->map(function ($partner) {
                 return [
-                    'id' => $directorList->id,
-                    'image' => $directorList->image,
-                    'name' => $directorList->name,
-                    'position' => $directorList->position,
-                    'link' => $directorList->link,
+                    'id' => $partner->id,
+                    'image' => $partner->image
                 ];
-            }),
-            'strategic_title' => $this->strategic_title,
-            'strategic_subtitle' => $this->strategic_subtitle,
-            'management_strategies' => $this->managementStrategies->map(function ($managementStrategy) {
+            })->chunk(12)->toArray(),
+            'certificate_title' => $this->certification_title,
+            'certificate_list' => $this->certificate_list->map(function ($certificate) {
+
                 return [
-                    'id' => $managementStrategy->id,
-                    'title' => $managementStrategy->title,
-                    'management_strategy_lists' => $managementStrategy->managementStrategyLists->map(function ($managementStrategyList) {
-                        return [
-                            'id' => $managementStrategyList->id,
-                            'title' => $managementStrategyList->title,
-                            'desc' => $managementStrategyList->desc,
+                    'id' => $certificate->id,
+                    'image' => $certificate->image,
+                    'title' => $certificate->title,
+                    'company' => $certificate->company,
+                    'published' => $certificate->created_at
+
                         ];
-                    }),
-                ];
-            }),
+                    })->chunk(6)->toArray(),    
         ];
     }
 }
