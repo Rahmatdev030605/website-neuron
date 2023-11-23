@@ -14,6 +14,7 @@ class ValueList extends Model
     protected $fillable = [
         'title',
         'desc',
+        'image',
         'about_id',
     ];
 

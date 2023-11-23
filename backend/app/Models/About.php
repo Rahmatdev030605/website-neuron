@@ -15,21 +15,15 @@ class About extends Model
         'hero_title',
         'hero_desc',
         'hero_image',
-        'activity_image',
-        'vision_title',
-        'vision_subtitle',
         'vision_desc',
         'vision_image',
         'mission_title',
-        'mission_subtitle',
-        'mission_desc',
-        'mission_image',
         'value_title',
         'value_subtitle',
-        'director_title',
-        'director_subtitle',
-        'strategic_title',
-        'strategic_subtitle',
+        'partnership_title',
+        'part_cert_title',
+        'part_cert_desc',
+        'certification_title'
     ];
 
     public function ctaContact()
@@ -56,8 +50,8 @@ class About extends Model
     {
         return $this->hasMany(ManagementStrategy::class, 'about_id');
     }
-    public function certification()
+    public function certificate_list()
     {
-        return $this->hasMany(Certification::class, 'about_id');
+        return $this->hasMany(Certificate::class, 'about_id');
     }
 }

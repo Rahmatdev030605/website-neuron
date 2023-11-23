@@ -23,8 +23,8 @@ class AboutSeeder extends Seeder
 
         DB::table('about')->insert([
 
-            'about_title' => '',
-            'about_desc' => '',
+            'about_title' => 'Neuron Works',
+            'about_desc' => 'Neuron Works',
             'hero_title' => 'Transform Your Idea Into Best Product Digital Solutions',
             'hero_image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
             'vision_title' => 'Our Vision',
@@ -32,9 +32,10 @@ class AboutSeeder extends Seeder
             'vision_image' => 'http://127.0.0.1:8000/img/about/vission_image.jpg',
             'value_title' => 'Our Values',
             'value_subtitle' => 'Foundation of Our Core Values',
-            'part_cert_title' => '',
-            'part_cert_desc' => '',
-            'certification_title' => '',
+            'partnership_title' => 'Neuron Works',
+            'part_cert_title' => 'Neuron Works',
+            'part_cert_desc' => 'Neuron Works',
+            'certification_title' => 'Neuron Works',
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

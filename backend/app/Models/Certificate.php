@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Certification extends Model
+class Certificate extends Model
 {
     use HasFactory;
     protected $table = 'certificate';
@@ -16,8 +16,8 @@ class Certification extends Model
         'about_id',
     ];
 
-    public function certification()
+    public function about()
     {
-        return $this->belongsTo(Certification::class, 'about_id');
+        return $this->belongsTo(Certificate::class, 'about_id');
     }
 }

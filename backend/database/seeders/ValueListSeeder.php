@@ -25,6 +25,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'INNOVATION FOR SOLUTIONS',
                 'desc' => ' Every challenge is an opportunity, and every solution is a step toward progress.',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg', //random vall
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -32,6 +33,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'CUSTOMER SATISFACTION',
                 'desc' => 'Delivering Professional Service with a Focus on Win-Win Solutions, Ensuring Rapid Responses within 24 Hours.',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -39,6 +41,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'RELIABLE APPLICATION',
                 'desc' => 'We are committed to always focusing and being disciplined in adhering to scientific principles in developing reliable software to create zero-bug software.',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -46,6 +49,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'EFFECTIVE TEAMWORK',
                 'desc' => 'An Environment of Collaborative Excellence, Mutual Respect, and Common Objectives',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -53,6 +57,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'INNOVATE IN TECHNOLOGICAL ADVANCES',
                 'desc' => 'Explore emerging technologies and ideate creative solutions.',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -60,6 +65,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'RESPONSIBILITY AND  PRIORITY IN EVERY PROJECT',
                 'desc' => 'Accountable for every aspect of a project',
+                'image' => 'http://127.0.0.1:8000/img/about/hero_image.jpg',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),

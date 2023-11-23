@@ -17,6 +17,7 @@ class CreateValueListsTable extends Migration
             $table->id();
             $table->string('title');
             $table->string('desc');
+            $table->string('image');
             $table->timestamps();
         });
     }
