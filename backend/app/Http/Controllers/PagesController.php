@@ -16,7 +16,6 @@ class PagesController extends Controller
     {
         return view('cms.Pages.pages');
     }
-
     public function previewHome()
     {
         $dataHome = Home::with('heroTitleLists', 'neuronPrograms')->findOrFail(1);

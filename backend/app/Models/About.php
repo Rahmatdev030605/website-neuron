@@ -56,4 +56,8 @@ class About extends Model
     {
         return $this->hasMany(ManagementStrategy::class, 'about_id');
     }
+    public function certification()
+    {
+        return $this->hasMany(Certification::class, 'about_id');
+    }
 }

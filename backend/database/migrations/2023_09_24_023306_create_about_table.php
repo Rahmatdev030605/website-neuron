@@ -15,24 +15,19 @@ class CreateAboutTable extends Migration
     {
         Schema::create('about', function (Blueprint $table) {
             $table->id();
+            $table->string('about_title');
+            $table->string('about_desc');
             $table->string('hero_title');
-            $table->text('hero_desc');
             $table->string('hero_image');
-            $table->string('activity_image');
             $table->string('vision_title');
-            $table->string('vision_subtitle');
             $table->string('vision_desc');
             $table->string('vision_image');
-            $table->string('mission_title');
-            $table->string('mission_subtitle');
-            $table->string('mission_desc');
-            $table->string('mission_image');
             $table->string('value_title');
             $table->string('value_subtitle');
-            $table->string('director_title');
-            $table->string('director_subtitle');
-            $table->string('strategic_title');
-            $table->string('strategic_subtitle');
+            $table->string('part_cert_title');
+            $table->string('part_cert_desc');
+            $table->string('partnership_title');
+            $table->string('certification_title');
             $table->timestamps();
         });
     }

@@ -23,20 +23,22 @@ class CertificateSeeder extends Seeder
 
         DB::table('certificate')->insert([
             [
+                'title' => '',
+                'company' => '',
                 'image' => 'http://127.0.0.1:8000/img/certificate/Award Logo.png',
-                'home_id' => '1',
+                'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'image' => 'http://127.0.0.1:8000/img/certificate/Award Logo.png',
-                'home_id' => '1',
+                'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
             [
                 'image' => 'http://127.0.0.1:8000/img/certificate/Award Logo.png',
-                'home_id' => '1',
+                'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
