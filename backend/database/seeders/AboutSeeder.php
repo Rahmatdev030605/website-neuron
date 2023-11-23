@@ -30,7 +30,7 @@ class AboutSeeder extends Seeder
             'vision_title' => "Enhancing customer performance by making improvements, refinements, and advancements in every aspect of the customer's business process through superior and best IT solutions",
             'mission_title' => 'Mission',
             'vision_desc' => 'Improving customer performance by making improvements. Improvements and progress in all corners of the customers business processes through superior and best IT solutions.',
-            'vision_image' => 'img/about/ilustrasi.jpg',
+            'vision_image' => 'img/about/vision_img.jpg',
             'value_title' => 'Our Values',
             'value_subtitle' => 'Our company values are at the core of who we are.',
             'partnership_title' => 'PARTNERSHIPS & CERTIFICATIONS',

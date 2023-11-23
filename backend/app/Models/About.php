@@ -21,7 +21,6 @@ class About extends Model
         'vision_image',
         'mission_title',
         'value_title',
-        'value_subtitle',
         'partnership_title',
         'part_cert_title',
         'part_cert_desc',

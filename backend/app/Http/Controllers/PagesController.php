@@ -122,6 +122,7 @@ class PagesController extends Controller
                 'hero_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'about_title' => 'required|string|max:500',
                 'about_desc' => 'required|string',
+                'vision_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
                 'vision_title' => 'required|string|max:500',
                 'vision_desc' => 'required|string|max:500',
                 'mission_title' => 'required|string|max:500',
@@ -154,14 +155,10 @@ class PagesController extends Controller
 
             //Menyimpan gambar hero_image
             $hasHeroImage = false;
-
-
-            //Menyimpan gambar hero_image
             if ($req->hasFile('hero_image')) {
                 $heroImage = $req->file('hero_image');
                 $heroImageName = $heroImage->getClientOriginalName();
                 $heroImagePath = '/img/about/' . $heroImageName;
-
                 $aboutUpdate->hero_image = url($heroImagePath);
                 $hasHeroImage = true;
 
@@ -171,10 +168,9 @@ class PagesController extends Controller
             if ($req->hasFile('vision_image')) {
                 $visionImage = $req->file('vision_image');
                 $visionImageName = $visionImage->getClientOriginalName();
-                $visionImagePath = '/img/about' . $visionImageName;
+                $visionImagePath = '/img/about/' . $visionImageName;
                 $aboutUpdate->vision_image = url($visionImagePath);
                 $hasVisionImage = true;
-
 
             }
             $oldHeroImageName = basename($aboutUpdate['hero_image']);

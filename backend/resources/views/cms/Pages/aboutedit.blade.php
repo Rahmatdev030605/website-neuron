@@ -1,13 +1,15 @@
 @extends('layouts.master')
 @section('content')
 <style>
-    #image-tampil {
+    #image-tampil,
+    #vision-image {
         width: 500px;
         height: auto;
         border: 1px solid black;
     }
 
-    #imageDB {
+    #imageDB,
+    #img-vision {
         width: 100%;
         height: 100%;
         object-fit: cover;
@@ -59,11 +61,20 @@
                     <label for="vision_title">Vision Title</label>
                     <input type="text" name="vision_title" class="form-control" value="{{ old('vision_title', $dataAbout->vision_title) }}" required maxlength="255">
                 </div>
-                
+
                 <!-- Input field for 'vision_desc' -->
                 <div class="form-group">
                     <label for="vision_desc">Vision Description</label>
                     <textarea type="text" name="vision_desc" class="form-control" required maxlength="255" rows="4">{{ old('vision_desc', $dataAbout->vision_desc) }}</textarea>
+                </div>
+
+                <!-- Input field for 'hero_image' -->
+                <div class="form-group">
+                    <label for="vision_image">Vision Image</label><br>
+                    <div id="vision-image">
+                        <img id="img-vision" src="{{asset($dataAbout->vision_image)}}" alt="gagal">
+                    </div>
+                    <input type="file" name="vision_image" class="form-control" accept="image/*">
                 </div>
 
                 <!-- Input field for 'mission_title' -->
@@ -112,6 +123,8 @@
     </div>
     <!-- /.card -->
 </div>
+
+
 
 @endsection
 `
