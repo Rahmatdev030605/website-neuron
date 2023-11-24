@@ -19,6 +19,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\Register\RegisterController;
+use App\Http\Controllers\ValueListController;
 use App\Models\About;
 
 /*
@@ -200,6 +201,16 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/career/jobQualification/{id}/update', [JobQualificationController::class, 'updateJobQualification'])->name('career.update-jobQualification');
     Route::get('/career/jobQualification/add', [JobQualificationController::class, 'addJobQualification'])->name('career.add-jobQualification');
     Route::post('/career/jobQualification/store', [JobQualificationController::class, 'storeJobQualification'])->name('career.store-jobQualification');
+    Route::get('/career/jobQualification', [JobQualificationController::class, 'getJobQualification'])->name('career.get-jobQualification');
+
+
+    //Value List
+    Route::get('/value-list', [ValueListController::class, 'getValueList'])->name('get-value-list');
+    Route::get('/value-list/show', [ValueListController::class, 'showValueList'])->name('get-value-list');
+    Route::delete('/value-list/{id}delete', [ValueListController::class, 'deleteValueList'])->name('delete-value-list');
+    Route::put('/value-list/{id}/update', [ValueListController::class, 'updateValueList'])->name('update-value-list');
+    Route::post('/value-list/store', [ValueListController::class, 'storeValueList'])->name('store-value-list');
+
 
     //TODO *AJAX REQUEST*
     // Get GOOGLE ANALYTICS COSTUM DATE

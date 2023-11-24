@@ -81,6 +81,14 @@
               </p>
             </a>
           </li>
+          <li class="nav-item" id="value-list">
+            <a href="{{ route('get-value-list') }}" class="nav-link">
+            <i class="nav-icon fas fa-hands-helping"></i>
+            <p>
+                Value List
+              </p>
+            </a>
+          </li>
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>

@@ -221,4 +221,5 @@ class PagesController extends Controller
             return redirect()->route('pages')->with('error', 'Failed to Update Service Page');
         }
     }
+    
 }
