@@ -33,7 +33,7 @@ class AboutResource extends JsonResource
                     'title' => $valueList->title,
                     'desc' => $valueList->desc,
                 ];
-            }),
+            })->chunk(3)->toArray(),
             'part_cert_title' => $this->part_cert_title,
             'part_cert_desc' => $this->part_cert_desc,
             'partnership_title' => $this->partnership_title,
@@ -44,7 +44,7 @@ class AboutResource extends JsonResource
                 ];
             })->chunk(12)->toArray(),
             'certificate_title' => $this->certification_title,
-            'certificate_list' => $this->certificate_list->map(function ($certificate) {
+            'certificate_list' => $this->certificate->map(function ($certificate) {
 
                 return [
                     'id' => $certificate->id,
@@ -53,8 +53,8 @@ class AboutResource extends JsonResource
                     'company' => $certificate->company,
                     'published' => $certificate->created_at
 
-                        ];
-                    })->chunk(6)->toArray(),    
+                ];
+            })->chunk(6)->toArray(),
         ];
     }
 }

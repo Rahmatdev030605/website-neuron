@@ -80,7 +80,7 @@ class ValueListController extends Controller
     {
             $search = $request->input('search');
             if($search){
-                $valuelists = ValueList::query()->where('name', 'like', '%'. $search. '%')->paginate(12);
+                $valuelists = ValueList::query()->where('title', 'like', '%'. $search. '%')->paginate(12);
             }else{
                 $valuelists = ValueList::query()->paginate(12);
             }
@@ -177,7 +177,7 @@ class ValueListController extends Controller
                 }
             }
             deleteRec('ValueList', Auth::id(), Auth::user()->role_id, $valuelists->title);
-            return redirect()->route('get-value-list', compact('valuelist'))->with('success', 'Value List Deleted Successfully');
+            return redirect()->route('get-value-list', compact('valuelists'))->with('success', 'Value List Deleted Successfully');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         //throw $th;

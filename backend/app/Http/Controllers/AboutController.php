@@ -13,7 +13,7 @@ class AboutController extends Controller
         $about = About::with([
             'missionLists',
             'valueLists',
-            'certificates'
+            'certificate'
         ])->first();
 
         return new AboutResource($about);

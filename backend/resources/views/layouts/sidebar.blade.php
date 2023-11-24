@@ -57,14 +57,36 @@
               </p>
             </a>
           </li>
-          <li class="nav-item" id="career">
-            <a href="{{ route('career') }}" class="nav-link">
-            <i class="nav-icon fas fa-briefcase"></i>
-              <p>
-                Career
+          <li class="nav-item" id="about">
+            <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-hands-helping"></i>
+                <p>
+                About
+                <i class="fas fa-angle-left right"></i>
               </p>
             </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item" id="partner">
+                    <a href="{{ route('partner') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                    <p>Partner</p>
+                  </a>
+                </li>
+                <li class="nav-item" id="certificate">
+                    <a href="{{ route('certificate') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                    <p>Certificate</p>
+                  </a>
+                </li>
+                <li class="nav-item" id="certificate">
+                    <a href="{{ route('get-value-list') }}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                    <p>Value List</p>
+                  </a>
+                </li>
+            </ul>
           </li>
+
           <li class="nav-item" id="career">
             <a href="{{ route('methadology') }}" class="nav-link">
             <i class="nav-icon fas fa-chart-pie"></i>
@@ -73,22 +95,7 @@
               </p>
             </a>
           </li>
-          <li class="nav-item" id="career">
-            <a href="{{ route('partner') }}" class="nav-link">
-            <i class="nav-icon fas fa-hands-helping"></i>
-            <p>
-                Partner
-              </p>
-            </a>
-          </li>
-          <li class="nav-item" id="value-list">
-            <a href="{{ route('get-value-list') }}" class="nav-link">
-            <i class="nav-icon fas fa-hands-helping"></i>
-            <p>
-                Value List
-              </p>
-            </a>
-          </li>
+
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-copy"></i>

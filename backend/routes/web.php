@@ -13,6 +13,7 @@ use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\TechnologyController;
 use App\Http\Controllers\MethadologyController;
 use App\Http\Controllers\BlogCategoryController;
+use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\ToDoListController;
 use App\Http\Controllers\JobQualificationController;
 use App\Http\Controllers\HomeController;
@@ -202,6 +203,16 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/career/jobQualification/add', [JobQualificationController::class, 'addJobQualification'])->name('career.add-jobQualification');
     Route::post('/career/jobQualification/store', [JobQualificationController::class, 'storeJobQualification'])->name('career.store-jobQualification');
     Route::get('/career/jobQualification', [JobQualificationController::class, 'getJobQualification'])->name('career.get-jobQualification');
+
+    //Certificate
+    Route::get('/certificate', [CertificateController::class, 'getCertificate'])->name('certificate');
+    Route::get('/certificate/show', [CertificateController::class, 'showCertificate'])->name('certificate');
+    // store partner
+    Route::post('/certificate/store', [CertificateController::class, 'storeCertificate'])->name('certificate-store');
+    // edit and update partner
+    Route::put('/certificate/{id}/update', [CertificateController::class, 'updateCertificate'])->name('certificate-update');
+    // delete partner
+    Route::delete('/certificate/{id}/delete', [CertificateController::class, 'deleteCertificate'])->name('certificate-delete');
 
 
     //Value List

@@ -26,7 +26,7 @@
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{ route('adminpanel') }}">Home</a></li>
-                    <li class="breadcrumb-item active">Partner</li>
+                    <li class="breadcrumb-item active">Value List</li>
                 </ol>
             </div>
         </div>
@@ -76,7 +76,8 @@
                 </div>
                 <div class="col-sm mb-2 mx-auto card-body">
                     <div class="row justify-content-center mb-4 ">
-                        <h3 class="card-title text-bold">{{ $valuelist->title }}</h3>
+                        <h3 class="card-title text-bold mr-2">{{ $valuelist->title }}</h3>
+                        <h3 class="card-title ">{{ $valuelist->desc }}</h3>
                     </div>
                     <div class="row mx-auto">
                         <div class="row mx-auto btn-group">
@@ -92,7 +93,7 @@
     </div>
 
     <div class="mx-auto">
-
+    {{$valuelists->links('pagination::bootstrap-4')}}
     </div>
 
     <!-- Modal Add  -->
@@ -150,14 +151,14 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-
             <div class="modal-body">
+                @foreach($valuelists as $valuelist)
                 <form id="valuelist-edit" action="{{ route('update-value-list', ['id' => $valuelist->id]) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
                         <div class="mx-auto">
-                            <img class="value-list-img value-list-img-modal" src="{{ $valuelist->image }}" alt="ValueList Image">
+                            <img class="value-list-img value-list-img-modal" src="" alt="ValueList Image">
                         </div>
                         <label for="image">Image</label>
                         <input type="file" class="form-control" accept="image/*" name="image" id="image">
@@ -175,6 +176,7 @@
                     <button type="submit" class="btn btn-success">Edit</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </form>
+                @endforeach
             </div>
         </div>
     </div>
@@ -187,6 +189,7 @@
 
 <div class="modal fade" id="deleteValueListModal" tabindex="-1" aria-labelledby="deleteValueListModal" aria-hidden="true">
     <div class="modal-dialog modal-m">
+        @foreach($valuelists as $valuelist)
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="viewValueListModalLabel">Delete Value List</h5>
@@ -207,7 +210,7 @@
                 </form>
             </div>
         </div>
-
+        @endforeach
     </div>
 </div>
 <!-- Akhir modal Delete Partner -->

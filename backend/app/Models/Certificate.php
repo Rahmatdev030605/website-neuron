@@ -13,7 +13,6 @@ class Certificate extends Model
         'image',
         'title',
         'company',
-        'about_id',
     ];
 
     public function about()

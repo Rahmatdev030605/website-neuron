@@ -25,7 +25,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'Satisfied Customer',
                 'desc' => ' Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
-                'image' => 'img/valuelist/val_img_1.jpg', //random vall
+                'image' => 'img/valuelist/val_img_1.png', //random vall
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -33,7 +33,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'Inovation for Solutions',
                 'desc' => 'Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
-                'image' => 'img/valuelist/val_img_2.jpg',
+                'image' => 'img/valuelist/val_img_2.png',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
@@ -41,7 +41,7 @@ class ValueListSeeder extends Seeder
             [
                 'title' => 'Excellent Software',
                 'desc' => 'Serving customers with dedication, prioritizing win-win solutions, and ensuring 24-hour service.',
-                'image' => 'img/valuelist/val_img_3.jpg',
+                'image' => 'img/valuelist/val_img_3.png',
                 'about_id' => '1',
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
