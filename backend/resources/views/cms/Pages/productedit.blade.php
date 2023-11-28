@@ -53,7 +53,7 @@
                 <!-- Input field for 'about_title' -->
 
                 <!-- Submit button -->
-                <button clas="fixed-bottom" type="submit" class="btn btn-primary">Update</button>
+                <button class="fixed-bottom" type="submit" class="btn btn-primary">Update</button>
             </form>
         </div>
         <!-- /.card-body -->
