@@ -120,7 +120,7 @@ class JobQualificationController extends Controller
 
         $JobQualifications->delete();
         deleteRec("Job Qualifications", Auth::id(), Auth::user()->role_id, ("Job Qualification ". $JobQualifications->id));
-        return redirect()->route('career.get-jobQualification')->with('success', 'Item has been deleted.');
+        return redirect()->route('career')->with('success', 'Item has been deleted.');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', $th->getMessage());
         }

@@ -119,7 +119,7 @@ class ServiceController extends Controller
             $service->image = url($imagePath);
             if($service->save()){
                 $image->move('img/service', $imageName);
-                if(File::exists($oldImagePath) && !(basename($service['image'])==$imageName)){
+                if(File::exists($oldImagePath) && !(basename($oldImagePath)==$imageName)){
                     File::delete($oldImagePath);
                 }
             };

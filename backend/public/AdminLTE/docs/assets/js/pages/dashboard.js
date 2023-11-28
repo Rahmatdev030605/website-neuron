@@ -10,53 +10,7 @@
 $(function () {
   'use strict'
 
-  // Make the dashboard widgets sortable Using jquery UI
-  $('.connectedSortable').sortable({
-    placeholder: 'sort-highlight',
-    connectWith: '.connectedSortable',
-    handle: '.card-header, .nav-tabs',
-    forcePlaceholderSize: true,
-    zIndex: 999999
-  })
-  $('.connectedSortable .card-header').css('cursor', 'move')
 
-  // jQuery UI sortable for the todo list
-  $('.todo-list').sortable({
-    placeholder: 'sort-highlight',
-    handle: '.handle',
-    forcePlaceholderSize: true,
-    zIndex: 999999
-  })
-
-  // bootstrap WYSIHTML5 - text editor
-  $('.textarea').summernote()
-
-  /* jQueryKnob */
-  $('.knob').knob()
-
-
-
-
-
-  // Sparkline charts
-  var sparkline1 = new Sparkline($('#sparkline-1')[0], { width: 80, height: 50, lineColor: '#92c1dc', endColor: '#ebf4f9' })
-  var sparkline2 = new Sparkline($('#sparkline-2')[0], { width: 80, height: 50, lineColor: '#92c1dc', endColor: '#ebf4f9' })
-  var sparkline3 = new Sparkline($('#sparkline-3')[0], { width: 80, height: 50, lineColor: '#92c1dc', endColor: '#ebf4f9' })
-
-  sparkline1.draw([1000, 1200, 920, 927, 931, 1027, 819, 930, 1021])
-  sparkline2.draw([515, 519, 520, 522, 652, 810, 370, 627, 319, 630, 921])
-  sparkline3.draw([15, 19, 20, 22, 33, 27, 31, 27, 19, 30, 21])
-
-  // The Calender
-  $('#calendar').datetimepicker({
-    format: 'L',
-    inline: true
-  })
-
-  // SLIMSCROLL FOR CHAT WIDGET
-  $('#chat-box').overlayScrollbars({
-    height: '250px'
-  })
 
   /* Chart.js Charts */
   // Sales chart

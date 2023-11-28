@@ -188,7 +188,7 @@
                     @foreach($editRecord as $record)
                     <tr>
                         <td>{{$record->action}}</td>
-                        <td>{{$record->section}}</td>
+                        <td>{!!$record->section!!}</td>
                         <td class="w-25">{!! $record->message !!}</td>
                         <td>{{$record->user->firstname ." ". $record->user->lastname}}</td>
                         <td>{{$record->user->role->role_name}}</td>
@@ -237,11 +237,12 @@
               <!-- /.card-body-->
               <div class="card-footer bg-transparent">
                 <div class="row">
-                  <div class="col-4 text-center">
-                    <div id="sparkline-1"></div>
+                  <div class="col-12 text-center">
+                    <h3>Jawa Barat</h3>
                     <div class="text-white">Visitors</div>
+                    <canvas class="chart" id="geomap-chart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
                   </div>
-                  <!-- ./col -->
+                  {{-- <!-- ./col -->
                   <div class="col-4 text-center">
                     <div id="sparkline-2"></div>
                     <div class="text-white">Online</div>
@@ -251,7 +252,7 @@
                     <div id="sparkline-3"></div>
                     <div class="text-white">Sales</div>
                   </div>
-                  <!-- ./col -->
+                  <!-- ./col --> --}}
                 </div>
                 <!-- /.row -->
               </div>
@@ -351,31 +352,12 @@
 
 $(function () {
   'use strict'
-
-  var mapData={};
+    //DATA FOR GEOMAP
   var arrayMap = {!!json_encode($dataMap)!!}
-  for(var i = 0; i < arrayMap[0].length; i++){
-    mapData[arrayMap[0][i]] = arrayMap[1][i];
-  }
-  console.log(mapData);
+    function findRegion(regionName) {
+        return arrayMap.find(item => item.region === regionName);
+    }
 
-
-
-
-  // jvectormap data
-  var visitorsData = {
-    US: 398, // USA
-    SA: 400, // Saudi Arabia
-    CA: 1000, // Canada
-    DE: 500, // Germany
-    FR: 760, // France
-    CN: 300, // China
-    AU: 700, // Australia
-    BR: 600, // Brazil
-    IN: 800, // India
-    GB: 320, // Great Britain
-    RU: 3000 // Russia
-  }
   // World map by jvectormap
   $('#world-map').vectorMap({
     map: 'indonesia_id',
@@ -391,7 +373,7 @@ $(function () {
     },
     series: {
       regions: [{
-        values: visitorsData,
+        values: arrayMap,
         scale: ['#ffffff', '#0154ad'],
         normalizeFunction: 'polynomial'
       }]
@@ -400,19 +382,164 @@ $(function () {
       if (typeof visitorsData[code] !== 'undefined') {
         el.html(el.html() + ': ' + visitorsData[code] + ' new visitors')
       }
-    },onRegionOver: function (e, code) {
-      // Tindakan yang akan diambil saat provinsi dihover
-      // Misalnya, menampilkan data kunjungan untuk provinsi tertentu
-      if (typeof visitorsData[code] !== 'undefined') {
-          console.log('Data kunjungan untuk ' + code + ': ' + visitorsData[code]);
-          // Tambahkan logika atau tindakan lain sesuai kebutuhan Anda
-      }
+    },onRegionClick: function (e, code, region) {
+        var visitorRegion = findRegion(region);
+        geoMapChartData.labels = visitorRegion.date
+        geoMapChartData.datasets[0].data = visitorRegion.metric;
+        geoMapChart.update();
   }
+  })
+     // Geo Map chart
+     var geoMapChartCanvas = $('#geomap-chart').get(0)
+  geoMapChartCanvas.getContext('2d')
+  // $('#revenue-chart').get(0).getContext('2d');
+
+  var geoMapChartData = {
+    // labels: ['2011 Q1', '2011 Q2', '2011 Q3', '2011 Q4', '2012 Q1', '2012 Q2', '2012 Q3', '2012 Q4', '2013 Q1', '2013 Q2'],
+    labels: arrayMap[0].date,
+    datasets: [
+      {
+        label: 'Visitors',
+        fill: false,
+        borderWidth: 2,
+        lineTension: 0,
+        spanGaps: true,
+        borderColor: '#efefef',
+        pointRadius: 3,
+        pointHoverRadius: 7,
+        pointColor: '#efefef',
+        pointBackgroundColor: '#efefef',
+        data: arrayMap[0].metric
+        // data: [2666, 2778, 4912, 3767, 6810, 5670, 4820, 15073, 10687, 8432]
+      }
+    ]
+  }
+
+  var geoMapChartOptions = {
+    maintainAspectRatio: false,
+    responsive: true,
+    legend: {
+      display: false
+    },
+    scales: {
+      xAxes: [{
+        ticks: {
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: false,
+          color: '#efefef',
+          drawBorder: false
+        }
+      }],
+      yAxes: [{
+        ticks: {
+          stepSize: 5,
+          fontColor: '#efefef'
+        },
+        gridLines: {
+          display: true,
+          color: '#efefef',
+          drawBorder: true
+        }
+      }]
+    }
+  }
+
+  // This will get the first returned node in the jQuery collection.
+  // eslint-disable-next-line no-unused-vars
+  var geoMapChart = new Chart(geoMapChartCanvas, { // lgtm[js/unused-local-variable]
+    type: 'bar',
+    data: geoMapChartData,
+    options: geoMapChartOptions
+  })
+
+  $('.daterange').daterangepicker({
+    ranges: {
+      Today: [moment(), moment()],
+      Yesterday: [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+      'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+      'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+      'This Month': [moment().startOf('month'), moment().endOf('month')],
+      'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+    },
+    startDate: moment().subtract(29, 'days'),
+    endDate: moment()
+  }, function (start, end) {
+    // eslint-disable-next-line no-alert
+    var startDate = start.format('YYYY-MM-DD')
+    var endDate = end.format('YYYY-MM-DD')
+    $.ajax({
+        type: "GET",
+        url: '{{route('map-costum')}}',
+        dataType: "json",
+        data: {
+        'startDate': start.format('YYYY-MM-DD'),
+        'endDate': end.format('YYYY-MM-DD'),
+        },
+        success: function (response) {
+            var firstElement = response[0];
+            if (Array.isArray(firstElement.date) && Array.isArray(firstElement.metric)) {
+            var numericMetrics = firstElement.metric.map(Number);
+
+            geoMapChartData.labels = firstElement.date;
+            geoMapChartData.datasets[0].data = numericMetrics;
+            geoMapChart.update();
+        }
+        },
+        error: function (xhr, status, error) {
+        console.log('gagal');
+            console.log(xhr.responseText);  // Tampilkan respon kesalahan lengkap
+            console.log(status);  // Tampilkan status kesalahan (misalnya: "Not Found", "Internal Server Error", dll.)
+            console.log(error);  // Tampilkan pesan kesalahan jika ada
+    }
+    });
   })
 
 
 
 
+
+
+
+
+
+  // The Calender
+  $('#calendar').datetimepicker({
+    format: 'L',
+    inline: true
+  })
+
+
+
+  // Make the dashboard widgets sortable Using jquery UI
+  $('.connectedSortable').sortable({
+    placeholder: 'sort-highlight',
+    connectWith: '.connectedSortable',
+    handle: '.card-header, .nav-tabs',
+    forcePlaceholderSize: true,
+    zIndex: 999999
+  })
+  $('.connectedSortable .card-header').css('cursor', 'move')
+
+  // jQuery UI sortable for the todo list
+  $('.todo-list').sortable({
+    placeholder: 'sort-highlight',
+    handle: '.handle',
+    forcePlaceholderSize: true,
+    zIndex: 999999
+  })
+
+  // bootstrap WYSIHTML5 - text editor
+  $('.textarea').summernote()
+
+  /* jQueryKnob */
+  $('.knob').knob()
+
+  // SLIMSCROLL FOR CHAT WIDGET
+  $('#chat-box').overlayScrollbars({
+    height: '250px'
+  })
 
 
 

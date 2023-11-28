@@ -16,8 +16,6 @@ class AddForeignHomeIdToTableCertificate extends Migration
         Schema::table('certificate', function (Blueprint $table) {
             $table->unsignedBigInteger('about_id');
             $table->foreign('about_id')->references('id')->on('home');
-            $table->string('title');
-            $table->string('company');
         });
     }
 
@@ -29,8 +27,8 @@ class AddForeignHomeIdToTableCertificate extends Migration
     public function down()
     {
         Schema::table('certificate', function (Blueprint $table) {
-            $table->dropForeign('certificate_home_id_foreign');
-            $table->dropColumn(['title', 'company', 'about_id']);
+            $table->dropForeign('certificate_about_id_foreign');
+           $table->dropColumn(['title', 'company', 'about_id']);
         });
     }
 }

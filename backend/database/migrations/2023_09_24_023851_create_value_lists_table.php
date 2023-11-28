@@ -16,7 +16,7 @@ class CreateValueListsTable extends Migration
         Schema::create('value_lists', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('desc')->default('')->nullable();
+            $table->string('desc');
             $table->string('image');
             $table->timestamps();
         });

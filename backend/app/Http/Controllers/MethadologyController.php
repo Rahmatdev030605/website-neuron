@@ -119,7 +119,7 @@ class MethadologyController extends Controller
             // Simpan perubahan
             if($methodology->save()){
                 $methadology->move('img/methodology', $methadologyName);
-                if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $methadologyName)){
+                if(File::exists($oldImageNamePath)&&!(basename($oldImageNamePath) == $methadologyName)){
                     File::delete($oldImageNamePath);
                 }
             };

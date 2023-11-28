@@ -20,7 +20,7 @@ class BlogResource extends JsonResource
             'image' => $this->image,
             'description' => $this->desc,
             'author' => $this->author,
-            'category' => $this->articleCategoryGroup->map(function ($category){
+            'category' => $this->articleCategoryGroups->map(function ($category){
                 return [
                     'id' => $category->articleCategory->id,
                     'name' => $category->articleCategory->name,

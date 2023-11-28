@@ -88,6 +88,7 @@ class CertificateController extends Controller
         foreach ($certificates as $certificate) {
             $certificate['image'] = asset("img/certificate/" . basename($certificate['image']));
         }
+
         return view('cms.Certificate.certificate', compact('certificates'));
     }
 

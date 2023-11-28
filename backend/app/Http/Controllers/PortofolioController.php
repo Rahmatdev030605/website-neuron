@@ -185,7 +185,7 @@ class PortofolioController extends Controller
                 $portofolio->image = url($portofolioImagePath);
                 if($portofolio->save()){
                     $PortofolioImage->move('img/portofolios', $portofolioImageName);
-                    if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $portofolioImageName)){
+                    if(File::exists($oldImageNamePath)&&!(basename($oldImageNamePath) == $portofolioImageName)){
                         File::delete($oldImageNamePath);
                     }
                 }else{

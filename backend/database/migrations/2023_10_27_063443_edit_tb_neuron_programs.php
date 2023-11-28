@@ -14,8 +14,8 @@ class EditTbNeuronPrograms extends Migration
     public function up()
     {
         Schema::table('neuron_programs', function(Blueprint $table) {
-            $table->renameColumn('image', 'video');
-            $table->string('tagline');
+            $table->unsignedBigInteger('home_id')->default(1);
+            $table->foreign('home_id')->references('id')->on('neuron_programs');
         });
     }
 
@@ -27,8 +27,8 @@ class EditTbNeuronPrograms extends Migration
     public function down()
     {
         Schema::table('neuron_programs', function(Blueprint $table) {
-            $table->renameColumn('video', 'image');
-            $table->dropColumn('tagline');
+            $table->dropForeign('neuron_programs_home_id_foreign');
+            $table->dropColumn('home_id');
         });
     }
 }

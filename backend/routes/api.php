@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\BlogCategoryController;
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CareerController;
 use App\Http\Controllers\CtaContactController;
@@ -10,6 +11,7 @@ use App\Http\Controllers\PortofolioController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\TechnologyController;
+use App\Models\ArticleCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -64,6 +66,9 @@ Route::get('/about', [AboutController::class, 'getAbout']);
 
 // Blog
 Route::get('/blog', [BlogController::class, 'getBlog']);
+
+// Category
+Route::get('/blog-category', [BlogCategoryController::class, 'getArticleCategory']);
 
 // Detail Blog
 Route::get('/blog/{id}', [BlogController::class, 'getBlogById']);

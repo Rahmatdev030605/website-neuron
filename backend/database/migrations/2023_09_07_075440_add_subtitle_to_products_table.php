@@ -15,7 +15,6 @@ class AddSubtitleToProductsTable extends Migration
     {
         Schema::table('products', function (Blueprint $table) {
             Schema::table('products', function (Blueprint $table) {
-                $table->string('subtitle')->nullable();
             });
         });
     }

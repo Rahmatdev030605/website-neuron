@@ -14,7 +14,8 @@ class AddForeignServiceIdToPortfolioTable extends Migration
     public function up()
     {
         Schema::table('portofolios', function (Blueprint $table) {
-            // $table->foreignId('service_id')->references('id')->on('services');
+            $table->unsignedBigInteger('service_id')->default(1);
+            $table->foreign('service_id')->references('id')->on('services');
         });
     }
 
@@ -26,9 +27,8 @@ class AddForeignServiceIdToPortfolioTable extends Migration
     public function down()
     {
         Schema::table('portofolios', function (Blueprint $table) {
-            // $table->dropForeign('portofolios_service_id_foreign');
-            // $table->dropColumn('service_id');
-
+            $table->dropForeign('portofolios_service_id_foreign');
+            $table->dropColumn('service_id');
         });
     }
 }

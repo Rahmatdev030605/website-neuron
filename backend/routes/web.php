@@ -105,7 +105,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/blog-categories/create', [BlogCategoryController::class, 'create'])->name('create-blog-categories');
     Route::post('/blog-categories/store', [BlogCategoryController::class, 'store'])->name('store-blog-categories');
     // delete blog category
-    Route::delete('/blog-category/{id}', [BlogCategoryController::class, 'deleteBlogCategory'])->name('delete-blog-categories');
+    Route::delete('/blog-categories/{id}/delete', [BlogCategoryController::class, 'deleteBlogCategory'])->name('delete-blog-categories');
     // edit & update blog category
     Route::get('blog-categories/{id}/edit', [BlogCategoryController::class, 'edit'])->name('blog-categories-edit');
     Route::put('blog-categories/{id}/update', [BlogCategoryController::class, 'update'])->name('blog-categories-update');
@@ -174,6 +174,10 @@ Route::middleware(['auth'])->group(function () {
     // edit & update service page
     Route::get('/page/service', [PagesController::class, 'previewService'])->name('service-pages.index');
     Route::put('/page/service/edit/{id}', [PagesController::class, 'editService'])->name('page-settings.update');
+    // edit & update product page
+    Route::get('/page/product', [PagesController::class, 'previewProduct'])->name('product-pages.index');
+    Route::put('/page/product/edit/{id}', [PagesController::class, 'editProduct'])->name('product.update');
+
 
     // Show Todo List
     Route::get('/adminpanel/todolist', [ToDoListController::class, 'getToDoList'])->name('todolist.index');
@@ -195,37 +199,37 @@ Route::middleware(['auth'])->group(function () {
     // delete partner
     Route::delete('/partner/{id}/delete', [PartnerController::class, 'deletePartner'])->name('partner-delete');
 
+      //Value List
+      Route::get('/value-list', [ValueListController::class, 'getValueList'])->name('get-value-list');
+      Route::get('/value-list/show', [ValueListController::class, 'showValueList'])->name('get-value-list');
+      Route::delete('/value-list/{id}delete', [ValueListController::class, 'deleteValueList'])->name('delete-value-list');
+      Route::put('/value-list/{id}/update', [ValueListController::class, 'updateValueList'])->name('update-value-list');
+      Route::post('/value-list/store', [ValueListController::class, 'storeValueList'])->name('store-value-list');
+
+
     // edit general job qualification
     Route::get('/career/jobQualification', [JobQualificationController::class, 'getJobQualification'])->name('career.get-jobQualification');
-    // Route::get('/career/jobQualification', [JobQualificationController::class, 'showJobQualification'])->name('career.show-jobQualification');
     Route::delete('/career/jobQualification/delete/{id}', [JobQualificationController::class, 'deleteJobQualification'])->name('career.delete-jobQualification');
     Route::put('/career/jobQualification/{id}/update', [JobQualificationController::class, 'updateJobQualification'])->name('career.update-jobQualification');
     Route::get('/career/jobQualification/add', [JobQualificationController::class, 'addJobQualification'])->name('career.add-jobQualification');
     Route::post('/career/jobQualification/store', [JobQualificationController::class, 'storeJobQualification'])->name('career.store-jobQualification');
-    Route::get('/career/jobQualification', [JobQualificationController::class, 'getJobQualification'])->name('career.get-jobQualification');
 
-    //Certificate
-    Route::get('/certificate', [CertificateController::class, 'getCertificate'])->name('certificate');
-    Route::get('/certificate/show', [CertificateController::class, 'showCertificate'])->name('certificate');
-    // store partner
-    Route::post('/certificate/store', [CertificateController::class, 'storeCertificate'])->name('certificate-store');
-    // edit and update partner
-    Route::put('/certificate/{id}/update', [CertificateController::class, 'updateCertificate'])->name('certificate-update');
-    // delete partner
-    Route::delete('/certificate/{id}/delete', [CertificateController::class, 'deleteCertificate'])->name('certificate-delete');
+      //Certificate
+      Route::get('/certificate', [CertificateController::class, 'getCertificate'])->name('certificate');
+      Route::get('/certificate/show', [CertificateController::class, 'showCertificate'])->name('certificate');
+      // store partner
+      Route::post('/certificate/store', [CertificateController::class, 'storeCertificate'])->name('certificate-store');
+      // edit and update partner
+      Route::put('/certificate/{id}/update', [CertificateController::class, 'updateCertificate'])->name('certificate-update');
+      // delete partner
+      Route::delete('/certificate/{id}/delete', [CertificateController::class, 'deleteCertificate'])->name('certificate-delete');
 
-
-    //Value List
-    Route::get('/value-list', [ValueListController::class, 'getValueList'])->name('get-value-list');
-    Route::get('/value-list/show', [ValueListController::class, 'showValueList'])->name('get-value-list');
-    Route::delete('/value-list/{id}delete', [ValueListController::class, 'deleteValueList'])->name('delete-value-list');
-    Route::put('/value-list/{id}/update', [ValueListController::class, 'updateValueList'])->name('update-value-list');
-    Route::post('/value-list/store', [ValueListController::class, 'storeValueList'])->name('store-value-list');
 
 
     //TODO *AJAX REQUEST*
     // Get GOOGLE ANALYTICS COSTUM DATE
     Route::get('/gacostum', [GAnalytics::class, 'getGraphAnalytics'])->name('ga-costum');
+    Route::get('/mapcostum', [GAnalytics::class, 'getMapAnalytics'])->name('map-costum');
 });
 
 // hanya untuk user dengan role superadmin

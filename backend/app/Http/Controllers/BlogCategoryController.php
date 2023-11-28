@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\BlogCategoryResource;
+use App\Models\Article;
 use Illuminate\Http\Request;
 use App\Models\ArticleCategory;
 use App\Models\ArticleCategoryGroup;
@@ -18,7 +20,6 @@ class BlogCategoryController extends Controller
     public function blogcategoriesshow(Request $request)
     {
         $categories = ArticleCategory::with('articleCategoryGroup')->get();
-        return dd($categories);
         return view('cms.Blog.Categories.categories', compact('categories'));
     }
 
@@ -36,12 +37,12 @@ class BlogCategoryController extends Controller
 
             //Data For Record
             deleteRec('Blog Category', Auth::id(), Auth::user()->role_id, $category->name);
-            return redirect()->route('blog-categories')->with('success', 'Category deleted successfully');
+            return ['message' => 'Category Deleted Successfully'];
         } else {
-            return redirect()->route('blog-categories')->with('error', 'Category not found');
+            return ['message'=>'Category not found'];
         }
         } catch (\Throwable $th) {
-            return redirect()->route('blog-categories')->with('error', $th->getMessage());
+            return $th->getMessage();
         }
     }
 
@@ -67,9 +68,9 @@ class BlogCategoryController extends Controller
         $category->save();
         addRec('Blog Category', Auth::id(), Auth::user()->role_id, $category->name);
         // Redirect ke halaman yang sesuai atau tampilkan pesan sukses
-        return redirect()->route('blog-categories')->with('success', 'Blog Categories added successfully.');
+        return $category;
         } catch (\Throwable $th) {
-            return redirect()->route('blog-categories')->with('error', $th->getMessage());
+            return $th->getMessage();
         }
     }
 
@@ -100,5 +101,11 @@ class BlogCategoryController extends Controller
         } catch (\Throwable $th) {
             return redirect()->route('blog-categories')->with('error', $th->getMessage());
         }
+    }
+
+    //API
+    public function getArticleCategory(Request $request){
+        $category = ArticleCategory::all();
+        return BlogCategoryResource::collection($category);
     }
 }

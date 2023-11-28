@@ -13,6 +13,6 @@ class Product extends Model
         'name',
         'desc',
         'link',
-        'subtitle',
+        'image',
     ];
 }

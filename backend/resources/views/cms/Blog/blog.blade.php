@@ -18,10 +18,6 @@
 
     <div class="container">
         <div class="mt-3">
-            <div class="d-flex justify-content-start mb-3">
-                <a href="{{ route('blog') }}" class="btn btn-success mr-2">Blog</a>
-                <a href="{{ route('blog-categories') }}" class="btn btn-primary mr-2">Blog Category</a>
-            </div>
             <form action="{{ route('show-blog') }}" method="GET">
                 @csrf
                 <div class="input-group" style="width: 100%;">
@@ -38,6 +34,26 @@
             </form>
         </div>
 
+        <form action="{{route('show-blog')}}" class="w-50 mt-3" method="POST">
+            @csrf
+            @method('GET')
+            <select name="filter" id="filter" class="btn btn-outline-secondary text-left">
+                <option selected value="">All</option>
+                @foreach($categories as $category)
+                <option value="{{$category->id}}" {{($filter == $category->id)?'selected':''}}>{{$category->name}}</option>
+                @endforeach
+            </select>
+            <select name="sort" id="sort" class="btn btn-outline-secondary text-left ml-2">
+                <option selected>Sort By</option>
+                <option value="ascending" {{($sort == "ascending") ? 'selected' : ''}}>A-Z</option>
+                <option value="descending" {{($sort == "descending") ? 'selected' : ''}}>Z-A</option>
+                <option value="newest" {{($sort == "newest" ) ? 'selected' : ''}}>Newest</option>
+                <option value="oldest" {{($sort == "oldest" ) ? 'selected' : ''}}>Oldest</option>
+            </select>
+
+            <button type="submit" class="btn btn-info ml-2">Apply</button>
+        </form>
+
         <div id="success-message" class="mt-3">
             @if(session('success'))
                 <div class="alert alert-success">
@@ -53,37 +69,6 @@
                 </div>
             @endif
         </div>
-
-        {{--! SORT ERROR
-            <div class="col-md-3">
-            <h4>Sort by</h4>
-            <ul class="list-g   roup">
-                <li class="list-group-item">
-                    <a href="{{ route('show-blog', ['sort' => 'title']) }}">Title</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="{{ route('show-blog', ['sort' => 'date']) }}">Date</a>
-                </li>
-                <li class="list-group-item">
-                    <a href="{{ route('show-blog', ['sort' => 'category']) }}">Category</a>
-                </li>
-            </ul>
-        </div> --}}
-
-        {{--! CATEGORY ERROR
-             <div class="col-md-3">
-            <h4>Filter by Category</h4>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <a href="{{ route('show-blog') }}">All Categories</a>
-                </li>
-                @foreach($blogs as $blog)
-                <li class="list-group-item">
-                    <a href="{{ route('show-blog') }}"></a>
-                </li>
-                @endforeach
-            </ul>
-        </div> --}}
 
         <div class="row mt-3">
             <style>
@@ -147,7 +132,7 @@
                     </div>
                     <img class="blog-img" src="{{ asset($blog->image) }}" alt="{{ $blog->image }}">
                     <div id="category-container" >
-                        @foreach ($blog->articleCategoryGroup as $cateGroup)
+                        @foreach ($blog->articleCategoryGroups as $cateGroup)
                         <strong><span class="ml-0 badge badge-danger border border-dark align-middle" id="categoryExample">
                             {{$cateGroup->articleCategory->name}}
                         </span></strong>

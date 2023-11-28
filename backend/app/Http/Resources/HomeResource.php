@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Article;
+use App\Models\Service;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class HomeResource extends JsonResource
@@ -14,6 +16,8 @@ class HomeResource extends JsonResource
      */
     public function toArray($request)
     {
+        $services = Service::all();
+        $article = Article::all()->take(4);
         return [
             'id' => $this->id,
             'hero'=>[
@@ -31,15 +35,22 @@ class HomeResource extends JsonResource
                 'about_desc' => $this->about_desc,
             ],
             'program' => [
-                'id' => $this->neuron_program_id,
-                'title' => optional($this->neuronProgram)->title,
-                'desc' => optional($this->neuronProgram)->desc,
-                'ytEmbed' => optional($this->neuronProgram)->video,
-                'tagline' => optional($this->neuronProgram)->tagline,
+                'title' => optional($this->neuronPrograms)->title,
+                'desc' => optional($this->neuronPrograms)->desc,
+                'ytEmbed' => optional($this->neuronPrograms)->video,
+                'tagline' => optional($this->neuronPrograms)->tagline,
             ],
             'service' => [
                 'service_title' => $this->service_title,
                 'service_desc' => $this->service_desc,
+                'neuron_services'=> $services->map(function ($service){
+                    return [
+                        'id' => $service->id,
+                        'name' => $service->name,
+                        'desc' => $service->desc,
+                        'image' => $service->image,
+                    ];
+                })
             ],
             'partner' => [
                 'partner_title' => $this->partner_title,
@@ -64,6 +75,14 @@ class HomeResource extends JsonResource
             'article' => [
                 'article_title' => $this->article_title,
                 'article_desc' => $this->article_desc,
+                'neuron_articles' => $article->map(function ($blog){
+                    return [
+                        'id'=>$blog->id,
+                        'title'=>$blog->title,
+                        'image'=>$blog->image,
+                        'created_at'=>$blog->created_at
+                    ];
+                })
             ],
         ];
     }

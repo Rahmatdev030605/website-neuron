@@ -246,8 +246,6 @@ class CareerController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            //code...
-            // return dd($request->all());
         $career = Job::findOrFail($id);
         $careerBefore = clone $career;
 

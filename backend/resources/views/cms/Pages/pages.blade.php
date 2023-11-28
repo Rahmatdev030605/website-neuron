@@ -76,6 +76,16 @@
                     <a href="{{route('service-pages.index')}}" id="servicePage" class="btn btn-primary mb-8 col-md-12">EDIT</a>
                 </div>
             </div>
+
+            <div class="card col-md-11 card-danger mx-auto">
+                <h3 class="card-header">Product Page</h3>
+                <div class="card-body">
+                    <div id="image-tampil">
+                        <img id="imageDB" src="{{asset('img/product/product-img.jpg')}}" alt="...">
+                    </div>
+                    <a href="{{route('product-pages.index')}}" id="servicePage" class="btn btn-primary mb-8 col-md-12">EDIT</a>
+                </div>
+            </div>
 </div>
 <script>
     // Cari elemen pesan sukses

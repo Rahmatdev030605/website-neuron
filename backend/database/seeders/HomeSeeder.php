@@ -31,7 +31,6 @@ class HomeSeeder extends Seeder
             'partner_desc' => 'We are dedicated to provide a strategic and highly effecient solutions for our customer, each of solutions meticulously crafted by professional and trusted talent.',
             'article_title' => 'Article',
             'article_desc' => 'An update from Neuronworks Indonesia activities',
-            'neuron_program_id' => 1,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ]);

@@ -15,7 +15,8 @@ class CreateTableHeroTitleListTable extends Migration
     {
         Schema::create('hero_title_list', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('hero_title');
+            $table->text('hero_desc');
             $table->timestamps();
         });
     }

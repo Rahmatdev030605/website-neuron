@@ -115,6 +115,6 @@ class ArticleSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
         ]);
-        // \App\Models\Article::factory(10)->create();
+        // \App\Models\Article::factory(5)->create();
     }
 }

@@ -14,7 +14,7 @@ class AddForeignAboutIdToTableMissionLists extends Migration
     public function up()
     {
         Schema::table('mission_lists', function (Blueprint $table) {
-            $table->unsignedBigInteger('about_id');
+            $table->unsignedBigInteger('about_id')->default(1);
             $table->foreign('about_id')->references('id')->on('about');
         });
     }

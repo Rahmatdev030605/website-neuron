@@ -25,7 +25,7 @@ class Home extends Model
 
     public function neuronPrograms()
     {
-        return $this->hasMany(NeuronProgram::class, 'neuronPrograms_id');
+        return $this->hasOne(NeuronProgram::class);
     }
 
     public function testimonials()

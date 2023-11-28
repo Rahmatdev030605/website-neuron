@@ -17,6 +17,6 @@ class Certificate extends Model
 
     public function about()
     {
-        return $this->belongsTo(Certificate::class, 'about_id');
+        return $this->belongsTo(About::class, 'about_id');
     }
 }

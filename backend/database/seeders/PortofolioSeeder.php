@@ -33,7 +33,7 @@ class PortofolioSeeder extends Seeder
                 'successProject' => 'true',
                 'created_at' => '2019-10-13',
                 'updated_at' => Carbon::now(),
-                'service_id'=>1
+                'service_id'=> 1
             ],
             [
                 'name' => 'My Telkom',

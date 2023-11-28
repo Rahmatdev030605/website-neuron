@@ -125,13 +125,20 @@
                         <label for="skillRequirements">Skill Requirement</label>
                         <button type="button" class="btn btn-primary ml-auto" id="button-skill">Add Skill</button>
                     </div>
-                    <input type="text" class="form-control" id="skillRequirements" name="skillRequirements[]" placeholder="Skill" required>
+                    <div class="d-flex text-middle" id="skillRequirements">
+                            <input type="text" class="form-control"  name="skillRequirements[]" placeholder="Skill" required >
+                            <a class="far fa-trash-alt btn-sm btn-outline-danger" onclick="removeElement('skillRequirements')"></a>
+                    </div>
                 </div>
 
                 <div class="form-group" id="plusValue-container">
                     <div class="d-flex">
                         <label for="jobPlusValues">Plus Value</label>
                         <button type="button" class="btn btn-primary ml-auto" id="button-plusValue">Add Plus Value</button>
+                    </div>
+                    <div class="d-flex" id="jobPlusValues">
+                        <input type="text" id="plusValue" class="form-control"  name="jobPlusValues[]" placeholder="Plus Value">
+                        <a class="far fa-trash-alt btn-sm btn-outline-danger" onclick="removeElement('jobPlusValues')"></a>
                     </div>
                 </div>
 
@@ -148,22 +155,32 @@
 </div>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    var i = 0;
     $(document).ready(function () {
         var skillContainer = $('#skill-container');
 
         $('#button-skill').click(function () {
-            var newInput = $('<input type="text" class="form-control" name="skillRequirements[]" placeholder="Skill" required>');
+            var newInput = $(`<div class="d-flex text-middle" id="skillRequirements`+i+`">
+                            <input type="text" class="form-control"  name="skillRequirements[]" placeholder="Skill" required onclick="remove">
+                            <a class="far fa-trash-alt btn-sm btn-outline-danger" onclick="removeElement('skillRequirements`+i+`')"></a>
+                    </div>`);
             skillContainer.append(newInput);
+            i++
         });
     });
 </script>
 <script>
+    var a = 0;
     $(document).ready(function () {
         var plusValueContainer = $('#plusValue-container');
 
         $('#button-plusValue').click(function () {
-            var newInput = $('<input type="text" class="form-control" id="jobPlusValues" name="jobPlusValues[]" placeholder="Plus Value">');
+            var newInput = $(`<div class="d-flex" id="jobPlusValues`+a+`">
+                        <input type="text" id="plusValue" class="form-control"  name="jobPlusValues[]" placeholder="Plus Value">
+                        <a class="far fa-trash-alt btn-sm btn-outline-danger" onclick="removeElement('jobPlusValues`+a+`')"></a>
+                    </div>`);
             plusValueContainer.append(newInput);
+            a++
         });
     });
 </script>
@@ -192,6 +209,12 @@
         setTimeout(function() {
             successMessage.style.display = 'none';
         }, 3000); // 5000 milidetik (5 detik)
+    }
+</script>
+<script>
+    function removeElement(elementId){
+        var categoryElement = document.getElementById(elementId);
+        categoryElement.remove();
     }
 </script>
 @endsection

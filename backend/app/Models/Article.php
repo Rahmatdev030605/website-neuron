@@ -22,9 +22,9 @@ class Article extends Model
         'articles_categories_id'
     ];
 
-    public function articleCategoryGroup()
+    public function articleCategoryGroups()
     {
-        return $this->hasMany(ArticleCategoryGroup::class);
+        return $this->hasMany(ArticleCategoryGroup::class, 'article_id');
     }
 
     public function user()

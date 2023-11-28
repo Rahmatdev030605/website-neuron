@@ -76,7 +76,7 @@ class PartnerController extends Controller
                 $partner->image = url($partnerImagePath);
                 if($partner->save()){
                     $partnerImage->move('img/partner', $partnerImageName);
-                    if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $partnerImageName)){
+                    if(File::exists($oldImageNamePath)&&!(basename($oldImageNamePath) == $partnerImageName)){
                         File::delete($oldImageNamePath);
                     }
                 }

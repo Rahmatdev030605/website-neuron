@@ -72,7 +72,7 @@
                                     style="visibility: hidden" >Example
                                     <a class="btn-outline-light rounded-circle p-1 fas fa-times delete-category" onclick="removeCategory('categoryExample')"></a>
                                 </span></strong>
-                                    @foreach($blog->articleCategoryGroup as $category)
+                                    @foreach($blog->articleCategoryGroups as $category)
                                     <strong id="category-exist-{{$category->articleCategory->id}}"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check"name="categoryExist[]" checked style="visibility: hidden" value="{{$category->articleCategory->id}}">
                                         {{$category->articleCategory->name}}
                                         <a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory('category-exist-{{$category->articleCategory->id}}','{{$category->articleCategory->name}}')"></a></span></strong>
@@ -94,7 +94,7 @@
                                                             $categoryExist = false;
                                                         @endphp
 
-                                                        @foreach($blog->articleCategoryGroup as $categoryGroup)
+                                                        @foreach($blog->articleCategoryGroups as $categoryGroup)
                                                             @if($category->id == $categoryGroup->articleCategory->id)
                                                                 @php
                                                                     $categoryExist = true;
@@ -103,7 +103,11 @@
                                                         @endforeach
 
                                                         @if (!$categoryExist)
-                                                        <a class="dropdown-item button-category-exist" data-category="{{ $category->name }}" data-category-id="{{$category->id}}">{{ $category->name }}</a>
+                                                        <div class="d-flex pr-2 div-of-category{{$category->id}}">
+                                                            <a onclick="removeSelected('div-of-category{{$category->id}}')" class="dropdown-item button-category" data-category="{{ $category->name }}" data-category-id="{{$category->id}}">{{ $category->name }}</a>
+                                                            <a class="edit-category-db far fa-edit btn-sm btn-outline-warning" data-category-id="{{$category->id}}"></a>
+                                                            <a class="delete-category-db far fa-trash-alt btn-sm btn-outline-danger" data-category-id="{{$category->id}}"></a>
+                                                            </div>
                                                         @endif
                                                     @endforeach
                                                 </div>
@@ -145,49 +149,22 @@
         } );
 </script>
 <script>
-    var categoryArrayNew = [];
-    var categoryArrayExist = [];
     $(document).ready(function (e) {
         var categoryContainer = $('#category-container');
 
-        $(document).on('click','.button-category-exist', function () {
+        $(document).on('click','.button-category', function (e) {
+            e.preventDefault
             var category = $(this).data('category');
             var categoryId = $(this).data('category-id');
-            var elementId = 'category-exist-' + categoryId;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check"name="categoryExist[]" checked style="visibility: hidden" value="'+categoryId+'">'
+            var elementId = 'category-' + categoryId;
+            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryExist[]" checked style="visibility: hidden" value="'+categoryId+'">'
                 +category
                 +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+category+'\')"></a></span></strong>');
-            categoryArrayExist.push(categoryId);
             categoryContainer.append(newInput);
-            $(this).remove();
+            $('div-of-category').remove();
         });
 
-        $(document).on('click','.button-category-new', function () {
-            var category = $(this).data('category');
-            var elementId = 'category-new-' + categoryArrayNew.length;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryNew[]" checked style="visibility: hidden" value="'+category+'">'
-                +category
-                +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+category+'\')"></a></span></strong>');
-            categoryArrayNew.push(category);
-            categoryContainer.append(newInput);
-            $(this).remove();
-        });
-
-        $(document).on( 'click', '.new-category-form-add', function(e){
-            e.preventDefault();
-            var newCategory = $('.new-category-form').val();
-            var elementId = 'category-new-' + categoryArrayNew.length;
-            var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryNew[]" checked style="visibility: hidden" value="'+newCategory+'">'
-                +newCategory
-                +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+newCategory+'\')"></a></span></strong>');
-            categoryArrayNew.push(newCategory);
-            categoryContainer.append(newInput);
-            $('.col-new-category').remove()
-            $('.button-new-category').removeAttr('disabled');
-        })
-
-
-    $('.button-new-category').click(function (e) {
+        $('.button-new-category').click(function (e) {
         e.preventDefault();
         $('.category-section').append(`
         <div class="col-sm-7 col-new-category input-group input-group-sm mb-3">
@@ -199,28 +176,88 @@
         `);
         $('.button-new-category').attr('disabled', 'disabled')
         });
+
+        $(document).on( 'click', '.new-category-form-add', function(e){
+            e.preventDefault();
+            var newCategory = $('.new-category-form').val();
+            $.ajax({
+                type: "POST",
+                url: '{{route('store-blog-categories')}}',
+                data: {
+                  'name' : newCategory
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                dataType: "json",
+                success: function (response) {
+                    var elementId = 'category-' + response.id;
+                    var newInput = $('<strong id="'+elementId+'"><span class="mx-1 my-1 badge badge-light border border-dark align-middle"><input type="checkbox" id="category-check" name="categoryExist[]" checked style="visibility: hidden" value="'+response.id+'">'
+                    +response.name
+                    +'<a class="btn-outline-secondary rounded-circle p-1 fas fa-times" onclick="removeCategory(\''+elementId+'\',\''+response.name+'\')"></a></span></strong>');
+                    categoryContainer.append(newInput);
+                    $('.col-new-category').remove()
+                    $('.button-new-category').removeAttr('disabled');
+                },
+                error: function (xhr, status, error){
+                    console.log('gagal');
+                    // console.log(xhr.responseText);  // Tampilkan respon kesalahan lengkap
+                    // console.log(status);  // Tampilkan status kesalahan (misalnya: "Not Found", "Internal Server Error", dll.)
+                    // console.log(error);
+                }
+            });
+        })
+
+
+        $(document).on( 'click', '.delete-category-db', function(e){
+            e.preventDefault();
+            var categoryId = $(this).data('category-id');
+            $.ajax({
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                url: '{{route('delete-blog-categories',['id'=>'categoryId'])}}'.replace('categoryId', categoryId),
+                dataType: "json",
+                success: function (response) {
+                    console.log('berhasil');
+                    $('.item-of-dropdown').load(location.href+" .item-of-dropdown>*","")
+                },
+                error: function (xhr, status, error){
+                    console.log('gagal');
+                    // console.log(xhr.responseText);  // Tampilkan respon kesalahan lengkap
+                    // console.log(status);  // Tampilkan status kesalahan (misalnya: "Not Found", "Internal Server Error", dll.)
+                    // console.log(error);
+                }
+            });
+        })
+
+
+
+
+
     });
 
-    function removeCategory(categoryElementId, categoryName, group){
+
+    function removeCategory(categoryElementId, categoryName){
         var categoryElement = document.getElementById(categoryElementId);
         var dropdownSection = $('.item-of-dropdown')
-        if(categoryElement && categoryElementId.includes('exist')){
+
             var categoryId = categoryElementId.match(/\d+/);
             dropdownSection.append(`
-            <a class="dropdown-item button-category-exist" data-category="`+categoryName+`" data-category-id="`+categoryId+`">`+categoryName+`</a>
+            <div class="d-flex pr-2 div-of-category`+categoryId+`">
+            <a onclick="removeSelected('div-of-category`+categoryId+`')" class="dropdown-item button-category" data-category="`+categoryName+`" data-category-id="`+categoryId+`">`+categoryName+`</a>
+            <a class="edit-category-db far fa-edit btn-sm btn-outline-warning" data-category-id="`+categoryId+`"></a>
+            <a class="delete-category-db far fa-trash-alt btn-sm btn-outline-danger" data-category-id="`+categoryId+`"></a>
+            </div>
             `)
             // Remove the category element
             categoryElement.remove();
 
-        }else if(categoryElement && categoryElementId.includes('new')){
-            if (categoryName) {
-                dropdownSection.append(`
-                <a class="dropdown-item button-category-new" data-category="`+categoryName+`">`+categoryName+`</a>
-                `)
-                // Remove the category element
-                categoryElement.remove();
-            }
         }
-    }
+
+        function removeSelected(id){
+            $('.' + id).remove();
+        }
 </script>
 @endsection

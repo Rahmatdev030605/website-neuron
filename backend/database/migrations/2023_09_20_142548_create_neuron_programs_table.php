@@ -17,7 +17,8 @@ class CreateNeuronProgramsTable extends Migration
             $table->id();
             $table->string('title');
             $table->text('desc');
-            $table->string('image');
+            $table->string('video');
+            $table->string('tagline');
             $table->timestamps();
         });
     }

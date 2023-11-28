@@ -22,18 +22,47 @@ class BlogController extends Controller
 
     public function showblog(Request $request)
     {
+
         $search = $request->input('search'); // Ambil nilai dari input pencarian
+        $filter = $request->input('filter'); // Ambil nilai dari input filter
+        $sort = $request->input('sort'); // Ambil nilai dari input sort
+
+        $blogs = Article::with(['articleCategoryGroups.articleCategory', 'user']);
 
         // Jika ada parameter pencarian, lakukan pencarian berdasarkan nama atau deskripsi
         if ($search) {
-            $blogs = Article::where('title', 'like', '%' . $search . '%')
-                ->get();
-        } else {
-            // Jika tidak ada parameter pencarian, ambil semua data portofolio
-            $blogs = Article::all();
+            $blogs->where('title', 'like', '%' . $search . '%');
         }
 
-        return view('cms.Blog.blog', compact('blogs'));
+        if ($filter) {
+            $blogs->whereHas('articleCategoryGroups.articleCategory', function ($query) use ($filter) {
+                $query->where('id', $filter);
+            });
+        }
+
+        $blogs = $blogs->get();
+
+        switch($sort){
+            case 'ascending':
+                $blogs = $blogs->sortBy('title');
+                break;
+            case 'descending':
+                $blogs = $blogs->sortByDesc('title');
+                break;
+            case 'newest':
+                $blogs = $blogs->sortByDesc('created_at');
+                break;
+            case 'oldest':
+                $blogs = $blogs->sortBy('created_at');
+                break;
+            default:
+                $blogs = $blogs->sortBy('title');;
+                break;
+        }
+        $categories = ArticleCategory::all();
+
+
+        return view('cms.Blog.blog', compact('blogs','categories', 'filter', 'sort'));
     }
 
     public function deleteBlog($id)
@@ -181,7 +210,7 @@ class BlogController extends Controller
             $blog->image = url($imageBlogPath);
             if($blog->save()){
                 $imageBlog->move('img/blog', $imageBlogName);
-                if(File::exists($oldImageNamePath)&&!($oldImageNamePath == $imageBlogName)){
+                if(File::exists($oldImageNamePath)&&!(basename($oldImageNamePath) == $imageBlogName)){
                     File::delete($oldImageNamePath);
                 }
             }
@@ -223,18 +252,43 @@ class BlogController extends Controller
     //API
     public function getBlog(Request $request)
     {
-        $category = $request->input('category');
 
-        $query = Article::query();
+        $search = $request->input('search'); // Ambil nilai dari input pencarian
+        $filter = $request->input('filter'); // Ambil nilai dari input filter
+        $sort = $request->input('sort'); // Ambil nilai dari input sort
 
-        if ($category) {
-            $query->whereHas('articleCategoryGroup.articleCategory', function ($query) use ($category) {
-                $query->where('name', $category);
+        $blogs = Article::with(['articleCategoryGroups.articleCategory', 'user']);
 
+        // Jika ada parameter pencarian, lakukan pencarian berdasarkan nama atau deskripsi
+        if ($search) {
+            $blogs->where('title', 'like', '%' . $search . '%');
+        }
+
+        if ($filter) {
+            $blogs->whereHas('articleCategoryGroups.articleCategory', function ($query) use ($filter) {
+                $query->where('id', $filter);
             });
         }
 
-        $blogs = $query->get();
+        $blogs = $blogs->get();
+
+        switch($sort){
+            case 'ascending':
+                $blogs = $blogs->sortBy('title');
+                break;
+            case 'descending':
+                $blogs = $blogs->sortByDesc('title');
+                break;
+            case 'newest':
+                $blogs = $blogs->sortByDesc('created_at');
+                break;
+            case 'oldest':
+                $blogs = $blogs->sortBy('created_at');
+                break;
+            default:
+                $blogs = $blogs->sortBy('title');;
+                break;
+        }
 
         if ($blogs->isEmpty()) {
             return response()->json([

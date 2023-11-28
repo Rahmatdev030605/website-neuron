@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Home;
 use App\Models\About;
+use App\Models\Product;
+use App\Models\ProductPages;
 use App\Models\ServicePages;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
@@ -37,6 +39,14 @@ class PagesController extends Controller
         $dataAbout['hero_image'] = $publicImg . basename($dataAbout['hero_image']);
         $dataAbout['vision_image'] = $publicImg . basename($dataAbout['vision_image']);
         return view('cms.Pages.aboutedit', compact('dataAbout'));
+    }
+
+    public function previewProduct()
+    {
+        $dataProduct = ProductPages::findOrFail(1);
+        $publicImg = "img/product/";
+        $dataProduct['hero_image'] = $publicImg . basename($dataProduct['hero_image']);
+        return view('cms.Pages.productedit', compact('dataProduct'));
     }
 
     public function editHome(Request $req, $id)
@@ -161,7 +171,6 @@ class PagesController extends Controller
                 $heroImagePath = '/img/about/' . $heroImageName;
                 $aboutUpdate->hero_image = url($heroImagePath);
                 $hasHeroImage = true;
-
             }
             //Menyimpan gambar vision_image
             $hasVisionImage = false;
@@ -171,7 +180,6 @@ class PagesController extends Controller
                 $visionImagePath = '/img/about/' . $visionImageName;
                 $aboutUpdate->vision_image = url($visionImagePath);
                 $hasVisionImage = true;
-
             }
             $oldHeroImageName = basename($aboutUpdate['hero_image']);
             $oldVisionImageName = basename($aboutUpdate['vision_image']);
@@ -179,14 +187,18 @@ class PagesController extends Controller
             $oldHeroImagePath = $publicImg . $oldHeroImageName;
             $oldVisionImagePath = $publicImg . $oldVisionImageName;
 
-            if($aboutUpdate->update()){
-                if($hasHeroImage){
+            if ($aboutUpdate->update()) {
+                if ($hasHeroImage) {
                     $heroImage->move('img/about', $heroImageName);
-                    if(File::exists($oldHeroImagePath) && $oldHeroImageName != basename($aboutUpdate['hero_image'])){File::delete($oldHeroImagePath);}
+                    if (File::exists($oldHeroImagePath) && $oldHeroImageName != basename($aboutUpdate['hero_image'])) {
+                        File::delete($oldHeroImagePath);
+                    }
                 }
-                if($hasVisionImage){
+                if ($hasVisionImage) {
                     $visionImage->move('img/about', $visionImageName);
-                    if(File::exists($oldVisionImagePath) && $oldVisionImageName != basename($aboutUpdate['vision_image'])){File::delete($oldVisionImagePath);}
+                    if (File::exists($oldVisionImagePath) && $oldVisionImageName != basename($aboutUpdate['vision_image'])) {
+                        File::delete($oldVisionImagePath);
+                    }
                 }
             }
 
@@ -221,5 +233,46 @@ class PagesController extends Controller
             return redirect()->route('pages')->with('error', 'Failed to Update Service Page');
         }
     }
-    
+
+    public function editProduct(Request $req, $id)
+    {
+        try {
+            // Validate the request data
+            $reqProduct = $req->validate([
+                'hero_image' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+                'hero_title' => 'nullable|string|max:255',
+                'hero_desc' => 'nullable|string|max:255',
+            ]);
+
+            // Check if the request has the 'hero_image' file
+            if ($req->hasFile('hero_image')) {
+                // File Upload Logic
+                $heroProductImage = $req->file('hero_image');
+                $heroProductImageName = $heroProductImage->getClientOriginalName();
+                $heroProductImage->move('img/product', $heroProductImageName);
+                $heroProductImagePath = '/img/product/' . $heroProductImageName;
+                $reqProduct['hero_image'] = url($heroProductImagePath);
+            }
+
+            // Update ProductPages model
+
+            $DBProduct = ProductPages::findOrFail($id);
+            // Check if the 'hero_image' key exists in the request data before updating
+            if (array_key_exists('hero_image', $reqProduct)) {
+                $oldProductImageName = basename($DBProduct['hero_image']);
+                $oldProductImagePath = public_path('img/product/') . $oldProductImageName;
+
+
+                // Delete old image only if it exists and the image name has changed
+                if (File::exists($oldProductImagePath) && ($oldProductImageName != basename($DBProduct['hero_image']))) {
+                    File::delete($oldProductImagePath);
+                }
+            }
+            $DBProduct->update($reqProduct);
+
+            return redirect()->route('pages')->with('success', 'Product Pages updated Successfully');
+        } catch (\Throwable $th) {
+            return redirect()->route('pages')->with('error', $th->getMessage());
+        }
+    }
 }

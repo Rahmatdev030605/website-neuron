@@ -19,12 +19,12 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
+            ServiceSeeder::class,
             PortofolioSeeder::class,
             ProductSeeder::class,
             ArticleCategorySeeder::class,
             ArticleSeeder::class,
             MethadologyCategorySeeder::class,
-            ServiceSeeder::class,
             JobQualificationSeeder::class,
             JobSeeder::class,
             JobPlusValueSeeder::class,

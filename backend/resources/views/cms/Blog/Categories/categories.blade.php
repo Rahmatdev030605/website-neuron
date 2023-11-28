@@ -83,10 +83,6 @@
                                 </div>
                                 <div class="modal-body">
                                     Are you sure you want to delete <strong>{{ $category->name }}</strong>?
-                                    This will delete category <strong>{{ $category->name }}</strong> in:
-                                    @foreach($category->articleCategoryGroup as $key => $group)
-                                    <p>{{$key}}. {{$group->article->title}}</p>
-                                    @endforeach
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>

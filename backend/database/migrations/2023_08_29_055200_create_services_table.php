@@ -18,7 +18,6 @@ class CreateServicesTable extends Migration
             $table->string('name');
             $table->string('desc');
             $table->string('image');
-            $table->enum('isTopService', ['true', 'false']);
             $table->timestamps();
         });
     }
